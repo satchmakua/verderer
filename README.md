@@ -19,23 +19,30 @@ detection**.
 
 ## Run it
 
-**Prerequisites:** Python ≥ 3.11 (check: `python --version`).
+**Prerequisites:** Python ≥ 3.11 and a Rust toolchain (the trust core is in Rust) —
+check `python --version` and `cargo --version`.
 
 ```bash
+# 1) Build the trust kernel (the Merkle log + offline verifier)
+cargo build --release --manifest-path rust/Cargo.toml
+
+# 2) The Python pipeline
 python -m venv .venv
 source .venv/Scripts/activate        # Windows Git Bash; PowerShell: .venv\Scripts\Activate.ps1
 pip install -e ".[dev]"              # once
 
 python -m druid targets              # list the curated targets
-python -m druid observe epa-ghgrp    # fetch + content-address + diff + log one target
+python -m druid observe epa-ghgrp    # fetch + content-address + diff + append a signed leaf
 python -m druid log                  # print the observation / diff timeline
-python -m druid verify               # recompute the ledger chain + check the signed head
+python -m druid verify               # recompute the Merkle tree + check the signed checkpoint
 ```
 
 `observe` a target twice with content that changed in between and Druid flags the
 specific change (e.g. a watched term disappearing). `verify` proves the ledger hasn't
-been altered — corrupt any stored line and it reports `INVALID`. Runtime state lives in
-`./druid-data/` (gitignored).
+been altered — corrupt any stored leaf and it reports `INVALID`. The trust core
+(`rust/ledger-core`) also produces inclusion/consistency proofs and an **offline**
+verifier (`druid-verify`) that confirms a record against a signed checkpoint trusting
+neither the source nor Druid. Runtime state lives in `./druid-data/` (gitignored).
 
 ### Commands
 

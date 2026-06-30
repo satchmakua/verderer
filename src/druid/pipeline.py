@@ -17,7 +17,7 @@ from .collectors.static import StaticCollector
 from .config import Target
 from .differ.normalize import normalize_bytes
 from .differ.termwatch import term_watch
-from .ledger.log import SignedLog
+from .ledger.core import Ledger
 from .models import DiffRecord, DiffType, Observation
 from .store import ContentAddressedStore
 
@@ -44,7 +44,7 @@ class Druid:
     ) -> None:
         self.data_dir = Path(data_dir)
         self.store = ContentAddressedStore(self.data_dir / "blobs")
-        self.log = SignedLog(self.data_dir / "ledger")
+        self.log = Ledger(self.data_dir / "ledger")
         self.targets = targets
         self.terms = terms
         self.collector: Collector = collector or StaticCollector()

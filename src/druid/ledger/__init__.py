@@ -1,7 +1,10 @@
 """The ledger — Druid's trust core.
 
-M0 ships a deliberately simple, signed hash-chain stand-in (``SignedLog``). It is
-tamper-evident but it is **not** the real thing: M1 replaces it wholesale with the
-Rust ``ledger-core`` (a C2SP tlog-tiles Merkle log + signed checkpoints + an
-independent offline verifier). See DESIGN §4.3 and ROADMAP M1.
+The cryptographic core lives in `rust/ledger-core`: a C2SP tlog-tiles Merkle log with
+signed checkpoints (Ed25519 signed notes) and an independent offline verifier. This
+package's `core.Ledger` is a thin Python front end that owns canonicalisation and
+shells out to the `druid-ledger` / `druid-verify` binaries over stdio (no FFI). See
+DESIGN §4 and ADR-0003. Build the kernel with:
+
+    cargo build --release --manifest-path rust/Cargo.toml
 """

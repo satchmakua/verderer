@@ -1,6 +1,6 @@
 # 2. M0 ships a signed hash-chain ledger, not the real Merkle log
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0003](0003-m1-trust-core-tlog-tiles.md) (M1 landed 2026-06-30)
 - **Date:** 2026-06-30
 
 ## Context

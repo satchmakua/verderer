@@ -36,5 +36,8 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
-# Druid runtime state — blobs, ledger, and the (local, M0) signing key. Never commit.
+# Druid runtime state — blobs, ledger, and the local signing key. Never commit.
 druid-data/
+
+# Rust build output (Cargo.lock IS committed for the binaries — reproducible builds)
+rust/target/

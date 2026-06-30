@@ -1,0 +1,26 @@
+[package]
+name = "ledger-core"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Druid's trust core: a tlog Merkle log with C2SP signed checkpoints and an offline verifier."
+
+[dependencies]
+tlog_tiles = "0.2"
+ed25519-dalek = "2"
+sha2 = "0.10"
+base64 = "0.22"
+hex = "0.4"
+serde_json = "1"
+getrandom = "0.2"
+
+[dev-dependencies]
+tempfile = "3"
+
+[[bin]]
+name = "druid-ledger"
+path = "src/bin/druid-ledger.rs"
+
+[[bin]]
+name = "druid-verify"
+path = "src/bin/druid-verify.rs"
