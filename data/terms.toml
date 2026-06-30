@@ -1,0 +1,16 @@
+# L1 sensitive-term dictionary (DESIGN §6.2). Appearance, disappearance, or a count
+# change of any of these in a target's normalised text is flagged as a candidate
+# TermSubstitution. High-precision by design; expand deliberately.
+
+terms = [
+  "climate change",
+  "global warming",
+  "climate crisis",
+  "greenhouse gas",
+  "greenhouse gas emissions",
+  "environmental justice",
+  "climate resilience",
+  "climate adaptation",
+  "carbon dioxide",
+  "sea level rise",
+]

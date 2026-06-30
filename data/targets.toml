@@ -1,0 +1,24 @@
+# Curated, high-value targets — depth over breadth (DESIGN §7). Selection criteria are
+# published alongside each entry (mandate status, prior alteration history, etc.).
+# M0 seeds three; the set is expanded deliberately, never by crawling all of .gov.
+
+[[target]]
+id = "epa-ghgrp"
+title = "EPA Greenhouse Gas Reporting Program"
+url = "https://www.epa.gov/ghgreporting"
+collector = "static"
+criteria = "Congressionally mandated reporting program — high-signal if altered."
+
+[[target]]
+id = "epa-climate-indicators"
+title = "EPA Climate Change Indicators"
+url = "https://www.epa.gov/climate-indicators"
+collector = "static"
+criteria = "Core climate-change reference content; prior removal/alteration history."
+
+[[target]]
+id = "usgcrp"
+title = "U.S. Global Change Research Program (globalchange.gov)"
+url = "https://www.globalchange.gov/"
+collector = "static"
+criteria = "Host of the National Climate Assessments; site shut down in 2025 — deletion/redirect watch."
