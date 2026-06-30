@@ -8,6 +8,7 @@ records are appended as their own leaves *alongside* the observation.
 
 from __future__ import annotations
 
+import base64
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -104,3 +105,48 @@ class Druid:
 
     def timeline(self) -> list[dict]:
         return [entry.record for entry in self.log.entries()]
+
+    def bundle(self, target_id: str, index: int | None = None) -> dict:
+        """Assemble a self-verifying `druid.proofbundle/v1` for an observation (DESIGN §6.4).
+
+        Picks the latest observation leaf for `target_id` (or the leaf at ledger `index`),
+        and packages: the observation record, the raw response bytes (the artifact), the
+        Merkle inclusion proof, and the signed checkpoint + pinned public key. The bundle
+        verifies offline via `druid-verify bundle` — trusting neither the source nor Druid.
+        """
+        observations = [
+            entry
+            for entry in self.log.entries()
+            if entry.record.get("schema") == "druid.observation/v1"
+            and entry.record.get("target_id") == target_id
+        ]
+        if not observations:
+            raise ValueError(f"no observation logged for target {target_id}")
+        if index is None:
+            leaf = observations[-1]
+        else:
+            match = next((e for e in observations if e.index == index), None)
+            if match is None:
+                raise ValueError(f"ledger index {index} is not an observation of {target_id}")
+            leaf = match
+
+        incl = self.log.inclusion(leaf.index)
+        raw_hash = leaf.record["raw_bytes_hash"]
+        raw_bytes = self.store.get(raw_hash)
+        return {
+            "schema": "druid.proofbundle/v1",
+            "origin": "druid.watchdog/m1-log",
+            "observation": leaf.record,
+            "artifacts": [
+                {
+                    "hash": raw_hash,
+                    "media_type": "application/octet-stream",
+                    "bytes_b64": base64.b64encode(raw_bytes).decode(),
+                }
+            ],
+            "leaf": {"index": leaf.index, "record_b64": self.log.entry_b64(leaf.index), "leaf_hash": incl["leaf_hash"]},
+            "inclusion_proof": {"tree_size": incl["tree_size"], "proof": incl["proof"]},
+            "checkpoint": incl["checkpoint"],
+            "pubkey_hex": self.log.public_key_hex,
+            "anchors": [],  # external anchors land in the next M2 slice
+        }

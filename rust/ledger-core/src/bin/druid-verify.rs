@@ -11,7 +11,7 @@
 use std::io::Read;
 
 use base64::Engine;
-use ledger_core::{verify_inclusion, Ledger};
+use ledger_core::{verify_bundle, verify_inclusion, Ledger};
 use tlog_tiles::Hash;
 
 fn opt(args: &[String], key: &str) -> Option<String> {
@@ -97,8 +97,34 @@ fn run() -> i32 {
                 }
             }
         }
+        Some("bundle") => {
+            // druid-verify bundle <file.json> — verify a downloaded proof bundle offline.
+            let Some(path) = args.get(1) else {
+                eprintln!("usage: druid-verify bundle <file.json>");
+                return 2;
+            };
+            let json = match std::fs::read_to_string(path) {
+                Ok(s) => s,
+                Err(e) => {
+                    eprintln!("{e}");
+                    return 1;
+                }
+            };
+            match verify_bundle(&json) {
+                Ok(msg) => {
+                    println!("VALID {msg}");
+                    0
+                }
+                Err(e) => {
+                    println!("INVALID {e}");
+                    1
+                }
+            }
+        }
         _ => {
-            eprintln!("usage: druid-verify log --dir D | druid-verify inclusion (JSON on stdin)");
+            eprintln!(
+                "usage: druid-verify log --dir D | druid-verify inclusion (JSON on stdin) | druid-verify bundle <file.json>"
+            );
             2
         }
     }

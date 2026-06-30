@@ -23,6 +23,7 @@ use std::path::PathBuf;
 
 use base64::Engine;
 use ed25519_dalek::{SigningKey, VerifyingKey};
+use sha2::{Digest, Sha256};
 use tlog_tiles::{
     check_record, prove_record, prove_tree, record_hash, stored_hash_index, stored_hashes,
     tree_hash, Checkpoint, Error as TlogError, Hash, HashReader, RecordProof, TreeProof,
@@ -40,6 +41,11 @@ fn b64_encode(bytes: &[u8]) -> String {
 
 fn b64_decode(s: &str) -> Result<Vec<u8>, String> {
     B64.decode(s.trim()).map_err(|e| e.to_string())
+}
+
+/// The sha2-256 multihash of `data` (`"1220"` + hex digest), matching the Python store.
+fn multihash_sha256(data: &[u8]) -> String {
+    format!("1220{}", hex::encode(Sha256::digest(data)))
 }
 
 fn vk_from_hex(h: &str) -> Result<VerifyingKey, String> {
@@ -321,5 +327,85 @@ pub fn verify_inclusion(
     Ok(format!(
         "record {index} included in tree size {size}, root {}",
         hex::encode(root.0)
+    ))
+}
+
+fn parse_proof(value: &serde_json::Value) -> Vec<Hash> {
+    value
+        .as_array()
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|x| x.as_str())
+                .filter_map(|h| hex::decode(h).ok())
+                .filter_map(|b| <[u8; 32]>::try_from(b.as_slice()).ok())
+                .map(Hash)
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// Verify a `druid.proofbundle/v1` fully offline (DESIGN §6.4): the artifact bytes hash
+/// to the observation's referenced content, the leaf is exactly that observation, and the
+/// leaf is included under a validly-signed checkpoint. Trust routes through nothing live.
+///
+/// (M2 slice 1 — the `anchors` array, when present, is not yet checked; external-anchor
+/// verification arrives with the anchoring slice.)
+pub fn verify_bundle(json: &str) -> Result<String, String> {
+    let v: serde_json::Value = serde_json::from_str(json).map_err(|e| e.to_string())?;
+    if v["schema"] != "druid.proofbundle/v1" {
+        return Err("unexpected bundle schema".into());
+    }
+
+    // The leaf is the canonical observation bytes; its hash must match what's claimed.
+    let record_b64 = v["leaf"]["record_b64"]
+        .as_str()
+        .ok_or("missing leaf.record_b64")?;
+    let leaf_bytes = B64.decode(record_b64).map_err(|e| e.to_string())?;
+    let claimed = v["leaf"]["leaf_hash"]
+        .as_str()
+        .ok_or("missing leaf.leaf_hash")?;
+    if hex::encode(record_hash(&leaf_bytes).0) != claimed {
+        return Err("leaf_hash does not match the leaf bytes".into());
+    }
+
+    // The observation references its content by hash; an artifact must supply those bytes.
+    let observation: serde_json::Value =
+        serde_json::from_slice(&leaf_bytes).map_err(|e| e.to_string())?;
+    let raw_hash = observation["raw_bytes_hash"]
+        .as_str()
+        .ok_or("observation missing raw_bytes_hash")?;
+    let artifacts = v["artifacts"].as_array().ok_or("missing artifacts")?;
+    let mut matched_raw = false;
+    for artifact in artifacts {
+        let hash = artifact["hash"].as_str().ok_or("artifact missing hash")?;
+        let bytes = B64
+            .decode(
+                artifact["bytes_b64"]
+                    .as_str()
+                    .ok_or("artifact missing bytes_b64")?,
+            )
+            .map_err(|e| e.to_string())?;
+        if multihash_sha256(&bytes) != hash {
+            return Err(format!("artifact bytes do not hash to {hash}"));
+        }
+        if hash == raw_hash {
+            matched_raw = true;
+        }
+    }
+    if !matched_raw {
+        return Err("no artifact provides the observation's raw_bytes_hash".into());
+    }
+
+    // The leaf is included under the signed checkpoint.
+    let index = v["leaf"]["index"].as_u64().ok_or("missing leaf.index")?;
+    let proof = parse_proof(&v["inclusion_proof"]["proof"]);
+    let checkpoint = v["checkpoint"].as_str().ok_or("missing checkpoint")?;
+    let pubkey = v["pubkey_hex"].as_str().ok_or("missing pubkey_hex")?;
+    verify_inclusion(&leaf_bytes, index, &proof, checkpoint, pubkey)?;
+
+    let url = observation["url"].as_str().unwrap_or("?");
+    Ok(format!(
+        "bundle OK: {} artifact(s) match; observation of {url} included offline",
+        artifacts.len()
     ))
 }

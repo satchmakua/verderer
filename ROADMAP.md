@@ -25,27 +25,32 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 
 ## Phase 1 — The trust spine
 
-- [ ] **M1 — Real trust core (Rust `ledger-core` + offline verifier).** _Built;
-  awaiting confirmation._ Replaced `SignedLog` with a Merkle log on the `tlog_tiles`
-  crate (C2SP tlog algorithms): a Rust kernel does append-leaf, signed checkpoint
-  (C2SP signed note, Ed25519), inclusion proof, and consistency proof, backed by the
-  canonical stored-hash file; a standalone `druid-verify` validates a leaf against a
-  signed checkpoint **offline**. Python shells out over stdio (no FFI). _(The HTTP
-  tile-file serialization for R2/CDN serving moved to M2, where fetching tiles from
-  the blob store matters.)_
-  **Test:** `cargo build --release --manifest-path rust/Cargo.toml`; observe a target;
-  `python -m druid verify` → `VALID`; `druid.log.offline_verify(0)` confirms inclusion
-  under the signed checkpoint without the live service; corrupt a stored leaf →
-  verify **fails**. `pytest` green; `cargo test` green.
+- [x] **M1 — Real trust core (Rust `ledger-core` + offline verifier).** Replaced
+  `SignedLog` with a Merkle log on the `tlog_tiles` crate (C2SP tlog algorithms): a
+  Rust kernel does append-leaf, signed checkpoint (C2SP signed note, Ed25519),
+  inclusion proof, and consistency proof, backed by the canonical stored-hash file; a
+  standalone `druid-verify` validates a leaf against a signed checkpoint **offline**.
+  Python shells out over stdio (no FFI). _(Confirmed; committed 9570122. HTTP
+  tile-file serialization moved to M2c.)_
 
-- [ ] **M2 — Tile serving + anchoring + self-verifying proof bundle.** Emit the C2SP
-  tile files to the blob store (R2 / CDN-served) so a verifier can fetch tiles directly;
-  anchor each checkpoint via OpenTimestamps + RFC 3161 + ≥2 mirrors; `druid bundle
-  <observation>` exports a `druid.proofbundle/v1` (built on `offline_verify` from M1);
-  `druid-verify bundle.zip` validates fully offline including anchor proofs.
-  **Test:** export a bundle, copy it to a clean machine with only the verifier, run
-  `druid-verify bundle.zip` → it validates without contacting Druid. Tamper any field
-  → it rejects.
+- **M2 — The citable proof (split into runnable slices).**
+  - [ ] **M2a — Self-verifying proof bundle.** _Built; awaiting confirmation._
+    `druid bundle <target> [-o file]` exports a single self-contained
+    `druid.proofbundle/v1` (observation + raw artifact bytes + Merkle inclusion proof
+    + signed checkpoint + pinned key); `druid-verify bundle <file>` validates it fully
+    **offline** — artifact bytes hash to the observation, the leaf is included under
+    the signed root — trusting neither the source nor Druid. Built on M1's
+    `offline_verify`.
+    **Test:** `druid observe epa-ghgrp`; `druid bundle epa-ghgrp -o proof.json`;
+    `druid verify-bundle proof.json` → `VALID`; edit any byte of `proof.json` →
+    `INVALID`. `pytest` + `cargo test` green.
+  - [ ] **M2b — External anchoring.** Anchor each checkpoint via OpenTimestamps +
+    RFC 3161 + ≥2 mirrors; add the `anchors` array to the bundle and verify the
+    "existed no later than T_anchor" proofs offline.
+    **Test:** a bundle's anchors validate offline; a forged anchor is rejected.
+  - [ ] **M2c — Tile serving.** Emit the C2SP tile files to the blob store
+    (R2 / CDN-served) so a verifier can fetch tiles directly and recompute proofs.
+    **Test:** the verifier reconstructs an inclusion proof from fetched tiles alone.
 
 ## Phase 2 — Detection depth
 

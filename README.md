@@ -35,6 +35,8 @@ python -m druid targets              # list the curated targets
 python -m druid observe epa-ghgrp    # fetch + content-address + diff + append a signed leaf
 python -m druid log                  # print the observation / diff timeline
 python -m druid verify               # recompute the Merkle tree + check the signed checkpoint
+python -m druid bundle epa-ghgrp -o proof.json   # export a self-verifying proof bundle
+python -m druid verify-bundle proof.json         # verify it offline (trusts neither gov nor Druid)
 ```
 
 `observe` a target twice with content that changed in between and Druid flags the

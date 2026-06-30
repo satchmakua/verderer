@@ -11,9 +11,12 @@ Global options (before the subcommand): --data-dir, --targets, --terms.
 from __future__ import annotations
 
 import argparse
+import json
+import subprocess
 from pathlib import Path
 
 from .config import load_targets, load_terms
+from .ledger.core import LedgerBinaryNotFound, find_binary
 from .pipeline import Druid
 
 DEFAULT_DATA_DIR = Path("druid-data")
@@ -81,6 +84,33 @@ def cmd_verify(args: argparse.Namespace) -> int:
     return 0 if ok else 1
 
 
+def cmd_bundle(args: argparse.Namespace) -> int:
+    druid = _build(args)
+    try:
+        bundle = druid.bundle(args.target_id, args.index)
+    except Exception as error:
+        print(f"bundle failed: {error}")
+        return 1
+    text = json.dumps(bundle, indent=2)
+    if args.output:
+        Path(args.output).write_text(text, encoding="utf-8")
+        print(f"wrote proof bundle -> {args.output} ({len(text)} bytes); verify with `druid verify-bundle {args.output}`")
+    else:
+        print(text)
+    return 0
+
+
+def cmd_verify_bundle(args: argparse.Namespace) -> int:
+    try:
+        verifier = find_binary("druid-verify")
+    except LedgerBinaryNotFound as error:
+        print(str(error))
+        return 1
+    result = subprocess.run([str(verifier), "bundle", str(args.path)], capture_output=True, encoding="utf-8")
+    print((result.stdout or result.stderr).strip())
+    return 0 if result.returncode == 0 else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="druid", description="A verifiable watchdog for public environmental data.")
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR, help="where blobs + ledger live")
@@ -92,7 +122,20 @@ def main(argv: list[str] | None = None) -> int:
     observe.add_argument("target_id")
     sub.add_parser("log", help="print the observation / diff timeline")
     sub.add_parser("verify", help="verify the ledger chain and signed head")
+    bundle = sub.add_parser("bundle", help="export a self-verifying proof bundle for a target")
+    bundle.add_argument("target_id")
+    bundle.add_argument("--index", type=int, default=None, help="ledger index of a specific observation leaf")
+    bundle.add_argument("-o", "--output", type=Path, default=None, help="write the bundle to a file")
+    verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
+    verify_bundle.add_argument("path", type=Path)
 
     args = parser.parse_args(argv)
-    dispatch = {"targets": cmd_targets, "observe": cmd_observe, "log": cmd_log, "verify": cmd_verify}
+    dispatch = {
+        "targets": cmd_targets,
+        "observe": cmd_observe,
+        "log": cmd_log,
+        "verify": cmd_verify,
+        "bundle": cmd_bundle,
+        "verify-bundle": cmd_verify_bundle,
+    }
     return dispatch[args.cmd](args)

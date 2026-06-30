@@ -124,6 +124,10 @@ class Ledger:
 
     # --- reads (the entries file is the published leaf data) ---
 
+    def entry_b64(self, index: int) -> str:
+        """The exact stored leaf bytes (base64) for a ledger index — what was hashed."""
+        return (self.dir / "entries.b64").read_text(encoding="utf-8").splitlines()[index]
+
     def entries(self) -> list[LeafEntry]:
         path = self.dir / "entries.b64"
         if not path.exists():
