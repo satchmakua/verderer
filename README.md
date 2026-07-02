@@ -35,9 +35,16 @@ python -m druid targets              # list the curated targets
 python -m druid observe epa-ghgrp    # fetch + content-address + diff + append a signed leaf
 python -m druid log                  # print the observation / diff timeline
 python -m druid verify               # recompute the Merkle tree + check the signed checkpoint
-python -m druid bundle epa-ghgrp -o proof.json   # export a self-verifying proof bundle
-python -m druid verify-bundle proof.json         # verify it offline (trusts neither gov nor Druid)
+python -m druid anchor --tsa digicert,freetsa     # timestamp via independent TSAs (over HTTP)
+python -m druid bundle epa-ghgrp -o proof.json    # export a self-verifying proof bundle
+python -m druid verify-bundle proof.json          # verify it offline — anchors included
 ```
+
+The anchor gives a **time bound** ("existed no later than T"): `druid anchor` submits the
+checkpoint to independent third-party TSAs (**DigiCert**, **FreeTSA**), whose roots ship
+pinned in the verifier — so `verify-bundle` checks those anchors offline with no extra
+flags. An offline, self-hosted dev TSA is available via `--tsa dev` (proves the mechanism,
+not independence; verify it with `--root druid-data/ledger/dev-tsa-root.pem`).
 
 `observe` a target twice with content that changed in between and Druid flags the
 specific change (e.g. a watched term disappearing). `verify` proves the ledger hasn't

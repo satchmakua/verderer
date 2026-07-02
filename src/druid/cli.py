@@ -100,13 +100,44 @@ def cmd_bundle(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_anchor(args: argparse.Namespace) -> int:
+    from .anchors import HttpTsaAnchorer, OpensslTsaAnchorer
+
+    druid = _build(args)
+    if not druid.log.entries():
+        print("nothing to anchor — run `druid observe <target>` first")
+        return 1
+    names = [n.strip() for n in args.tsa.split(",") if n.strip()]
+    succeeded = 0
+    for name in names:
+        try:
+            if name == "dev":
+                anchorer: object = OpensslTsaAnchorer(args.data_dir / "anchors" / "dev-tsa")
+            else:
+                anchorer = HttpTsaAnchorer(name)
+            info = druid.anchor(anchorer)  # type: ignore[arg-type]
+            print(f"anchored via {name}: token {info['token_bytes']} bytes")
+            succeeded += 1
+        except Exception as error:  # network / openssl / unknown TSA — report, keep going
+            print(f"  {name}: FAILED ({error})")
+    if succeeded == 0:
+        print("no anchors succeeded (real TSAs need network; try `--tsa dev` for the offline self-hosted TSA)")
+        return 1
+    print(f"bundles now embed {succeeded} anchor(s). DigiCert/FreeTSA verify by default;")
+    print("  a self-hosted `dev` anchor needs `--root druid-data/ledger/dev-tsa-root.pem`.")
+    return 0
+
+
 def cmd_verify_bundle(args: argparse.Namespace) -> int:
     try:
         verifier = find_binary("druid-verify")
     except LedgerBinaryNotFound as error:
         print(str(error))
         return 1
-    result = subprocess.run([str(verifier), "bundle", str(args.path)], capture_output=True, encoding="utf-8")
+    cmd = [str(verifier), "bundle", str(args.path)]
+    for root in args.root or []:
+        cmd += ["--root", str(root)]
+    result = subprocess.run(cmd, capture_output=True, encoding="utf-8")
     print((result.stdout or result.stderr).strip())
     return 0 if result.returncode == 0 else 1
 
@@ -122,12 +153,18 @@ def main(argv: list[str] | None = None) -> int:
     observe.add_argument("target_id")
     sub.add_parser("log", help="print the observation / diff timeline")
     sub.add_parser("verify", help="verify the ledger chain and signed head")
+    anchor = sub.add_parser("anchor", help="anchor the current checkpoint with independent TSAs")
+    anchor.add_argument(
+        "--tsa", default="digicert,freetsa",
+        help="comma-separated TSAs: digicert, freetsa, sectigo (real, need network), or dev (self-hosted, offline)",
+    )
     bundle = sub.add_parser("bundle", help="export a self-verifying proof bundle for a target")
     bundle.add_argument("target_id")
     bundle.add_argument("--index", type=int, default=None, help="ledger index of a specific observation leaf")
     bundle.add_argument("-o", "--output", type=Path, default=None, help="write the bundle to a file")
     verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
     verify_bundle.add_argument("path", type=Path)
+    verify_bundle.add_argument("--root", type=Path, action="append", help="pinned TSA root PEM (repeatable) to verify anchors")
 
     args = parser.parse_args(argv)
     dispatch = {
@@ -135,6 +172,7 @@ def main(argv: list[str] | None = None) -> int:
         "observe": cmd_observe,
         "log": cmd_log,
         "verify": cmd_verify,
+        "anchor": cmd_anchor,
         "bundle": cmd_bundle,
         "verify-bundle": cmd_verify_bundle,
     }

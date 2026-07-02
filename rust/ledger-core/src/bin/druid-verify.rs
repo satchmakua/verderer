@@ -98,11 +98,33 @@ fn run() -> i32 {
             }
         }
         Some("bundle") => {
-            // druid-verify bundle <file.json> — verify a downloaded proof bundle offline.
-            let Some(path) = args.get(1) else {
-                eprintln!("usage: druid-verify bundle <file.json>");
+            // druid-verify bundle <file.json> [--root <tsa_root.pem>]...
+            // Verify a downloaded proof bundle offline; pinned TSA roots verify any anchors.
+            let Some(path) = args.get(1).filter(|a| !a.starts_with("--")) else {
+                eprintln!("usage: druid-verify bundle <file.json> [--root <tsa_root.pem>]...");
                 return 2;
             };
+            // Ship the independent third-party TSA roots we trust by default (M2b-2);
+            // --root adds more (e.g. a self-hosted dev TSA).
+            let mut roots: Vec<String> = vec![
+                include_str!("../../roots/digicert_g4.crt").to_string(),
+                include_str!("../../roots/freetsa.crt").to_string(),
+            ];
+            let mut i = 2;
+            while i < args.len() {
+                if args[i] == "--root" {
+                    match args.get(i + 1).map(std::fs::read_to_string) {
+                        Some(Ok(pem)) => roots.push(pem),
+                        _ => {
+                            eprintln!("--root needs a readable PEM file");
+                            return 2;
+                        }
+                    }
+                    i += 2;
+                } else {
+                    i += 1;
+                }
+            }
             let json = match std::fs::read_to_string(path) {
                 Ok(s) => s,
                 Err(e) => {
@@ -110,7 +132,7 @@ fn run() -> i32 {
                     return 1;
                 }
             };
-            match verify_bundle(&json) {
+            match verify_bundle(&json, &roots) {
                 Ok(msg) => {
                     println!("VALID {msg}");
                     0

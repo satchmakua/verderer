@@ -14,8 +14,10 @@
 //! signatures.
 
 mod note;
+mod rfc3161;
 
 pub use note::{key_id, sign_note, verify_note, NoteError};
+pub use rfc3161::{verify_rfc3161_token, AnchorInfo};
 
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Seek, SeekFrom, Write};
@@ -348,9 +350,10 @@ fn parse_proof(value: &serde_json::Value) -> Vec<Hash> {
 /// to the observation's referenced content, the leaf is exactly that observation, and the
 /// leaf is included under a validly-signed checkpoint. Trust routes through nothing live.
 ///
-/// (M2 slice 1 — the `anchors` array, when present, is not yet checked; external-anchor
-/// verification arrives with the anchoring slice.)
-pub fn verify_bundle(json: &str) -> Result<String, String> {
+/// Any RFC 3161 `anchors` are verified against `roots_pem` (the TSA roots the caller
+/// pins): a pinned anchor that fails is a hard error; anchors present with no pinned root
+/// are reported as unchecked (the core inclusion proof stands on its own).
+pub fn verify_bundle(json: &str, roots_pem: &[String]) -> Result<String, String> {
     let v: serde_json::Value = serde_json::from_str(json).map_err(|e| e.to_string())?;
     if v["schema"] != "druid.proofbundle/v1" {
         return Err("unexpected bundle schema".into());
@@ -403,9 +406,48 @@ pub fn verify_bundle(json: &str) -> Result<String, String> {
     let pubkey = v["pubkey_hex"].as_str().ok_or("missing pubkey_hex")?;
     verify_inclusion(&leaf_bytes, index, &proof, checkpoint, pubkey)?;
 
+    // External anchors bind the checkpoint to a time. Each token must commit to the hash
+    // of the very checkpoint bytes in this bundle.
+    let roots: Vec<&str> = roots_pem.iter().map(String::as_str).collect();
+    let anchored_hash = Sha256::digest(checkpoint.as_bytes());
+    let empty: Vec<serde_json::Value> = Vec::new();
+    let anchors = v["anchors"].as_array().unwrap_or(&empty);
+    let mut anchor_note = String::new();
+    let mut verified = 0usize;
+    let mut earliest: Option<String> = None; // ISO-8601 sorts chronologically
+    for anchor in anchors {
+        if anchor["type"] != "rfc3161" {
+            continue;
+        }
+        let token = B64
+            .decode(anchor["token"].as_str().ok_or("anchor missing token")?)
+            .map_err(|e| e.to_string())?;
+        if roots.is_empty() {
+            anchor_note = format!(
+                "; {} anchor(s) present but UNCHECKED (pin a --root to verify)",
+                anchors.len()
+            );
+            continue;
+        }
+        let info = verify_rfc3161_token(&token, anchored_hash.as_slice(), &roots)
+            .map_err(|e| format!("anchor verification failed: {e}"))?;
+        verified += 1;
+        earliest = Some(match earliest {
+            Some(current) if current <= info.gen_time => current,
+            _ => info.gen_time,
+        });
+    }
+    if verified > 0 {
+        // The tightest bound is the earliest genTime across independent anchors.
+        anchor_note = format!(
+            "; {verified} anchor(s) verified - existed no later than {}",
+            earliest.unwrap_or_default()
+        );
+    }
+
     let url = observation["url"].as_str().unwrap_or("?");
     Ok(format!(
-        "bundle OK: {} artifact(s) match; observation of {url} included offline",
+        "bundle OK: {} artifact(s) match; observation of {url} included offline{anchor_note}",
         artifacts.len()
     ))
 }

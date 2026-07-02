@@ -150,6 +150,10 @@ class Ledger:
         result = subprocess.run([str(verifier), "log", "--dir", str(self.dir)], capture_output=True, encoding="utf-8")
         return result.returncode == 0, (result.stdout or result.stderr).strip()
 
+    def signed_checkpoint(self) -> str:
+        """The current signed checkpoint (a C2SP signed note)."""
+        return (self.dir / "checkpoint").read_text(encoding="utf-8")
+
     @property
     def public_key_hex(self) -> str:
         path = self.dir / "key.json"

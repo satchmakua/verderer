@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from .anchors import Anchorer, anchored_hash
 from .collectors.base import Collector
 from .collectors.static import StaticCollector
 from .config import Target
@@ -106,6 +107,45 @@ class Druid:
     def timeline(self) -> list[dict]:
         return [entry.record for entry in self.log.entries()]
 
+    def _anchors_dir(self) -> Path:
+        return self.data_dir / "ledger" / "anchors"
+
+    def anchor(self, anchorer: Anchorer) -> dict:
+        """Anchor the current signed checkpoint with a TSA and store the token (M2b).
+
+        Anchor *after* logging observations: the token commits to the current checkpoint,
+        so a bundle for a leaf includes the anchor only when its checkpoint still matches.
+        """
+        checkpoint = self.log.signed_checkpoint()
+        digest = anchored_hash(checkpoint)
+        token = anchorer.anchor(digest)
+        adir = self._anchors_dir()
+        adir.mkdir(parents=True, exist_ok=True)
+        (adir / f"{digest.hex()}.{anchorer.name}.der").write_bytes(token)
+        # Stash a self-hosted root to pin when verifying (real TSA roots ship in the verifier).
+        root = anchorer.root_pem()
+        if root:
+            (self.data_dir / "ledger" / f"{anchorer.name}-root.pem").write_text(root, encoding="utf-8")
+        return {"tsa": anchorer.name, "anchored_hash": digest.hex(), "token_bytes": len(token)}
+
+    def _anchors_for(self, checkpoint: str) -> list[dict]:
+        digest = anchored_hash(checkpoint).hex()
+        adir = self._anchors_dir()
+        if not adir.exists():
+            return []
+        anchors: list[dict] = []
+        for path in sorted(adir.glob(f"{digest}.*.der")):
+            tsa_name = path.name[len(digest) + 1 : -4]
+            anchors.append(
+                {
+                    "type": "rfc3161",
+                    "anchored_hash": digest,
+                    "tsa_name": tsa_name,
+                    "token": base64.b64encode(path.read_bytes()).decode(),
+                }
+            )
+        return anchors
+
     def bundle(self, target_id: str, index: int | None = None) -> dict:
         """Assemble a self-verifying `druid.proofbundle/v1` for an observation (DESIGN §6.4).
 
@@ -148,5 +188,5 @@ class Druid:
             "inclusion_proof": {"tree_size": incl["tree_size"], "proof": incl["proof"]},
             "checkpoint": incl["checkpoint"],
             "pubkey_hex": self.log.public_key_hex,
-            "anchors": [],  # external anchors land in the next M2 slice
+            "anchors": self._anchors_for(incl["checkpoint"]),
         }

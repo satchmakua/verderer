@@ -14,6 +14,21 @@ hex = "0.4"
 serde_json = "1"
 getrandom = "0.2"
 
+# RFC 3161 timestamp-token offline verification (M2b). der-0.7 generation — do NOT mix
+# der 0.8: cms/x509-cert have no stable 0.3 against it yet (verified 2026-07-01).
+# TODO(der-0.8): migrate when cms 0.3 + x509-cert 0.3 ship stable.
+cms = "0.2.3"
+x509-cert = { version = "0.2.5", features = ["pem"] }
+x509-tsp = "0.1.0"
+der = { version = "0.7", features = ["alloc", "oid", "pem"] }
+spki = "0.7"
+const-oid = { version = "0.9", features = ["db"] }
+rsa = { version = "0.9.10", features = ["sha2"] }
+ecdsa = "0.16.9"
+p256 = { version = "0.13", features = ["ecdsa"] }
+p384 = { version = "0.13", features = ["ecdsa"] }
+p521 = { version = "0.13", features = ["ecdsa", "pkcs8"] }
+
 [dev-dependencies]
 tempfile = "3"
 

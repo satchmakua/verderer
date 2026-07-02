@@ -44,10 +44,31 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     **Test:** `druid observe epa-ghgrp`; `druid bundle epa-ghgrp -o proof.json`;
     `druid verify-bundle proof.json` → `VALID`; edit any byte of `proof.json` →
     `INVALID`. `pytest` + `cargo test` green.
-  - [ ] **M2b — External anchoring.** Anchor each checkpoint via OpenTimestamps +
-    RFC 3161 + ≥2 mirrors; add the `anchors` array to the bundle and verify the
-    "existed no later than T_anchor" proofs offline.
-    **Test:** a bundle's anchors validate offline; a forged anchor is rejected.
+  - **M2b — External anchoring (split; RFC 3161 offline verification is the spine).**
+    - [ ] **M2b-1 — RFC 3161 anchor + offline verifier.** _Built; awaiting confirmation._
+      A Rust `rfc3161` verifier (on cms/x509-cert/x509-tsp/rsa/ecdsa) validates a
+      timestamp token offline: it binds the token's messageImprint to the checkpoint,
+      verifies the TSA signature over the signed attributes, checks the timestamping EKU,
+      and chains the signer to a **pinned** root. `druid anchor` timestamps the current
+      checkpoint (a **self-hosted dev TSA** for now — proves the mechanism, not
+      independence); `bundle` embeds the token in `anchors`; `druid verify-bundle
+      --root <pem>` reports "anchored no later than T" offline.
+      **Test:** `observe` → `anchor` → `bundle` → `verify-bundle --root` → `VALID …
+      anchored no later than <T>`; tamper the token or pin the wrong root → `INVALID`.
+      `cargo test` (incl. openssl-minted token fixtures) + `pytest` green.
+    - [ ] **M2b-2 — Independent third-party TSAs.** _Built; awaiting confirmation._
+      `druid anchor --tsa digicert,freetsa` submits over HTTP to real, independent TSAs;
+      the verifier **ships their roots pinned**, so those anchors verify with no `--root`.
+      The verifier now handles real production tokens (DigiCert RSA-4096; FreeTSA ECDSA
+      **P-384 + SHA-512** — curve taken from the key, not the digest). This is the step
+      that gives a *real* time bound (self-hosted does not).
+      **Test:** `druid anchor --tsa digicert,freetsa` → `bundle` → `verify-bundle` (no
+      `--root`) → `VALID … N anchor(s) verified - existed no later than <T>`; `cargo test`
+      verifies committed real DigiCert + FreeTSA tokens and rejects each under the other's
+      root. (Live submission is network-gated + skips offline.)
+    - [ ] **M2b-3 — OpenTimestamps.** Add an OTS proof + the Bitcoin block header needed
+      to bound time offline (a distinct `anchors` entry type). **Test:** an OTS anchor
+      validates offline against the carried header; a forged one is rejected.
   - [ ] **M2c — Tile serving.** Emit the C2SP tile files to the blob store
     (R2 / CDN-served) so a verifier can fetch tiles directly and recompute proofs.
     **Test:** the verifier reconstructs an inclusion proof from fetched tiles alone.
