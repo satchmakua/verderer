@@ -39,6 +39,7 @@ python -m druid anchor --tsa digicert,freetsa     # timestamp via independent TS
 python -m druid bundle epa-ghgrp -o proof.json    # export a self-verifying proof bundle
 python -m druid verify-bundle proof.json          # verify it offline — anchors included
 python -m druid export --out web/public           # build the public record: record.json + RSS feeds
+python -m druid notify --dry-run                   # push alerts to webhook/email subscriptions (data/subscriptions.toml)
 ```
 
 ### The public record (Astro site)

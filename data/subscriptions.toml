@@ -1,0 +1,24 @@
+# Alert subscriptions (DESIGN §7). `druid notify` delivers each new classified diff event
+# to every subscription it matches. Filter by target, diff-type, and minimum severity.
+# `channel` is "webhook" (POST druid.alert/v1 JSON) or "email" (SMTP). Delivery is
+# idempotent — an event is sent to a subscription at most once.
+
+[[subscription]]
+name = "high-severity-webhook"
+channel = "webhook"
+dest = "https://example.com/hooks/druid"
+min_severity = "High"
+
+[[subscription]]
+name = "ncas-desk"
+channel = "email"
+dest = "desk@example.org"
+targets = ["usgcrp", "epa-climate-indicators"]
+min_severity = "Medium"
+
+[[subscription]]
+name = "threshold-watch"
+channel = "webhook"
+dest = "https://example.com/hooks/thresholds"
+diff_types = ["NumericThresholdChange", "SchemaChange", "DistributionalShift"]
+min_severity = "Medium"

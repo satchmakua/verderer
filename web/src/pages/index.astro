@@ -24,9 +24,15 @@ const targets = record.targets ?? [];
   <section>
     <h2>Recent changes</h2>
     {events.length === 0 && <p class="muted">No changes recorded yet.</p>}
+    {events.length > 0 && (
+      <input id="search" type="search" placeholder="Filter changes (target, type, severity, value)…" autocomplete="off" />
+    )}
     <ul class="events">
-      {events.slice(0, 60).map((ev) => (
-        <li id={`event-${ev.id.slice(0, 16)}`}>
+      {events.slice(0, 200).map((ev) => (
+        <li
+          id={`event-${ev.id.slice(0, 16)}`}
+          data-search={`${ev.diff_type} ${ev.target_id} ${ev.severity} ${summarize(ev)}`.toLowerCase()}
+        >
           <span class={`badge ${sevClass(ev.severity)}`}>{ev.severity}</span>
           <a class="type" href={`/event/${ev.id}`}>{ev.diff_type}</a>
           <span class="summary"><a href={`/target/${ev.target_id}`}>{ev.target_id}</a> — {summarize(ev)}</span>
@@ -34,6 +40,30 @@ const targets = record.targets ?? [];
         </li>
       ))}
     </ul>
+    <p id="no-results" class="muted" hidden>No changes match that filter.</p>
+    <style>
+      #search { width: 100%; margin: 4px 0 14px; padding: 9px 12px; border-radius: 8px;
+        border: 1px solid var(--line); background: #0b0e12; color: var(--ink); font: inherit; }
+      #search:focus { outline: none; border-color: var(--accent); }
+    </style>
+    <script is:inline>
+      (() => {
+        const input = document.getElementById('search');
+        if (!input) return;
+        const items = Array.from(document.querySelectorAll('ul.events > li'));
+        const none = document.getElementById('no-results');
+        input.addEventListener('input', () => {
+          const q = input.value.trim().toLowerCase();
+          let shown = 0;
+          for (const li of items) {
+            const hit = !q || (li.dataset.search || '').includes(q);
+            li.hidden = !hit;
+            if (hit) shown++;
+          }
+          if (none) none.hidden = shown > 0;
+        });
+      })();
+    </script>
   </section>
 
   <section>

@@ -138,6 +138,53 @@ def cmd_export(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_notify(args: argparse.Namespace) -> int:
+    from .notify import (
+        HttpWebhookNotifier,
+        Notifier,
+        SmtpEmailNotifier,
+        dispatch,
+        events,
+        load_state,
+        load_subscriptions,
+        matches,
+        save_state,
+    )
+
+    druid = _build(args)
+    subs_path = args.subscriptions or _repo_data_dir() / "subscriptions.toml"
+    subscriptions = load_subscriptions(subs_path)
+    evs = events(druid)
+    state = load_state(args.data_dir)
+
+    if args.dry_run:
+        pending = [
+            (s.name, s.channel, e["id"])
+            for e in evs
+            for s in subscriptions
+            if matches(s, e) and f"{s.name}:{e['id']}" not in state.delivered
+        ]
+        print(f"{len(pending)} pending delivery(ies) across {len(subscriptions)} subscription(s):")
+        for name, channel, eid in pending[:30]:
+            print(f"  {channel:8} {name:24} <- {eid[:16]}")
+        return 0
+
+    notifiers: dict[str, Notifier] = {
+        "webhook": HttpWebhookNotifier(),
+        "email": SmtpEmailNotifier(args.smtp_host, args.smtp_port, args.email_from),
+    }
+    deliveries = dispatch(evs, subscriptions, notifiers, state)
+    save_state(args.data_dir, state)
+    sent = [d for d in deliveries if "error" not in d]
+    failed = [d for d in deliveries if "error" in d]
+    print(f"delivered {len(sent)} alert(s); {len(failed)} failed (will retry)")
+    for d in sent[:30]:
+        print(f"  {d['channel']:8} {d['subscription']:24} -> {d['dest']}")
+    for d in failed[:10]:
+        print(f"  FAILED {d['channel']} {d['subscription']} -> {d['dest']}: {d['error']}")
+    return 1 if failed and not sent else 0
+
+
 def cmd_verify_bundle(args: argparse.Namespace) -> int:
     try:
         verifier = find_binary("druid-verify")
@@ -178,6 +225,12 @@ def main(argv: list[str] | None = None) -> int:
     export = sub.add_parser("export", help="export the public record (record.json + RSS feeds) for the site")
     export.add_argument("--out", type=Path, default=Path("site-data"), help="output directory")
     export.add_argument("--base-url", default="https://druid.example", help="public base URL for feed links")
+    notify = sub.add_parser("notify", help="deliver new diff events to webhook/email subscriptions")
+    notify.add_argument("--subscriptions", type=Path, default=None, help="override subscriptions.toml")
+    notify.add_argument("--dry-run", action="store_true", help="show pending deliveries without sending")
+    notify.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
+    notify.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
+    notify.add_argument("--email-from", default="druid@localhost", help="From: address for email alerts")
 
     args = parser.parse_args(argv)
     dispatch = {
@@ -189,5 +242,6 @@ def main(argv: list[str] | None = None) -> int:
         "bundle": cmd_bundle,
         "verify-bundle": cmd_verify_bundle,
         "export": cmd_export,
+        "notify": cmd_notify,
     }
     return dispatch[args.cmd](args)

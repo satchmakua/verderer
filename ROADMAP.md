@@ -122,10 +122,17 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     **Test:** in the browser, a real anchored bundle → `VALID … anchored no later than <T>`;
     a tampered artifact → `INVALID`; matches the native `druid-verify`. `cargo build
     --target wasm32` + native `cargo test` green.
-  - [ ] **M5c — Push alerts.** Webhook + email delivery by target and diff-type/severity
-    (RSS already ships in M5a); a FastAPI read API + SQLite/Litestream index if a live
-    query surface is needed.
-    **Test:** a new High-severity diff fires a configured webhook.
+  - [ ] **M5c — Push alerts + search.** _Built; awaiting confirmation._ `druid notify`
+    delivers each new diff event to matching subscriptions (`data/subscriptions.toml`) over
+    **webhook** (POST `druid.alert/v1`) and **email** (SMTP), filtered by target, diff-type,
+    and minimum severity; delivery is idempotent (a per-(sub, event) key persisted in
+    `notify-state.json`, so re-runs never re-send and failures retry). Senders are
+    injectable → fully offline-testable. The record site gains **client-side search** over
+    the changes. _(A FastAPI/SQLite live-query surface is deferred — the static export +
+    search covers the read need.)_
+    **Test:** `notify --dry-run` lists pending deliveries; dispatch sends matching events
+    once (idempotent, failures retry); the site's search filters the change list. `pytest`
+    green.
 
 ## Phase 4 — Force multipliers
 
