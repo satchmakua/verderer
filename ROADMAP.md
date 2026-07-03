@@ -75,17 +75,33 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 
 ## Phase 2 — Detection depth
 
-- [ ] **M3 — Numeric extraction + full taxonomy + render collector.** L2
-  numeric/threshold extraction (`pint` + NER); the complete typed taxonomy with
-  severities; a Playwright render collector capturing DOM + the page's API calls.
-  **Test:** point it at a fixture where a limit changes `10 ppb → 15 ppb` → a
-  `NumericThresholdChange [High]` is emitted; a JS-rendered page is observed with its
-  data calls captured.
+- **M3 — Numeric extraction + render collector (split).**
+  - [ ] **M3a — L2 numeric / threshold extraction.** _Built; awaiting confirmation._
+    Extract numbers-with-units in a regulatory context (a limit, standard, threshold,
+    reporting cutoff) and flag when the value tied to the same context changes →
+    `NumericThresholdChange [High]`. High-precision: a number counts only next to a
+    regulatory keyword with a plausible unit, so prose numbers (years, counts) are
+    ignored. Wired into the differ after L1. _(Cross-unit normalisation via `pint` —
+    10 ppb == 0.010 ppm — is the L2 refinement.)_
+    **Test:** a page whose "reporting threshold is 10 ppb" becomes "15 ppb" →
+    `NumericThresholdChange [High] {from: 10 ppb, to: 15 ppb}`; a page changing years/
+    counts emits nothing. `pytest` green.
+  - [ ] **M3b — Render collector.** A Playwright headless collector capturing the
+    rendered DOM + the page's underlying API/data calls (for JS tools).
+    **Test:** a JS-rendered fixture is observed with its data calls captured.
 
-- [ ] **M4 — Dataset collector + dataset diffing.** Dataset collector (CSV/JSON, then
-  NetCDF via `xarray`); L4 schema + distributional diff.
-  **Test:** feed two versions of a dataset with a dropped column and a re-baselined
-  series → `SchemaChange` and `DistributionalShift` are emitted.
+- **M4 — Dataset diffing (split).**
+  - [ ] **M4a — Tabular (CSV/JSON) schema + distributional diff.** _Built; awaiting
+    confirmation._ A `dataset`-kind target routes to the L4 differ (`differ/dataset.py`,
+    pandas): column add/remove/retype → `SchemaChange`; a numeric column re-baselined/
+    scaled or the series truncated → `DistributionalShift`. High-precision (distributional
+    checks only numeric columns).
+    **Test:** two dataset versions — a dropped column → `SchemaChange [High]`; a
+    re-baselined series → `DistributionalShift [High]`; truncation → a `row_count`
+    `DistributionalShift`. `pytest` green.
+  - [ ] **M4b — Scientific/geospatial datasets.** NetCDF/HDF via `xarray` (metadata +
+    variable-presence + summary-stat diff); `.zip`/`.xlsx` unpacking.
+    **Test:** a NetCDF with a dropped variable / changed summary stat is flagged.
 
 ## Phase 3 — The public product
 

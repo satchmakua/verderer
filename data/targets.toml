@@ -22,3 +22,13 @@ title = "U.S. Global Change Research Program (globalchange.gov)"
 url = "https://www.globalchange.gov/"
 collector = "static"
 criteria = "Host of the National Climate Assessments; site shut down in 2025 — deletion/redirect watch."
+
+# A tabular dataset target (kind = "dataset" routes it to the L4 schema/distributional
+# differ). If the download 404s that is itself a Deletion signal.
+[[target]]
+id = "epa-ghgrp-data"
+title = "EPA GHGRP facility-level emissions (data download)"
+url = "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip"
+kind = "dataset"
+collector = "static"
+criteria = "Congressionally-mandated dataset; a silent schema edit or re-baselining is high-signal."

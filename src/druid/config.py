@@ -17,6 +17,7 @@ class Target:
     title: str
     url: str
     collector: str = "static"
+    kind: str = "page"  # "page" (HTML/text) | "dataset" (CSV/TSV/JSON) — selects the differ
     criteria: str = ""
 
 
@@ -29,6 +30,7 @@ def load_targets(path: Path) -> dict[str, Target]:
             title=item["title"],
             url=item["url"],
             collector=item.get("collector", "static"),
+            kind=item.get("kind", "page"),
             criteria=item.get("criteria", ""),
         )
         targets[target.id] = target

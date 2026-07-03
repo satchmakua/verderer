@@ -17,7 +17,9 @@ from .anchors import Anchorer, anchored_hash
 from .collectors.base import Collector
 from .collectors.static import StaticCollector
 from .config import Target
+from .differ.dataset import dataset_diff
 from .differ.normalize import normalize_bytes
+from .differ.numeric import numeric_watch
 from .differ.termwatch import term_watch
 from .ledger.core import Ledger
 from .models import DiffRecord, DiffType, Observation
@@ -67,7 +69,7 @@ class Druid:
 
         diffs: list[DiffRecord] = []
         if previous is not None and previous.raw_bytes_hash != observation.raw_bytes_hash:
-            diffs = self._diff(previous, observation, body)
+            diffs = self._diff(target, previous, observation, body)
 
         # The attested observation is logged first, then its interpretation.
         self.log.append(observation.to_record())
@@ -76,14 +78,34 @@ class Druid:
 
         return ObserveResult(observation=observation, diffs=diffs, is_first=previous is None)
 
-    def _diff(self, previous: Observation, observation: Observation, body: bytes) -> list[DiffRecord]:
+    def _diff(
+        self, target: Target, previous: Observation, observation: Observation, body: bytes
+    ) -> list[DiffRecord]:
+        now = _utc_now()
+        if target.kind == "dataset":
+            # L4 — tabular schema + distributional diff over the raw bytes.
+            return dataset_diff(
+                self.store.get(previous.raw_bytes_hash),
+                body,
+                target_id=observation.target_id,
+                detected_at=now,
+                from_hash=previous.raw_bytes_hash,
+                to_hash=observation.raw_bytes_hash,
+            )
         prev_text = normalize_bytes(self.store.get(previous.raw_bytes_hash))
         curr_text = normalize_bytes(body)
-        now = _utc_now()
         diffs = term_watch(
             prev_text,
             curr_text,
             self.terms,
+            target_id=observation.target_id,
+            detected_at=now,
+            from_hash=previous.raw_bytes_hash,
+            to_hash=observation.raw_bytes_hash,
+        )
+        diffs += numeric_watch(
+            prev_text,
+            curr_text,
             target_id=observation.target_id,
             detected_at=now,
             from_hash=previous.raw_bytes_hash,
