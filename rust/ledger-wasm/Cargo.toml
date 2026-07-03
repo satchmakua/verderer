@@ -1,0 +1,13 @@
+[package]
+name = "ledger-wasm"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "WASM bindings for Druid's offline proof-bundle verifier (in-browser green check)."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ledger-core = { path = "../ledger-core" }
+wasm-bindgen = "0.2"

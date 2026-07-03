@@ -105,13 +105,27 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 
 ## Phase 3 — The public product
 
-- [ ] **M5 — Public record (Astro) + alerts. ★ public ship.** FastAPI + SQLite/
-  Litestream index; an Astro site with per-target timelines, diff detail pages,
-  permanent content-hash URLs, "download proof bundle" with the in-browser WASM
-  verifier; alerts via RSS/Atom + webhook + email by target and diff-type/severity.
-  **Test:** open the site, browse a target's timeline, download a bundle and watch the
-  in-browser verifier show a green check; subscribe to an RSS feed and see a new diff
-  appear.
+- **M5 — Public record + alerts (split). ★ public ship.**
+  - [ ] **M5a — Public record (Astro) + RSS feeds.** _Built; awaiting confirmation._
+    `druid export` builds `record.json` + a global and per-target RSS feed from the
+    ledger. An Astro static site (`web/`) renders a home page (recent classified changes
+    + targets), per-target timelines (attested observations interleaved with diffs), and
+    per-event permalinks — each with the integrity/interpretation boundary stated in copy.
+    **Test:** `druid export` writes valid `record.json` + `feed.xml`; `cd web && npm run
+    build` renders the pages; the home + target pages show the classified changes (incl.
+    10→15 ppb). `pytest` green.
+  - [ ] **M5b — In-browser WASM verifier.** _Built; awaiting confirmation._ `ledger-core`
+    compiles to WASM (`rust/ledger-wasm`, wasm-bindgen), shipping the pinned DigiCert/FreeTSA
+    roots; the `/verify` page verifies a downloaded `druid.proofbundle/v1` **entirely in the
+    browser** — a green check / red cross, nothing uploaded, trusting neither the source nor
+    Druid. _(Client-side search is a small remaining add.)_
+    **Test:** in the browser, a real anchored bundle → `VALID … anchored no later than <T>`;
+    a tampered artifact → `INVALID`; matches the native `druid-verify`. `cargo build
+    --target wasm32` + native `cargo test` green.
+  - [ ] **M5c — Push alerts.** Webhook + email delivery by target and diff-type/severity
+    (RSS already ships in M5a); a FastAPI read API + SQLite/Litestream index if a live
+    query surface is needed.
+    **Test:** a new High-severity diff fires a configured webhook.
 
 ## Phase 4 — Force multipliers
 

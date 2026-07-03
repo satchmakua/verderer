@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Druid — verify a proof bundle">
+  <h1>Verify a proof bundle</h1>
+  <p class="muted">
+    Choose a <code>druid.proofbundle/v1</code> file. It is verified <strong>entirely in your
+    browser</strong> (WebAssembly) — trusting neither the government nor Druid's servers. Nothing is
+    uploaded. This is the whole point: the proof is transferable, and you can check it yourself.
+  </p>
+
+  <div class="verify">
+    <input type="file" id="bundle-file" accept="application/json,.json" />
+    <button id="verify-btn">Verify offline</button>
+  </div>
+  <p id="verify-status" class="muted">Loading the verifier…</p>
+  <pre id="verify-result" class="result" hidden></pre>
+
+  <p class="muted small">
+    A valid result attests: Druid observed exactly this content at this URL, faithfully preserved and
+    included in the signed log, and (if anchored) that the log existed no later than the timestamp — none
+    of which routes through Druid's live service.
+  </p>
+
+  <style>
+    .verify { display: flex; gap: 10px; align-items: center; margin: 18px 0 8px; flex-wrap: wrap; }
+    #verify-btn { background: var(--accent); color: #0b0e12; border: 0; border-radius: 8px; padding: 8px 16px; font-weight: 700; cursor: pointer; }
+    #verify-btn:disabled { opacity: .5; cursor: default; }
+    input[type=file] { color: var(--muted); }
+    .result { white-space: pre-wrap; border-radius: 8px; padding: 12px; margin-top: 10px; }
+    .result.ok { border: 1px solid #2f8a5b; background: #10231a; color: #7ee2a8; }
+    .result.bad { border: 1px solid #7a2f2f; background: #241012; color: #f0a0a0; }
+    .small { font-size: 12.5px; max-width: 62ch; }
+  </style>
+
+  <script is:inline type="module">
+    import init, { verify_bundle } from '/wasm/ledger_wasm.js';
+    const status = document.getElementById('verify-status');
+    const btn = document.getElementById('verify-btn');
+    const out = document.getElementById('verify-result');
+    const ready = init().then(() => { status.textContent = 'Verifier ready (runs offline in your browser).'; })
+                         .catch((e) => { status.textContent = 'Could not load the WASM verifier: ' + e; });
+
+    function show(message) {
+      const ok = message.startsWith('VALID');
+      out.hidden = false;
+      out.className = 'result ' + (ok ? 'ok' : 'bad');
+      out.textContent = (ok ? '✓ ' : '✗ ') + message;
+    }
+
+    btn.addEventListener('click', async () => {
+      const file = document.getElementById('bundle-file').files[0];
+      if (!file) { status.textContent = 'Choose a proof.json first.'; return; }
+      await ready;
+      const text = await file.text();
+      try { show(verify_bundle(text)); }
+      catch (e) { show('INVALID could not parse bundle: ' + e); }
+    });
+
+    // Test hook so the WASM path can be checked headlessly.
+    window.__verifyBundle = async (text) => { await ready; return verify_bundle(text); };
+  </script>
+</Base>

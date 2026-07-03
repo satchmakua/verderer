@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import record from '../data/record.json';
+import { sevClass, summarize, type Event } from '../lib/format';
+
+const events = (record.events ?? []) as Event[];
+const targets = record.targets ?? [];
+---
+
+<Base title="Druid — the public record">
+  <section class="hero">
+    <h1>What the government's environmental data said — and how it is being changed.</h1>
+    <p>
+      An immutable, provable record over a curated set of high-value targets. Every observation is
+      cryptographically attested and independently verifiable offline; every change below is classified.
+    </p>
+    <p>
+      <a href="/feed.xml">Subscribe (RSS) to all changes →</a>
+      &nbsp;·&nbsp;
+      <a href="/verify">Verify a proof bundle in your browser →</a>
+    </p>
+  </section>
+
+  <section>
+    <h2>Recent changes</h2>
+    {events.length === 0 && <p class="muted">No changes recorded yet.</p>}
+    <ul class="events">
+      {events.slice(0, 60).map((ev) => (
+        <li id={`event-${ev.id.slice(0, 16)}`}>
+          <span class={`badge ${sevClass(ev.severity)}`}>{ev.severity}</span>
+          <a class="type" href={`/event/${ev.id}`}>{ev.diff_type}</a>
+          <span class="summary"><a href={`/target/${ev.target_id}`}>{ev.target_id}</a> — {summarize(ev)}</span>
+          <time>{ev.detected_at}</time>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Targets</h2>
+    <div class="targets">
+      {targets.map((t: any) => (
+        <a class="card" href={`/target/${t.id}`}>
+          <h3>{t.title}</h3>
+          <p class="url">{t.url}</p>
+          <p class="stat">{t.observations.length} observations · {t.events.length} changes · {t.kind}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

@@ -38,7 +38,24 @@ python -m druid verify               # recompute the Merkle tree + check the sig
 python -m druid anchor --tsa digicert,freetsa     # timestamp via independent TSAs (over HTTP)
 python -m druid bundle epa-ghgrp -o proof.json    # export a self-verifying proof bundle
 python -m druid verify-bundle proof.json          # verify it offline — anchors included
+python -m druid export --out web/public           # build the public record: record.json + RSS feeds
 ```
+
+### The public record (Astro site)
+
+```bash
+python -m druid export --out web/public           # generate record.json + feed.xml from the ledger
+cp web/public/record.json web/src/data/           # (the `npm --prefix web run export` script does both)
+cd web && npm install
+npm run build:wasm                                # compile the verifier to WASM (needs Rust + wasm-bindgen-cli)
+npm run dev                                        # browse the record at http://localhost:4321
+```
+
+A browsable, static-leaning record: recent classified changes, per-target timelines
+(attested observations + diffs with evidence), per-event permalinks, a subscribable **RSS
+feed** (`/feed.xml`, plus per-target feeds), and a **`/verify` page that checks a downloaded
+proof bundle entirely in your browser** (WebAssembly — nothing uploaded, trusting neither
+the source nor Druid). Push (webhook/email) alerts and search are the next slices.
 
 The anchor gives a **time bound** ("existed no later than T"): `druid anchor` submits the
 checkpoint to independent third-party TSAs (**DigiCert**, **FreeTSA**), whose roots ship

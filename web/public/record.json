@@ -1,0 +1,181 @@
+{
+  "schema": "druid.record/v1",
+  "public_key": "f85843225250f351bcb5869ae2abea8a725e3f55b2c8d8ef30e245d7085800c2",
+  "size": 8,
+  "targets": [
+    {
+      "id": "epa-climate-indicators",
+      "title": "EPA Climate Change Indicators",
+      "url": "https://www.epa.gov/climate-indicators",
+      "kind": "page",
+      "criteria": "Core climate reference content; prior removal history.",
+      "observations": [
+        {
+          "id": "d0471f962cb2715609cd00af5e72819023814755b4a95e505b7bcac9970d1c9f",
+          "content_hash": "12205c6db139bcb01b3acf33a78baabdc649d042ae56982f2bd95b1ed879af1a0fe2",
+          "fetched_at": "2026-07-03T01:31:11Z",
+          "http_status": 200,
+          "url": "https://www.epa.gov/climate-indicators"
+        },
+        {
+          "id": "78037356883d93deb6244419d3f018711446fcdfc29f67cee408d775389da094",
+          "content_hash": "1220b357a842479cf90a853df352067145b92fcda59b8e5d07af64f3dd5fabd19498",
+          "fetched_at": "2026-07-03T01:31:11Z",
+          "http_status": 200,
+          "url": "https://www.epa.gov/climate-indicators"
+        }
+      ],
+      "events": [
+        {
+          "id": "1fc7d3987c9115d1feb247bdc5c4d7a827717b0b6411d1a265ce16b4b652e3cc",
+          "target_id": "epa-climate-indicators",
+          "diff_type": "TermSubstitution",
+          "severity": "High",
+          "layer": "L1-termwatch",
+          "detected_at": "2026-07-03T01:31:11Z",
+          "evidence": {
+            "from": 1,
+            "term": "global warming",
+            "to": 0
+          },
+          "from_hash": "12205c6db139bcb01b3acf33a78baabdc649d042ae56982f2bd95b1ed879af1a0fe2",
+          "to_hash": "1220b357a842479cf90a853df352067145b92fcda59b8e5d07af64f3dd5fabd19498"
+        }
+      ]
+    },
+    {
+      "id": "epa-ghgrp",
+      "title": "EPA Greenhouse Gas Reporting Program",
+      "url": "https://www.epa.gov/ghgreporting",
+      "kind": "page",
+      "criteria": "Congressionally mandated; high-signal if altered.",
+      "observations": [
+        {
+          "id": "4f7f2403cea5e582be5c58464cb408a0700e150e3315eb1ca34993dd731aecc1",
+          "content_hash": "1220fab12ddb31e7dad83d21a702e224445493e5400642de6a0812e34add243982ea",
+          "fetched_at": "2026-07-03T01:31:11Z",
+          "http_status": 200,
+          "url": "https://www.epa.gov/ghgreporting"
+        },
+        {
+          "id": "6c15893deca6779bf85a57691d5283262fa25cba094a1f1d50891e38d5e82ee2",
+          "content_hash": "122063f6f4eec3ee3bda52194f2909cb7677c602f5f479ba7d76e804807ea48bd45e",
+          "fetched_at": "2026-07-03T01:31:11Z",
+          "http_status": 200,
+          "url": "https://www.epa.gov/ghgreporting"
+        }
+      ],
+      "events": [
+        {
+          "id": "484d41c52a0e53f20a02c0904a323c3614db4f276769e4d1072443b413d989d1",
+          "target_id": "epa-ghgrp",
+          "diff_type": "TermSubstitution",
+          "severity": "High",
+          "layer": "L1-termwatch",
+          "detected_at": "2026-07-03T01:31:11Z",
+          "evidence": {
+            "from": 1,
+            "term": "climate change",
+            "to": 0
+          },
+          "from_hash": "1220fab12ddb31e7dad83d21a702e224445493e5400642de6a0812e34add243982ea",
+          "to_hash": "122063f6f4eec3ee3bda52194f2909cb7677c602f5f479ba7d76e804807ea48bd45e"
+        },
+        {
+          "id": "4ec5a60c98a84ad5cbd7be898766073ea3719aafe641838bed85acc1fe0690d3",
+          "target_id": "epa-ghgrp",
+          "diff_type": "TermSubstitution",
+          "severity": "Medium",
+          "layer": "L1-termwatch",
+          "detected_at": "2026-07-03T01:31:11Z",
+          "evidence": {
+            "from": 0,
+            "term": "resilience",
+            "to": 1
+          },
+          "from_hash": "1220fab12ddb31e7dad83d21a702e224445493e5400642de6a0812e34add243982ea",
+          "to_hash": "122063f6f4eec3ee3bda52194f2909cb7677c602f5f479ba7d76e804807ea48bd45e"
+        },
+        {
+          "id": "9aed342e2df9f4868be025481fcacb621e61b1b9a83ceb6fc627d597bf70f5d9",
+          "target_id": "epa-ghgrp",
+          "diff_type": "NumericThresholdChange",
+          "severity": "High",
+          "layer": "L2-numeric",
+          "detected_at": "2026-07-03T01:31:11Z",
+          "evidence": {
+            "context": "threshold for benzene is",
+            "from": "10 ppb",
+            "to": "15 ppb",
+            "unit": "ppb"
+          },
+          "from_hash": "1220fab12ddb31e7dad83d21a702e224445493e5400642de6a0812e34add243982ea",
+          "to_hash": "122063f6f4eec3ee3bda52194f2909cb7677c602f5f479ba7d76e804807ea48bd45e"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "484d41c52a0e53f20a02c0904a323c3614db4f276769e4d1072443b413d989d1",
+      "target_id": "epa-ghgrp",
+      "diff_type": "TermSubstitution",
+      "severity": "High",
+      "layer": "L1-termwatch",
+      "detected_at": "2026-07-03T01:31:11Z",
+      "evidence": {
+        "from": 1,
+        "term": "climate change",
+        "to": 0
+      },
+      "from_hash": "1220fab12ddb31e7dad83d21a702e224445493e5400642de6a0812e34add243982ea",
+      "to_hash": "122063f6f4eec3ee3bda52194f2909cb7677c602f5f479ba7d76e804807ea48bd45e"
+    },
+    {
+      "id": "4ec5a60c98a84ad5cbd7be898766073ea3719aafe641838bed85acc1fe0690d3",
+      "target_id": "epa-ghgrp",
+      "diff_type": "TermSubstitution",
+      "severity": "Medium",
+      "layer": "L1-termwatch",
+      "detected_at": "2026-07-03T01:31:11Z",
+      "evidence": {
+        "from": 0,
+        "term": "resilience",
+        "to": 1
+      },
+      "from_hash": "1220fab12ddb31e7dad83d21a702e224445493e5400642de6a0812e34add243982ea",
+      "to_hash": "122063f6f4eec3ee3bda52194f2909cb7677c602f5f479ba7d76e804807ea48bd45e"
+    },
+    {
+      "id": "9aed342e2df9f4868be025481fcacb621e61b1b9a83ceb6fc627d597bf70f5d9",
+      "target_id": "epa-ghgrp",
+      "diff_type": "NumericThresholdChange",
+      "severity": "High",
+      "layer": "L2-numeric",
+      "detected_at": "2026-07-03T01:31:11Z",
+      "evidence": {
+        "context": "threshold for benzene is",
+        "from": "10 ppb",
+        "to": "15 ppb",
+        "unit": "ppb"
+      },
+      "from_hash": "1220fab12ddb31e7dad83d21a702e224445493e5400642de6a0812e34add243982ea",
+      "to_hash": "122063f6f4eec3ee3bda52194f2909cb7677c602f5f479ba7d76e804807ea48bd45e"
+    },
+    {
+      "id": "1fc7d3987c9115d1feb247bdc5c4d7a827717b0b6411d1a265ce16b4b652e3cc",
+      "target_id": "epa-climate-indicators",
+      "diff_type": "TermSubstitution",
+      "severity": "High",
+      "layer": "L1-termwatch",
+      "detected_at": "2026-07-03T01:31:11Z",
+      "evidence": {
+        "from": 1,
+        "term": "global warming",
+        "to": 0
+      },
+      "from_hash": "12205c6db139bcb01b3acf33a78baabdc649d042ae56982f2bd95b1ed879af1a0fe2",
+      "to_hash": "1220b357a842479cf90a853df352067145b92fcda59b8e5d07af64f3dd5fabd19498"
+    }
+  ]
+}

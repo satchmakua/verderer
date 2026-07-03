@@ -41,3 +41,12 @@ druid-data/
 
 # Rust build output (Cargo.lock IS committed for the binaries — reproducible builds)
 rust/target/
+
+# Web (Astro) build output + deps
+web/node_modules/
+web/dist/
+web/.astro/
+site-data/
+
+# Generated WASM verifier (rebuild with `npm --prefix web run build:wasm`)
+web/public/wasm/

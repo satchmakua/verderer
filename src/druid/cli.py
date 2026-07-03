@@ -128,6 +128,16 @@ def cmd_anchor(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_export(args: argparse.Namespace) -> int:
+    from .web.export import export_site
+
+    druid = _build(args)
+    info = export_site(druid, args.out, base_url=args.base_url)
+    print(f"exported public record -> {info['out']}: {info['targets']} target(s), {info['events']} event(s)")
+    print("  record.json + feed.xml (+ per-target feeds/); subscribe to feed.xml for alerts")
+    return 0
+
+
 def cmd_verify_bundle(args: argparse.Namespace) -> int:
     try:
         verifier = find_binary("druid-verify")
@@ -165,6 +175,9 @@ def main(argv: list[str] | None = None) -> int:
     verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
     verify_bundle.add_argument("path", type=Path)
     verify_bundle.add_argument("--root", type=Path, action="append", help="pinned TSA root PEM (repeatable) to verify anchors")
+    export = sub.add_parser("export", help="export the public record (record.json + RSS feeds) for the site")
+    export.add_argument("--out", type=Path, default=Path("site-data"), help="output directory")
+    export.add_argument("--base-url", default="https://druid.example", help="public base URL for feed links")
 
     args = parser.parse_args(argv)
     dispatch = {
@@ -175,5 +188,6 @@ def main(argv: list[str] | None = None) -> int:
         "anchor": cmd_anchor,
         "bundle": cmd_bundle,
         "verify-bundle": cmd_verify_bundle,
+        "export": cmd_export,
     }
     return dispatch[args.cmd](args)

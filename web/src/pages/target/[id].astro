@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import record from '../../data/record.json';
+import { sevClass } from '../../lib/format';
+
+export function getStaticPaths() {
+  return (record.targets ?? []).map((t: any) => ({ params: { id: t.id }, props: { target: t } }));
+}
+const { target } = Astro.props as { target: any };
+
+type Item = { kind: 'obs' | 'event'; at: string; obs?: any; ev?: any };
+const items: Item[] = [
+  ...target.observations.map((o: any) => ({ kind: 'obs' as const, at: o.fetched_at ?? '', obs: o })),
+  ...target.events.map((e: any) => ({ kind: 'event' as const, at: e.detected_at ?? '', ev: e })),
+].sort((a, b) => (b.at || '').localeCompare(a.at || ''));
+---
+
+<Base title={`Druid — ${target.title}`}>
+  <p><a href="/">← all targets</a></p>
+  <h1>{target.title}</h1>
+  <p class="url"><a href={target.url}>{target.url}</a></p>
+  {target.criteria && <p class="muted">{target.criteria}</p>}
+  <p><a href={`/feeds/${target.id}.xml`}>RSS for this target →</a></p>
+
+  <h2>Timeline</h2>
+  <ol class="timeline">
+    {items.map((it) => it.kind === 'event' ? (
+      <li>
+        <span class={`badge ${sevClass(it.ev.severity)}`}>{it.ev.severity}</span>
+        {' '}<a href={`/event/${it.ev.id}`}><strong>{it.ev.diff_type}</strong></a> <time>{it.at}</time>
+        <pre>{JSON.stringify(it.ev.evidence, null, 1)}</pre>
+      </li>
+    ) : (
+      <li class="obs">
+        observed <time>{it.at}</time> — HTTP {it.obs.http_status} — <code>{(it.obs.content_hash || '').slice(0, 20)}…</code>
+      </li>
+    ))}
+  </ol>
+</Base>
