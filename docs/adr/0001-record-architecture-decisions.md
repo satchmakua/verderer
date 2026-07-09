@@ -6,7 +6,7 @@
 ## Context
 
 Significant, hard-to-reverse decisions (a framework, a data model, a boundary, a
-protocol) need a durable record of *why*, so a future contributor
+protocol) need a durable record of *why*, so a future maintainer
 doesn't relitigate them or undo them blindly. `DESIGN.md` holds the current state;
 ADRs hold the reasoning behind individual choices over time.
 

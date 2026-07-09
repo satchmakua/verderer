@@ -3,7 +3,8 @@
 The milestone checklist.
 
 **Rules of the road:**
-- Each milestone is an **independently runnable** slice, testable end-to-end.
+- Each milestone is an **independently runnable** slice — something actually
+  testable end-to-end, not an internal-only refactor.
 - Every milestone ends with explicit **Test** steps — the acceptance criteria.
 - Build **top-down**: M0–M2 build and harden the trust spine; M3–M4 deepen
   detection; **M5 is the public ship**; M6–M8 are force multipliers.
