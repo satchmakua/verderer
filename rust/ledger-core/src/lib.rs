@@ -28,11 +28,15 @@ use ed25519_dalek::{SigningKey, VerifyingKey};
 use sha2::{Digest, Sha256};
 use tlog_tiles::{
     check_record, prove_record, prove_tree, record_hash, stored_hash_index, stored_hashes,
-    tree_hash, Checkpoint, Error as TlogError, Hash, HashReader, RecordProof, TreeProof,
+    tree_hash, Checkpoint, Error as TlogError, Hash, HashReader, RecordProof, Tile, TileHashReader,
+    TileReader, TreeProof,
 };
 
 /// The checkpoint origin and note key name. A stable, schema-less identifier.
 pub const ORIGIN: &str = "druid.watchdog/m1-log";
+
+/// The C2SP tlog-tiles tile height: tiles of 2^8 = 256 hashes (M2c).
+pub const TILE_HEIGHT: u8 = 8;
 
 const B64: base64::engine::general_purpose::GeneralPurpose =
     base64::engine::general_purpose::STANDARD;
@@ -204,6 +208,49 @@ impl Ledger {
         )
     }
 
+    /// Publish the C2SP tile files for the growth from `old_size` to `new_size` (M2c).
+    ///
+    /// Tiles land under `<ledger>/tile/<h>/<l>/<n>[.p/<w>]` — the C2SP tlog-tiles path
+    /// scheme, so the ledger directory doubles as a static tile server layout (serve it
+    /// from a CDN/R2 and verifiers can fetch tiles directly). Per the spec, stale
+    /// partials MAY be dropped: writing a wider partial removes narrower ones, and a
+    /// completed full tile removes its `.p/` directory. `write_tiles(0, size)`
+    /// regenerates everything (idempotent — the migration path for pre-tile ledgers).
+    pub fn write_tiles(&self, old_size: u64, new_size: u64) -> Result<usize, String> {
+        let reader = self.reader();
+        let tiles = Tile::new_tiles(TILE_HEIGHT, old_size, new_size);
+        for tile in &tiles {
+            let data = tile.read_data(&reader).map_err(|e| e.to_string())?;
+            let path = self.dir.join(tile.path());
+            let parent = path.parent().ok_or("tile path has no parent")?;
+            std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+            std::fs::write(&path, &data).map_err(|e| e.to_string())?;
+            if tile.width() == 1 << TILE_HEIGHT {
+                // Full tile: its partials are obsolete.
+                let name = path
+                    .file_name()
+                    .and_then(|n| n.to_str())
+                    .unwrap_or_default();
+                let _ = std::fs::remove_dir_all(parent.join(format!("{name}.p")));
+            } else {
+                // Growing partial: drop the narrower ones it supersedes.
+                if let Ok(entries) = std::fs::read_dir(parent) {
+                    for entry in entries.flatten() {
+                        let stale = entry
+                            .file_name()
+                            .to_str()
+                            .and_then(|n| n.parse::<u32>().ok())
+                            .is_some_and(|w| w < tile.width());
+                        if stale {
+                            let _ = std::fs::remove_file(entry.path());
+                        }
+                    }
+                }
+            }
+        }
+        Ok(tiles.len())
+    }
+
     /// Append a record, update the Merkle store, and write a fresh signed checkpoint.
     pub fn append(&self, record: &[u8]) -> Result<AppendResult, String> {
         let key = self.load_or_create_key()?;
@@ -241,6 +288,9 @@ impl Ledger {
         .map_err(|e| e.to_string())?;
         let checkpoint = sign_note(&body, ORIGIN, &key);
         std::fs::write(self.checkpoint_path(), &checkpoint).map_err(|e| e.to_string())?;
+        // Publish the tiles this append grew (M2c). The hash file is already durable, so
+        // a failure here leaves a consistent log; `write_tiles(0, size)` re-emits.
+        self.write_tiles(n, size)?;
         Ok(AppendResult {
             index: n,
             leaf_hash: record_hash(record),
@@ -311,6 +361,117 @@ impl Ledger {
     }
 }
 
+/// A [`TileReader`] over a directory laid out in the C2SP tile path scheme (M2c) —
+/// the shape of a ledger dir, a synced R2 bucket, or files fetched from a CDN.
+///
+/// Lookup per tile: the exact path first (`…/000.p/11` or `…/000`), then the full
+/// tile, then any wider partial — both fallbacks sliced down to the requested width
+/// (a reader may legitimately hold a newer, wider file than the one asked for).
+pub struct DirTileReader {
+    base: PathBuf,
+}
+
+impl DirTileReader {
+    pub fn new(base: impl Into<PathBuf>) -> Self {
+        Self { base: base.into() }
+    }
+
+    fn read_one(&self, tile: &Tile) -> Result<Vec<u8>, TlogError> {
+        let want = tile.width() as usize * 32;
+        let exact = self.base.join(tile.path());
+        if let Ok(data) = std::fs::read(&exact) {
+            if data.len() >= want {
+                return Ok(data[..want].to_vec());
+            }
+        }
+        if tile.width() < 1 << tile.height() {
+            let full = Tile::new(
+                tile.height(),
+                tile.level(),
+                tile.level_index(),
+                1 << tile.height(),
+                false,
+            );
+            let full_path = self.base.join(full.path());
+            if let Ok(data) = std::fs::read(&full_path) {
+                if data.len() >= want {
+                    return Ok(data[..want].to_vec());
+                }
+            }
+            let partials = full_path.parent().map(|p| {
+                let name = full_path
+                    .file_name()
+                    .and_then(|n| n.to_str())
+                    .unwrap_or_default();
+                p.join(format!("{name}.p"))
+            });
+            if let Some(dir) = partials {
+                if let Ok(entries) = std::fs::read_dir(dir) {
+                    for entry in entries.flatten() {
+                        let wide_enough = entry
+                            .file_name()
+                            .to_str()
+                            .and_then(|n| n.parse::<u32>().ok())
+                            .is_some_and(|w| w >= tile.width());
+                        if wide_enough {
+                            if let Ok(data) = std::fs::read(entry.path()) {
+                                if data.len() >= want {
+                                    return Ok(data[..want].to_vec());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Err(TlogError::InvalidInput(format!(
+            "tile {} not found under {}",
+            tile.path(),
+            self.base.display()
+        )))
+    }
+}
+
+impl TileReader for DirTileReader {
+    fn height(&self) -> u8 {
+        TILE_HEIGHT
+    }
+
+    fn read_tiles(&self, tiles: &[Tile]) -> Result<Vec<Vec<u8>>, TlogError> {
+        tiles.iter().map(|t| self.read_one(t)).collect()
+    }
+
+    fn save_tiles(&self, _tiles: &[Tile], _data: &[Vec<u8>]) {}
+}
+
+/// Verify a record against a signed checkpoint using **only published tile files** —
+/// no supplied proof, no stored-hash file, no live service (M2c's acceptance property).
+///
+/// The inclusion proof is *reconstructed* from the tiles via [`TileHashReader`], which
+/// authenticates every tile against the checkpoint's signed root before use — so a
+/// tampered or substituted tile is rejected, and trust still reduces to the checkpoint
+/// signature alone.
+pub fn verify_inclusion_from_tiles(
+    record: &[u8],
+    index: u64,
+    tiles_base: &std::path::Path,
+    signed_checkpoint: &str,
+    public_hex: &str,
+) -> Result<String, String> {
+    let vk = vk_from_hex(public_hex)?;
+    let body = verify_note(signed_checkpoint, ORIGIN, &vk).map_err(|e| e.to_string())?;
+    let (_origin, size, root) = parse_body(&body)?;
+    let reader = DirTileReader::new(tiles_base);
+    let tile_hashes = TileHashReader::new(size, Hash(root.0), &reader);
+    let proof = prove_record(size, index, &tile_hashes).map_err(|e| e.to_string())?;
+    let leaf = record_hash(record);
+    check_record(&proof, size, Hash(root.0), index, leaf).map_err(|e| e.to_string())?;
+    Ok(format!(
+        "record {index} included in tree size {size} via tiles alone, root {}",
+        hex::encode(root.0)
+    ))
+}
+
 /// Offline inclusion verification — no ledger directory, no live service. Given a
 /// record, its index + inclusion proof, and a signed checkpoint, confirm the record
 /// is included under the checkpoint's signed root. The foundation of the M2 proof bundle.
@@ -351,8 +512,9 @@ fn parse_proof(value: &serde_json::Value) -> Vec<Hash> {
 /// leaf is included under a validly-signed checkpoint. Trust routes through nothing live.
 ///
 /// Any RFC 3161 `anchors` are verified against `roots_pem` (the TSA roots the caller
-/// pins): a pinned anchor that fails is a hard error; anchors present with no pinned root
-/// are reported as unchecked (the core inclusion proof stands on its own).
+/// pins). Aggregation follows the C2SP witness model (ADR-0005): an internally-consistent
+/// anchor whose TSA root isn't pinned is reported "present but not verified" and claims
+/// no time bound; any other token failure is tamper-evidence and rejects the bundle.
 pub fn verify_bundle(json: &str, roots_pem: &[String]) -> Result<String, String> {
     let v: serde_json::Value = serde_json::from_str(json).map_err(|e| e.to_string())?;
     if v["schema"] != "druid.proofbundle/v1" {

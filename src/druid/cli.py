@@ -128,13 +128,28 @@ def cmd_anchor(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_tiles(args: argparse.Namespace) -> int:
+    druid = _build(args)
+    if not druid.log.entries():
+        print("nothing to tile — run `druid observe <target>` first")
+        return 1
+    info = druid.log.emit_tiles()
+    print(f"published {info['tiles']} tile file(s) at height {info['height']} under {args.data_dir / 'ledger' / 'tile'}")
+    print("  verifiers can now recompute inclusion proofs from the tile files alone")
+    return 0
+
+
 def cmd_export(args: argparse.Namespace) -> int:
     from .web.export import export_site
 
     druid = _build(args)
     info = export_site(druid, args.out, base_url=args.base_url)
-    print(f"exported public record -> {info['out']}: {info['targets']} target(s), {info['events']} event(s)")
+    print(
+        f"exported public record -> {info['out']}: {info['targets']} target(s), "
+        f"{info['events']} event(s), {info['tiles']} tile file(s)"
+    )
     print("  record.json + feed.xml (+ per-target feeds/); subscribe to feed.xml for alerts")
+    print("  checkpoint + tile/ published: verifiers can recompute proofs from the tiles alone")
     return 0
 
 
@@ -222,6 +237,7 @@ def main(argv: list[str] | None = None) -> int:
     verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
     verify_bundle.add_argument("path", type=Path)
     verify_bundle.add_argument("--root", type=Path, action="append", help="pinned TSA root PEM (repeatable) to verify anchors")
+    sub.add_parser("tiles", help="(re)publish the C2SP tile files for the current ledger")
     export = sub.add_parser("export", help="export the public record (record.json + RSS feeds) for the site")
     export.add_argument("--out", type=Path, default=Path("site-data"), help="output directory")
     export.add_argument("--base-url", default="https://druid.example", help="public base URL for feed links")
@@ -241,6 +257,7 @@ def main(argv: list[str] | None = None) -> int:
         "anchor": cmd_anchor,
         "bundle": cmd_bundle,
         "verify-bundle": cmd_verify_bundle,
+        "tiles": cmd_tiles,
         "export": cmd_export,
         "notify": cmd_notify,
     }

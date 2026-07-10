@@ -1,17 +1,22 @@
 //! `druid-verify` — the independent verifier.
 //!
-//!   druid-verify log       --dir D   recompute the whole log vs. its signed checkpoint
-//!   druid-verify inclusion           (JSON bundle on stdin) verify a record offline
+//!   druid-verify log       --dir D    recompute the whole log vs. its signed checkpoint
+//!   druid-verify inclusion            (JSON bundle on stdin) verify a record offline
+//!   druid-verify tiles     --tiles D  (JSON on stdin) reconstruct the proof from tile files
 //!
 //! The `inclusion` mode takes no directory and contacts no service: it is the offline,
 //! transferable check at the heart of Druid's value (DESIGN §6.4). stdin JSON:
 //!   {"record_b64": "...", "index": N, "proof": ["<hex>", ...],
 //!    "checkpoint": "<signed note>", "pubkey_hex": "<hex>"}
+//!
+//! The `tiles` mode (M2c) takes the same JSON **without** `proof`: the inclusion proof
+//! is reconstructed from fetched C2SP tile files alone, each tile authenticated against
+//! the checkpoint's signed root before use.
 
 use std::io::Read;
 
 use base64::Engine;
-use ledger_core::{verify_bundle, verify_inclusion, Ledger};
+use ledger_core::{verify_bundle, verify_inclusion, verify_inclusion_from_tiles, Ledger};
 use tlog_tiles::Hash;
 
 fn opt(args: &[String], key: &str) -> Option<String> {
@@ -97,6 +102,51 @@ fn run() -> i32 {
                 }
             }
         }
+        Some("tiles") => {
+            let Some(base) = opt(&args, "--tiles") else {
+                eprintln!("--tiles <dir> is required (a directory laid out as tile/<h>/<l>/<n>)");
+                return 2;
+            };
+            let mut s = String::new();
+            if std::io::stdin().read_to_string(&mut s).is_err() {
+                eprintln!("failed to read JSON from stdin");
+                return 1;
+            }
+            let value: serde_json::Value = match serde_json::from_str(&s) {
+                Ok(v) => v,
+                Err(e) => {
+                    eprintln!("{e}");
+                    return 1;
+                }
+            };
+            let b64 = base64::engine::general_purpose::STANDARD;
+            let record = match b64.decode(value["record_b64"].as_str().unwrap_or("")) {
+                Ok(b) => b,
+                Err(e) => {
+                    eprintln!("{e}");
+                    return 1;
+                }
+            };
+            let index = value["index"].as_u64().unwrap_or(u64::MAX);
+            let checkpoint = value["checkpoint"].as_str().unwrap_or("");
+            let pubkey = value["pubkey_hex"].as_str().unwrap_or("");
+            match verify_inclusion_from_tiles(
+                &record,
+                index,
+                std::path::Path::new(&base),
+                checkpoint,
+                pubkey,
+            ) {
+                Ok(msg) => {
+                    println!("VALID {msg}");
+                    0
+                }
+                Err(e) => {
+                    println!("INVALID {e}");
+                    1
+                }
+            }
+        }
         Some("bundle") => {
             // druid-verify bundle <file.json> [--root <tsa_root.pem>]...
             // Verify a downloaded proof bundle offline; pinned TSA roots verify any anchors.
@@ -145,7 +195,7 @@ fn run() -> i32 {
         }
         _ => {
             eprintln!(
-                "usage: druid-verify log --dir D | druid-verify inclusion (JSON on stdin) | druid-verify bundle <file.json>"
+                "usage: druid-verify log --dir D | druid-verify inclusion (JSON on stdin) | druid-verify tiles --tiles D (JSON on stdin) | druid-verify bundle <file.json>"
             );
             2
         }

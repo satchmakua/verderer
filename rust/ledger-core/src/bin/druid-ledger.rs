@@ -5,6 +5,7 @@
 //!   druid-ledger consistency --dir D --from M --to N -> JSON {from, to, proof}
 //!   druid-ledger checkpoint  --dir D            -> the signed checkpoint text
 //!   druid-ledger pubkey      --dir D            -> the log public key (hex)
+//!   druid-ledger tiles       --dir D            -> (re)publish all C2SP tile files (M2c)
 
 use std::io::Read;
 
@@ -109,6 +110,19 @@ fn run() -> i32 {
         "checkpoint" => match ledger.signed_checkpoint() {
             Ok(text) => {
                 print!("{text}");
+                0
+            }
+            Err(e) => {
+                eprintln!("{e}");
+                1
+            }
+        },
+        "tiles" => match ledger.write_tiles(0, ledger.size()) {
+            Ok(count) => {
+                println!(
+                    "{}",
+                    serde_json::json!({"tiles": count, "height": ledger_core::TILE_HEIGHT})
+                );
                 0
             }
             Err(e) => {

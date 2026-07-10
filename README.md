@@ -16,8 +16,10 @@ detection**.
 spine (Rust Merkle log, C2SP checkpoints, RFC 3161 anchors from independent TSAs),
 four-layer change detection (terms, regulatory numbers, dataset schema/distribution),
 and a public product: a browsable Astro record with RSS feeds, webhook/email alerts,
-search, and in-browser (WASM) offline proof verification. Next up: tile serving (M2c)
-and detection breadth (M3b/M4b). See [ROADMAP.md](ROADMAP.md) for the plan.
+search, and in-browser (WASM) offline proof verification. The log itself is published as C2SP
+tile files (M2c), so verifiers can fetch tiles and recompute proofs with no live
+service. Next up: detection breadth (M3b render collector, M4b NetCDF/xarray). See
+[ROADMAP.md](ROADMAP.md) for the plan.
 
 ---
 
@@ -42,7 +44,8 @@ python -m druid verify               # recompute the Merkle tree + check the sig
 python -m druid anchor --tsa digicert,freetsa     # timestamp via independent TSAs (over HTTP)
 python -m druid bundle epa-ghgrp -o proof.json    # export a self-verifying proof bundle
 python -m druid verify-bundle proof.json          # verify it offline — anchors included
-python -m druid export --out web/public           # build the public record: record.json + RSS feeds
+python -m druid tiles                             # (re)publish the C2SP tile files for the ledger
+python -m druid export --out web/public           # build the public record: record.json + RSS + checkpoint + tiles
 python -m druid notify --dry-run                   # push alerts to webhook/email subscriptions (data/subscriptions.toml)
 ```
 
@@ -61,7 +64,9 @@ A browsable, static-leaning record: recent classified changes, per-target timeli
 feed** (`/feed.xml`, plus per-target feeds), and a **`/verify` page that checks a downloaded
 proof bundle entirely in your browser** (WebAssembly — nothing uploaded, trusting neither
 the source nor Druid). The home page has client-side search over the classified changes,
-and `druid notify` pushes new events to webhook/email subscriptions.
+and `druid notify` pushes new events to webhook/email subscriptions. The site also serves
+the log itself — `/checkpoint` plus the C2SP `/tile/…` files — so an independent verifier
+can fetch tiles and recompute inclusion proofs with no live service (M2c).
 
 The anchor gives a **time bound** ("existed no later than T"): `druid anchor` submits the
 checkpoint to independent third-party TSAs (**DigiCert**, **FreeTSA**), whose roots ship

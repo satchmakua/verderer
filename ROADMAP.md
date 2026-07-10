@@ -72,9 +72,16 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     - [ ] **M2b-3 — OpenTimestamps.** Add an OTS proof + the Bitcoin block header needed
       to bound time offline (a distinct `anchors` entry type). **Test:** an OTS anchor
       validates offline against the carried header; a forged one is rejected.
-  - [ ] **M2c — Tile serving.** Emit the C2SP tile files to the blob store
-    (R2 / CDN-served) so a verifier can fetch tiles directly and recompute proofs.
+  - [x] **M2c — Tile serving.** _Confirmed 2026-07-10._ Every append publishes the C2SP
+    tile files (`tile/<h>/<l>/<n>[.p/<w>]`, height 8) beside the ledger; `druid tiles`
+    regenerates them for pre-tile ledgers; `druid export` ships `checkpoint` + `tile/`
+    so the static site doubles as a tile server. `druid-verify tiles` reconstructs an
+    inclusion proof from the tile files alone, authenticating every tile against the
+    signed root. _(Hash tiles only — entry bundles wait for a consumer; the record
+    bytes travel in the proof bundle.)_
     **Test:** the verifier reconstructs an inclusion proof from fetched tiles alone.
+    _(Passes: a dir holding only `tile/` → `VALID … via tiles alone`; a flipped tile
+    byte → `INVALID downloaded inconsistent tile`; hash-file deletion doesn't matter.)_
 
 ## Phase 2 — Detection depth
 

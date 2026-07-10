@@ -100,6 +100,41 @@ class Ledger:
             raise RuntimeError(f"druid-ledger inclusion failed: {result.stderr.strip()}")
         return json.loads(result.stdout)
 
+    def emit_tiles(self) -> dict[str, Any]:
+        """(Re)publish all C2SP tile files for the current tree (M2c).
+
+        Idempotent; the migration path for a ledger created before tile serving (appends
+        publish tiles incrementally from then on). Returns ``{"tiles": N, "height": 8}``.
+        """
+        result = subprocess.run(
+            [str(find_binary("druid-ledger")), "tiles", "--dir", str(self.dir)],
+            capture_output=True,
+            encoding="utf-8",
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"druid-ledger tiles failed: {result.stderr.strip()}")
+        return dict(json.loads(result.stdout))
+
+    def offline_verify_from_tiles(self, index: int) -> tuple[bool, str]:
+        """Verify a record against the signed checkpoint from **published tiles alone**.
+
+        No proof is supplied and the canonical stored-hash file is never read: the
+        verifier reconstructs the inclusion proof from the `tile/` files, authenticating
+        every tile against the checkpoint's signed root (M2c's acceptance property).
+        """
+        bundle = {
+            "record_b64": self.entry_b64(index),
+            "index": index,
+            "checkpoint": self.signed_checkpoint(),
+            "pubkey_hex": self.public_key_hex,
+        }
+        result = subprocess.run(
+            [str(find_binary("druid-verify")), "tiles", "--tiles", str(self.dir)],
+            input=json.dumps(bundle).encode("utf-8"),
+            capture_output=True,
+        )
+        return result.returncode == 0, result.stdout.decode(errors="replace").strip()
+
     def offline_verify(self, index: int) -> tuple[bool, str]:
         """Build an inclusion bundle for a record and verify it offline via `druid-verify`.
 
