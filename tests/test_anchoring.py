@@ -74,8 +74,10 @@ def test_anchor_bundle_and_verify_offline(tmp_path: Path, ledger_built: None, op
     assert "INVALID" in bad.stdout
 
 
-def test_anchor_rejected_under_wrong_root(tmp_path: Path, ledger_built: None, openssl_available: None) -> None:
-    # A bundle anchored by one dev TSA must not verify against a different TSA's root.
+def test_unpinned_anchor_is_reported_not_fatal(tmp_path: Path, ledger_built: None, openssl_available: None) -> None:
+    # An anchor from a TSA whose root isn't pinned is like an unknown C2SP witness
+    # cosignature: it proves nothing and spoils nothing. The bundle stays VALID on the
+    # inclusion proof, the anchor is reported unverified, and no time bound is claimed.
     druid = _make_druid(tmp_path)
     druid.observe("t")
     druid.anchor(OpensslTsaAnchorer(tmp_path / "data" / "anchors" / "dev-tsa"))
@@ -86,7 +88,18 @@ def test_anchor_rejected_under_wrong_root(tmp_path: Path, ledger_built: None, op
     other_root.write_text((tmp_path / "other-tsa" / "root.pem").read_text(encoding="utf-8"), encoding="utf-8")
 
     result = _verify_bundle(bundle, tmp_path, other_root, "wrongroot")
-    assert result.returncode != 0  # does not chain to the pinned (wrong) root
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "not verified" in result.stdout  # the anchor is surfaced, not silently dropped
+    assert "no later than" not in result.stdout  # and no time bound is claimed from it
+
+    # A *corrupt* token is a different matter entirely: tampering is fatal no matter
+    # which roots are pinned.
+    token = bytearray(base64.b64decode(bundle["anchors"][0]["token"]))
+    token[5] ^= 0xFF  # an early header byte: fails CMS parsing, which is always fatal
+    bundle["anchors"][0]["token"] = base64.b64encode(bytes(token)).decode()
+    bad = _verify_bundle(bundle, tmp_path, other_root, "corrupt-token")
+    assert bad.returncode != 0
+    assert "INVALID" in bad.stdout
 
 
 def test_live_digicert_anchor_verifies_with_embedded_root(

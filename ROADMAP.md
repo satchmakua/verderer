@@ -35,7 +35,7 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
   tile-file serialization moved to M2c.)_
 
 - **M2 — The citable proof (split into runnable slices).**
-  - [ ] **M2a — Self-verifying proof bundle.** _Built; awaiting confirmation._
+  - [x] **M2a — Self-verifying proof bundle.** _Confirmed 2026-07-10._
     `druid bundle <target> [-o file]` exports a single self-contained
     `druid.proofbundle/v1` (observation + raw artifact bytes + Merkle inclusion proof
     + signed checkpoint + pinned key); `druid-verify bundle <file>` validates it fully
@@ -46,7 +46,7 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     `druid verify-bundle proof.json` → `VALID`; edit any byte of `proof.json` →
     `INVALID`. `pytest` + `cargo test` green.
   - **M2b — External anchoring (split; RFC 3161 offline verification is the spine).**
-    - [ ] **M2b-1 — RFC 3161 anchor + offline verifier.** _Built; awaiting confirmation._
+    - [x] **M2b-1 — RFC 3161 anchor + offline verifier.** _Confirmed 2026-07-10._
       A Rust `rfc3161` verifier (on cms/x509-cert/x509-tsp/rsa/ecdsa) validates a
       timestamp token offline: it binds the token's messageImprint to the checkpoint,
       verifies the TSA signature over the signed attributes, checks the timestamping EKU,
@@ -55,9 +55,11 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
       independence); `bundle` embeds the token in `anchors`; `druid verify-bundle
       --root <pem>` reports "anchored no later than T" offline.
       **Test:** `observe` → `anchor` → `bundle` → `verify-bundle --root` → `VALID …
-      anchored no later than <T>`; tamper the token or pin the wrong root → `INVALID`.
+      anchored no later than <T>`; tamper the token → `INVALID`; an anchor whose TSA
+      root isn't pinned is reported `not verified` and claims no time bound — the bundle
+      stands on its inclusion proof (the C2SP witness model, ADR-0005).
       `cargo test` (incl. openssl-minted token fixtures) + `pytest` green.
-    - [ ] **M2b-2 — Independent third-party TSAs.** _Built; awaiting confirmation._
+    - [x] **M2b-2 — Independent third-party TSAs.** _Confirmed 2026-07-10._
       `druid anchor --tsa digicert,freetsa` submits over HTTP to real, independent TSAs;
       the verifier **ships their roots pinned**, so those anchors verify with no `--root`.
       The verifier now handles real production tokens (DigiCert RSA-4096; FreeTSA ECDSA
@@ -77,7 +79,7 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 ## Phase 2 — Detection depth
 
 - **M3 — Numeric extraction + render collector (split).**
-  - [ ] **M3a — L2 numeric / threshold extraction.** _Built; awaiting confirmation._
+  - [x] **M3a — L2 numeric / threshold extraction.** _Confirmed 2026-07-10._
     Extract numbers-with-units in a regulatory context (a limit, standard, threshold,
     reporting cutoff) and flag when the value tied to the same context changes →
     `NumericThresholdChange [High]`. High-precision: a number counts only next to a
@@ -92,8 +94,8 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     **Test:** a JS-rendered fixture is observed with its data calls captured.
 
 - **M4 — Dataset diffing (split).**
-  - [ ] **M4a — Tabular (CSV/JSON) schema + distributional diff.** _Built; awaiting
-    confirmation._ A `dataset`-kind target routes to the L4 differ (`differ/dataset.py`,
+  - [x] **M4a — Tabular (CSV/JSON) schema + distributional diff.** _Confirmed
+    2026-07-10._ A `dataset`-kind target routes to the L4 differ (`differ/dataset.py`,
     pandas): column add/remove/retype → `SchemaChange`; a numeric column re-baselined/
     scaled or the series truncated → `DistributionalShift`. High-precision (distributional
     checks only numeric columns).
@@ -107,7 +109,7 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 ## Phase 3 — The public product
 
 - **M5 — Public record + alerts (split). ★ public ship.**
-  - [ ] **M5a — Public record (Astro) + RSS feeds.** _Built; awaiting confirmation._
+  - [x] **M5a — Public record (Astro) + RSS feeds.** _Confirmed 2026-07-10._
     `druid export` builds `record.json` + a global and per-target RSS feed from the
     ledger. An Astro static site (`web/`) renders a home page (recent classified changes
     + targets), per-target timelines (attested observations interleaved with diffs), and
@@ -115,7 +117,7 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     **Test:** `druid export` writes valid `record.json` + `feed.xml`; `cd web && npm run
     build` renders the pages; the home + target pages show the classified changes (incl.
     10→15 ppb). `pytest` green.
-  - [ ] **M5b — In-browser WASM verifier.** _Built; awaiting confirmation._ `ledger-core`
+  - [x] **M5b — In-browser WASM verifier.** _Confirmed 2026-07-10._ `ledger-core`
     compiles to WASM (`rust/ledger-wasm`, wasm-bindgen), shipping the pinned DigiCert/FreeTSA
     roots; the `/verify` page verifies a downloaded `druid.proofbundle/v1` **entirely in the
     browser** — a green check / red cross, nothing uploaded, trusting neither the source nor
@@ -123,7 +125,7 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     **Test:** in the browser, a real anchored bundle → `VALID … anchored no later than <T>`;
     a tampered artifact → `INVALID`; matches the native `druid-verify`. `cargo build
     --target wasm32` + native `cargo test` green.
-  - [ ] **M5c — Push alerts + search.** _Built; awaiting confirmation._ `druid notify`
+  - [x] **M5c — Push alerts + search.** _Confirmed 2026-07-10._ `druid notify`
     delivers each new diff event to matching subscriptions (`data/subscriptions.toml`) over
     **webhook** (POST `druid.alert/v1`) and **email** (SMTP), filtered by target, diff-type,
     and minimum severity; delivery is idempotent (a per-(sub, event) key persisted in

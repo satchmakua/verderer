@@ -17,7 +17,7 @@ mod note;
 mod rfc3161;
 
 pub use note::{key_id, sign_note, verify_note, NoteError};
-pub use rfc3161::{verify_rfc3161_token, AnchorInfo};
+pub use rfc3161::{verify_rfc3161_token, AnchorInfo, ERR_UNTRUSTED_ROOT};
 
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Seek, SeekFrom, Write};
@@ -412,37 +412,49 @@ pub fn verify_bundle(json: &str, roots_pem: &[String]) -> Result<String, String>
     let anchored_hash = Sha256::digest(checkpoint.as_bytes());
     let empty: Vec<serde_json::Value> = Vec::new();
     let anchors = v["anchors"].as_array().unwrap_or(&empty);
-    let mut anchor_note = String::new();
     let mut verified = 0usize;
+    let mut unverified = 0usize; // present but uncheckable: unpinned TSA root or unsupported type
     let mut earliest: Option<String> = None; // ISO-8601 sorts chronologically
     for anchor in anchors {
         if anchor["type"] != "rfc3161" {
+            unverified += 1;
             continue;
         }
         let token = B64
             .decode(anchor["token"].as_str().ok_or("anchor missing token")?)
             .map_err(|e| e.to_string())?;
         if roots.is_empty() {
-            anchor_note = format!(
-                "; {} anchor(s) present but UNCHECKED (pin a --root to verify)",
-                anchors.len()
-            );
+            unverified += 1;
             continue;
         }
-        let info = verify_rfc3161_token(&token, anchored_hash.as_slice(), &roots)
-            .map_err(|e| format!("anchor verification failed: {e}"))?;
-        verified += 1;
-        earliest = Some(match earliest {
-            Some(current) if current <= info.gen_time => current,
-            _ => info.gen_time,
-        });
+        match verify_rfc3161_token(&token, anchored_hash.as_slice(), &roots) {
+            Ok(info) => {
+                verified += 1;
+                earliest = Some(match earliest {
+                    Some(current) if current <= info.gen_time => current,
+                    _ => info.gen_time,
+                });
+            }
+            // An internally-consistent token from a TSA we don't pin proves nothing but
+            // spoils nothing — the C2SP witness model: report it, ignore it, let the
+            // inclusion proof and the other anchors stand. Every other failure means
+            // the bundle carries a corrupt or mismatched token and is rejected.
+            Err(e) if e == rfc3161::ERR_UNTRUSTED_ROOT => unverified += 1,
+            Err(e) => return Err(format!("anchor verification failed: {e}")),
+        }
     }
+    let mut anchor_note = String::new();
     if verified > 0 {
         // The tightest bound is the earliest genTime across independent anchors.
         anchor_note = format!(
             "; {verified} anchor(s) verified - existed no later than {}",
             earliest.unwrap_or_default()
         );
+    }
+    if unverified > 0 {
+        anchor_note.push_str(&format!(
+            "; {unverified} anchor(s) present but not verified (no pinned root for that TSA)"
+        ));
     }
 
     let url = observation["url"].as_str().unwrap_or("?");

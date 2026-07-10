@@ -258,6 +258,12 @@ fn attr_value<'a>(
         .and_then(|a| a.values.iter().next())
 }
 
+/// The one non-fatal failure mode: the token is internally consistent (imprint, digests,
+/// signature, EKU all check out) but its signer chains to no pinned root. Callers
+/// aggregating anchors treat this like an unknown C2SP witness cosignature — reported,
+/// not trusted, not fatal — while every other failure is evidence of tampering.
+pub const ERR_UNTRUSTED_ROOT: &str = "signer cert does not chain to a pinned TSA root";
+
 /// Verify an RFC 3161 timestamp token offline and return what it proves.
 ///
 /// * `token_der` — the raw TimeStampToken (CMS SignedData) DER.
@@ -364,7 +370,7 @@ pub fn verify_rfc3161_token(
         return Err("signer cert lacks the id-kp-timeStamping EKU".into());
     }
     if !chains_to_pinned(leaf, &certs, &pinned) {
-        return Err("signer cert does not chain to a pinned TSA root".into());
+        return Err(ERR_UNTRUSTED_ROOT.into());
     }
 
     // ...and its validity window must contain genTime (NOT verify-time: RFC 3161 tokens

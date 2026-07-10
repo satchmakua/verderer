@@ -12,8 +12,12 @@ ecosystem (EDGI, PEDP, End-of-Term, Data Rescue Project) — adding the two thin
 them treat as primary: **provable observation integrity** and **classified manipulation
 detection**.
 
-**Status:** _early scaffold_ — **M0 (walking skeleton) shipped.** See
-[ROADMAP.md](ROADMAP.md) for the plan.
+**Status:** **the public ship (M0–M5) is complete and confirmed** — a provable trust
+spine (Rust Merkle log, C2SP checkpoints, RFC 3161 anchors from independent TSAs),
+four-layer change detection (terms, regulatory numbers, dataset schema/distribution),
+and a public product: a browsable Astro record with RSS feeds, webhook/email alerts,
+search, and in-browser (WASM) offline proof verification. Next up: tile serving (M2c)
+and detection breadth (M3b/M4b). See [ROADMAP.md](ROADMAP.md) for the plan.
 
 ---
 
@@ -56,7 +60,8 @@ A browsable, static-leaning record: recent classified changes, per-target timeli
 (attested observations + diffs with evidence), per-event permalinks, a subscribable **RSS
 feed** (`/feed.xml`, plus per-target feeds), and a **`/verify` page that checks a downloaded
 proof bundle entirely in your browser** (WebAssembly — nothing uploaded, trusting neither
-the source nor Druid). Push (webhook/email) alerts and search are the next slices.
+the source nor Druid). The home page has client-side search over the classified changes,
+and `druid notify` pushes new events to webhook/email subscriptions.
 
 The anchor gives a **time bound** ("existed no later than T"): `druid anchor` submits the
 checkpoint to independent third-party TSAs (**DigiCert**, **FreeTSA**), whose roots ship
