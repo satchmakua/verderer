@@ -167,6 +167,30 @@ def cmd_triage(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_overlay(args: argparse.Namespace) -> int:
+    from .overlay import ArchiveSource, WaybackSource, write_overlay
+
+    druid = _build(args)
+    sources: list[ArchiveSource] = []
+    for name in (n.strip() for n in args.sources.split(",") if n.strip()):
+        if name == "wayback":
+            sources.append(WaybackSource(match_prefix=args.prefix))
+        else:
+            print(f"unknown source: {name} (known: wayback)")
+            return 2
+    try:
+        info = write_overlay(druid, args.out, sources)
+    except Exception as error:  # network / archive API failure — report, don't crash
+        print(f"overlay build failed: {error}")
+        return 1
+    print(
+        f"built overlay -> {info['out']}: {info['resources']} resource(s) across {info['sources']}, "
+        f"{info['attested']} druid-attested ({info['bundles']} bundle(s) written)"
+    )
+    print("  attested resources carry a downloadable proof bundle; third-party-only copies do not")
+    return 0
+
+
 def cmd_export(args: argparse.Namespace) -> int:
     from .web.export import export_site
 
@@ -269,6 +293,10 @@ def main(argv: list[str] | None = None) -> int:
     triage = sub.add_parser("triage", help="draft a plain-language reviewer summary of a reworded change (L5)")
     triage.add_argument("target_id")
     triage.add_argument("--model", default="claude-opus-4-8", help="Claude model for the summary")
+    overlay = sub.add_parser("overlay", help="build the federated overlay index (third-party archives + attested badges)")
+    overlay.add_argument("--out", type=Path, default=Path("site-data"), help="output directory")
+    overlay.add_argument("--sources", default="wayback", help="comma-separated archive sources (known: wayback)")
+    overlay.add_argument("--prefix", action="store_true", help="Wayback prefix match (harvest sibling resources)")
     sub.add_parser("tiles", help="(re)publish the C2SP tile files for the current ledger")
     export = sub.add_parser("export", help="export the public record (record.json + RSS feeds) for the site")
     export.add_argument("--out", type=Path, default=Path("site-data"), help="output directory")
@@ -290,6 +318,7 @@ def main(argv: list[str] | None = None) -> int:
         "bundle": cmd_bundle,
         "verify-bundle": cmd_verify_bundle,
         "triage": cmd_triage,
+        "overlay": cmd_overlay,
         "tiles": cmd_tiles,
         "export": cmd_export,
         "notify": cmd_notify,

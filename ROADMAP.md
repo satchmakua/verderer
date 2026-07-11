@@ -175,11 +175,20 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
   passage as `ContentEdit [L3-embedding]`; the summary lands in the sidecar with the
   ledger entry count unchanged and `verify` still VALID.)_
 
-- [ ] **M7 — Federated overlay index + verification badging.** Harvest Wayback CDX /
-  OSF / Dataverse / Perma.cc / PEDP metadata into unified search; badge
-  Druid-attested (with proof bundle) vs unverified.
+- [x] **M7 — Federated overlay index + verification badging.** _Confirmed 2026-07-10._
+  `overlay.py` harvests third-party archive metadata behind an injectable `ArchiveSource`
+  port (default `WaybackSource` — Internet Archive CDX, polite/read-only; OSF/Dataverse/
+  Perma.cc/PEDP are the same port) and `build_overlay` cross-references it with Druid's
+  attested observations into a `druid.overlay/v1` index: a resource in both is badged
+  **druid-attested** with a downloadable proof bundle, a third-party-only copy shows no
+  badge. `druid overlay` writes `overlay.json` + `bundles/`; a `/overlay` Astro page
+  renders the badged, searchable list.
   **Test:** search a resource that exists in both Wayback and Druid → it shows the
   attested badge with a downloadable bundle; an unverified-only resource shows no badge.
+  _(Passes offline + live: a real Wayback CDX harvest on the ledger badged
+  `www.epa.gov/ghgreporting` attested with 7 real captures + a bundle, while
+  `ejscreen.epa.gov/mapper` (Wayback-only) got no badge; the `/overlay` page renders both
+  with the bundle link resolving to a valid `druid.proofbundle/v1`.)_
 
 - [ ] **M8 — Multi-party witnesses.** C2SP `tlog-cosignature`: independent witnesses
   co-sign checkpoints; bundles carry cosignatures; the verifier requires a quorum.
