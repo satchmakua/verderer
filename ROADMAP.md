@@ -117,9 +117,17 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     **Test:** two dataset versions — a dropped column → `SchemaChange [High]`; a
     re-baselined series → `DistributionalShift [High]`; truncation → a `row_count`
     `DistributionalShift`. `pytest` green.
-  - [ ] **M4b — Scientific/geospatial datasets.** NetCDF/HDF via `xarray` (metadata +
-    variable-presence + summary-stat diff); `.zip`/`.xlsx` unpacking.
+  - [x] **M4b — Scientific/geospatial datasets.** _Confirmed 2026-07-10._ `dataset_diff`
+    became a magic-byte format router (`detect_format` + `_route`): NetCDF/HDF via
+    `xarray` (`differ/netcdf.py` — variable presence, dimension sizes, global/per-variable
+    attributes, per-variable summary stats), `.xlsx` per-sheet tabular diff, and `.zip`
+    per-member diff recursing into each changed member. The scientific backends
+    (xarray/scipy/h5netcdf/openpyxl) are an optional `science` extra; the tabular + zip
+    paths need none.
     **Test:** a NetCDF with a dropped variable / changed summary stat is flagged.
+    _(Passes offline + live: NetCDF3 and NetCDF4/HDF5 with a dropped `ch4` →
+    `SchemaChange [High]`, a re-baselined `co2` → `DistributionalShift [High]`, a changed
+    `units` attr → `MetadataChange`; zip member-removal + recursion; xlsx column drop.)_
 
 ## Phase 3 — The public product
 

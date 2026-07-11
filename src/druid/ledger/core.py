@@ -56,8 +56,15 @@ def _leaf_hash(data: bytes) -> str:
 
 
 def canonical(record: dict[str, Any]) -> bytes:
-    """The exact leaf bytes for a record — Python owns canonicalisation."""
-    return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    """The exact leaf bytes for a record — Python owns canonicalisation.
+
+    `allow_nan=False`: a non-finite float would emit the non-standard `NaN`/`Infinity`
+    tokens, which are not valid JSON and would not round-trip through the open verifier.
+    Fail loud here rather than commit an unparseable leaf to the attested log.
+    """
+    return json.dumps(
+        record, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False
+    ).encode("utf-8")
 
 
 @dataclass(frozen=True, slots=True)

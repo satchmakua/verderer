@@ -29,6 +29,15 @@ dev = [
 render = [
   "playwright>=1.44",
 ]
+# Scientific/geospatial dataset diffing (M4b): NetCDF/HDF via xarray, xlsx via openpyxl.
+# Optional — the tabular (CSV/JSON) and zip paths need none of it.
+science = [
+  "xarray>=2024.1",
+  "scipy>=1.11",       # NetCDF3 classic backend
+  "h5netcdf>=1.3",     # NetCDF4 / HDF5 backend
+  "h5py>=3.10",
+  "openpyxl>=3.1",     # .xlsx
+]
 
 [project.scripts]
 druid = "druid.cli:main"

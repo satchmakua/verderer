@@ -18,9 +18,10 @@ four-layer change detection (terms, regulatory numbers, dataset schema/distribut
 and a public product: a browsable Astro record with RSS feeds, webhook/email alerts,
 search, and in-browser (WASM) offline proof verification. The log itself is published as C2SP
 tile files (M2c), so verifiers can fetch tiles and recompute proofs with no live
-service, and a headless-browser render collector (M3b) captures JS-rendered pages plus
-their API/data calls. Next up: scientific/geospatial datasets (M4b NetCDF/xarray). See
-[ROADMAP.md](ROADMAP.md) for the plan.
+service, a headless-browser render collector (M3b) captures JS-rendered pages plus their
+API/data calls, and dataset diffing spans CSV/JSON, NetCDF/HDF, and zip/xlsx (M4a/M4b).
+Next up: force multipliers (M6 embedding/LLM triage, M7 federated overlay, M8 witness
+cosigning). See [ROADMAP.md](ROADMAP.md) for the plan.
 
 ---
 
