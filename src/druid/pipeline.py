@@ -26,6 +26,7 @@ from .differ.termwatch import term_watch
 from .ledger.core import Ledger
 from .models import DiffRecord, DiffType, Observation
 from .store import ContentAddressedStore
+from .witness import Witness
 
 
 def _utc_now() -> str:
@@ -197,6 +198,34 @@ class Druid:
             (self.data_dir / "ledger" / f"{anchorer.name}-root.pem").write_text(root, encoding="utf-8")
         return {"tsa": anchorer.name, "anchored_hash": digest.hex(), "token_bytes": len(token)}
 
+    def _cosignatures_dir(self) -> Path:
+        return self.data_dir / "ledger" / "cosignatures"
+
+    def cosign(self, witness: Witness) -> dict:
+        """Have `witness` co-sign the current checkpoint and store the cosignature (M8).
+
+        Like anchoring, cosign *after* logging: the cosignature covers the current
+        checkpoint, so a bundle for a leaf carries it only while that checkpoint matches.
+        Cosignatures are keyed by the checkpoint digest; one per witness name (latest wins).
+        """
+        checkpoint = self.log.signed_checkpoint()
+        line = self.log.cosign(witness.name, witness.seed_hex)
+        digest = anchored_hash(checkpoint).hex()
+        cdir = self._cosignatures_dir()
+        cdir.mkdir(parents=True, exist_ok=True)
+        path = cdir / f"{digest}.txt"
+        lines = path.read_text(encoding="utf-8").splitlines() if path.exists() else []
+        lines = [entry for entry in lines if not entry.startswith(f"— {witness.name} ")]
+        lines.append(line)
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        return {"witness": witness.name, "checkpoint_hash": digest, "cosignatures": len(lines)}
+
+    def _cosignatures_for(self, checkpoint: str) -> list[str]:
+        path = self._cosignatures_dir() / f"{anchored_hash(checkpoint).hex()}.txt"
+        if not path.exists():
+            return []
+        return [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
     def _anchors_for(self, checkpoint: str) -> list[dict]:
         digest = anchored_hash(checkpoint).hex()
         adir = self._anchors_dir()
@@ -258,4 +287,5 @@ class Druid:
             "checkpoint": incl["checkpoint"],
             "pubkey_hex": self.log.public_key_hex,
             "anchors": self._anchors_for(incl["checkpoint"]),
+            "cosignatures": self._cosignatures_for(incl["checkpoint"]),
         }

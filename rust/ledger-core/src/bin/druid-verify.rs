@@ -148,10 +148,11 @@ fn run() -> i32 {
             }
         }
         Some("bundle") => {
-            // druid-verify bundle <file.json> [--root <tsa_root.pem>]...
-            // Verify a downloaded proof bundle offline; pinned TSA roots verify any anchors.
+            // druid-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]
+            // Verify a downloaded proof bundle offline; pinned TSA roots verify any anchors,
+            // pinned witness keys + a quorum require C2SP cosignatures (M8).
             let Some(path) = args.get(1).filter(|a| !a.starts_with("--")) else {
-                eprintln!("usage: druid-verify bundle <file.json> [--root <tsa_root.pem>]...");
+                eprintln!("usage: druid-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]");
                 return 2;
             };
             // Ship the independent third-party TSA roots we trust by default (M2b-2);
@@ -160,19 +161,45 @@ fn run() -> i32 {
                 include_str!("../../roots/digicert_g4.crt").to_string(),
                 include_str!("../../roots/freetsa.crt").to_string(),
             ];
+            let mut witnesses: Vec<(String, ledger_core::VerifyingKey)> = Vec::new();
+            let mut quorum: usize = 0;
             let mut i = 2;
             while i < args.len() {
-                if args[i] == "--root" {
-                    match args.get(i + 1).map(std::fs::read_to_string) {
-                        Some(Ok(pem)) => roots.push(pem),
+                match args[i].as_str() {
+                    "--root" => match args.get(i + 1).map(std::fs::read_to_string) {
+                        Some(Ok(pem)) => {
+                            roots.push(pem);
+                            i += 2;
+                        }
                         _ => {
                             eprintln!("--root needs a readable PEM file");
                             return 2;
                         }
+                    },
+                    "--witness" => {
+                        let Some((name, hex)) = args.get(i + 1).and_then(|s| s.split_once(':'))
+                        else {
+                            eprintln!("--witness needs name:pubkeyhex");
+                            return 2;
+                        };
+                        match ledger_core::vk_from_hex(hex) {
+                            Ok(vk) => witnesses.push((name.to_string(), vk)),
+                            Err(e) => {
+                                eprintln!("bad witness key: {e}");
+                                return 2;
+                            }
+                        }
+                        i += 2;
                     }
-                    i += 2;
-                } else {
-                    i += 1;
+                    "--quorum" => {
+                        let Some(k) = args.get(i + 1).and_then(|s| s.parse::<usize>().ok()) else {
+                            eprintln!("--quorum needs an integer");
+                            return 2;
+                        };
+                        quorum = k;
+                        i += 2;
+                    }
+                    _ => i += 1,
                 }
             }
             let json = match std::fs::read_to_string(path) {
@@ -182,7 +209,7 @@ fn run() -> i32 {
                     return 1;
                 }
             };
-            match verify_bundle(&json, &roots) {
+            match verify_bundle(&json, &roots, &witnesses, quorum) {
                 Ok(msg) => {
                     println!("VALID {msg}");
                     0

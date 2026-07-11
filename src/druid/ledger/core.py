@@ -196,6 +196,21 @@ class Ledger:
         """The current signed checkpoint (a C2SP signed note)."""
         return (self.dir / "checkpoint").read_text(encoding="utf-8")
 
+    def cosign(self, name: str, seed_hex: str) -> str:
+        """Produce a C2SP witness cosignature line for the current checkpoint (M8).
+
+        Delegates to the Rust core so the exact tlog-cosignature format lives in one
+        audited place. Returns the `— name base64(...)` cosignature line.
+        """
+        result = subprocess.run(
+            [str(find_binary("druid-ledger")), "cosign", "--dir", str(self.dir), "--name", name, "--key-hex", seed_hex],
+            capture_output=True,
+            encoding="utf-8",
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"druid-ledger cosign failed: {result.stderr.strip()}")
+        return result.stdout.strip()
+
     @property
     def public_key_hex(self) -> str:
         path = self.dir / "key.json"

@@ -190,13 +190,24 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
   `ejscreen.epa.gov/mapper` (Wayback-only) got no badge; the `/overlay` page renders both
   with the bundle link resolving to a valid `druid.proofbundle/v1`.)_
 
-- [ ] **M8 — Multi-party witnesses.** C2SP `tlog-cosignature`: independent witnesses
-  co-sign checkpoints; bundles carry cosignatures; the verifier requires a quorum.
+- [x] **M8 — Multi-party witnesses.** _Confirmed 2026-07-10._ C2SP `tlog-cosignature`
+  (`rust/…/cosignature.rs`, algorithm 0x04, `keyID || timestamp || sig` over
+  `cosignature/v1\ntime T\n<note body>`) implemented on the same audited Ed25519 primitive
+  as the log's signed note — no bespoke crypto. Independent witnesses (`witness.py`, own
+  keys) co-sign the checkpoint via `druid cosign`; bundles carry a `cosignatures` array
+  (ADR-0006 — separate from the checkpoint so anchoring stays intact); `druid-verify
+  bundle --witness name:hex --quorum K` requires K distinct pinned witnesses.
   **Test:** with a 2-of-3 witness set, a bundle missing a quorum of cosignatures is
-  rejected; a complete one validates.
+  rejected; a complete one validates. _(Passes offline + live: `--quorum 2` on a
+  2-cosignature bundle → `VALID … 2/2 witness cosignature(s) verified`; `--quorum 3` →
+  `INVALID witness quorum not met`; an unpinned witness's cosignature does not count.)_
 
 ---
 
 **North star:** A skeptical third party can verify, offline and trusting neither the
 government nor Druid, exactly what a source said and when — and Druid flags the
 specific meaningful change, classified and alertable.
+
+**Status: the roadmap is complete.** Every milestone M0–M8 is built and confirmed; only
+**M2b-3** (OpenTimestamps) remains deliberately deferred (its offline time bound needs a
+carried Bitcoin block header — a distinct anchor type, valuable but not on the spine).

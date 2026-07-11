@@ -252,6 +252,24 @@ def cmd_notify(args: argparse.Namespace) -> int:
     return 1 if failed and not sent else 0
 
 
+def cmd_cosign(args: argparse.Namespace) -> int:
+    from .witness import load_or_create_witness
+
+    druid = _build(args)
+    if not druid.log.entries():
+        print("nothing to cosign — run `druid observe <target>` first")
+        return 1
+    witness = load_or_create_witness(args.key_file, args.name)
+    try:
+        info = druid.cosign(witness)
+    except Exception as error:
+        print(f"cosign failed: {error}")
+        return 1
+    print(f"witness {witness.name} cosigned checkpoint {info['checkpoint_hash'][:16]} ({info['cosignatures']} total)")
+    print(f"  pin it when verifying: --witness {witness.pin()}")
+    return 0
+
+
 def cmd_verify_bundle(args: argparse.Namespace) -> int:
     try:
         verifier = find_binary("druid-verify")
@@ -261,6 +279,10 @@ def cmd_verify_bundle(args: argparse.Namespace) -> int:
     cmd = [str(verifier), "bundle", str(args.path)]
     for root in args.root or []:
         cmd += ["--root", str(root)]
+    for witness in args.witness or []:
+        cmd += ["--witness", witness]
+    if args.quorum:
+        cmd += ["--quorum", str(args.quorum)]
     result = subprocess.run(cmd, capture_output=True, encoding="utf-8")
     print((result.stdout or result.stderr).strip())
     return 0 if result.returncode == 0 else 1
@@ -287,9 +309,14 @@ def main(argv: list[str] | None = None) -> int:
     bundle.add_argument("target_id")
     bundle.add_argument("--index", type=int, default=None, help="ledger index of a specific observation leaf")
     bundle.add_argument("-o", "--output", type=Path, default=None, help="write the bundle to a file")
+    cosign = sub.add_parser("cosign", help="have a witness co-sign the current checkpoint (M8)")
+    cosign.add_argument("--name", required=True, help="witness name (a stable identifier)")
+    cosign.add_argument("--key-file", type=Path, required=True, help="witness key file (created if absent)")
     verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
     verify_bundle.add_argument("path", type=Path)
     verify_bundle.add_argument("--root", type=Path, action="append", help="pinned TSA root PEM (repeatable) to verify anchors")
+    verify_bundle.add_argument("--witness", action="append", help="pinned witness name:pubkeyhex (repeatable, M8)")
+    verify_bundle.add_argument("--quorum", type=int, default=0, help="required number of witness cosignatures (M8)")
     triage = sub.add_parser("triage", help="draft a plain-language reviewer summary of a reworded change (L5)")
     triage.add_argument("target_id")
     triage.add_argument("--model", default="claude-opus-4-8", help="Claude model for the summary")
@@ -317,6 +344,7 @@ def main(argv: list[str] | None = None) -> int:
         "anchor": cmd_anchor,
         "bundle": cmd_bundle,
         "verify-bundle": cmd_verify_bundle,
+        "cosign": cmd_cosign,
         "triage": cmd_triage,
         "overlay": cmd_overlay,
         "tiles": cmd_tiles,

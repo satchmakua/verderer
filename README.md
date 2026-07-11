@@ -12,18 +12,17 @@ ecosystem (EDGI, PEDP, End-of-Term, Data Rescue Project) — adding the two thin
 them treat as primary: **provable observation integrity** and **classified manipulation
 detection**.
 
-**Status:** **the public ship (M0–M5) is complete and confirmed** — a provable trust
-spine (Rust Merkle log, C2SP checkpoints, RFC 3161 anchors from independent TSAs),
-four-layer change detection (terms, regulatory numbers, dataset schema/distribution),
-and a public product: a browsable Astro record with RSS feeds, webhook/email alerts,
-search, and in-browser (WASM) offline proof verification. The log itself is published as C2SP
-tile files (M2c), so verifiers can fetch tiles and recompute proofs with no live
-service, a headless-browser render collector (M3b) captures JS-rendered pages plus their
-API/data calls, dataset diffing spans CSV/JSON, NetCDF/HDF, and zip/xlsx (M4a/M4b),
-reviewer-aid layers (M6) rank reworded passages and draft plain-language summaries, and a
-federated overlay (M7) cross-references third-party archives (Wayback CDX) with Druid's
-attested record — badging what carries a proof. Next up: M8 (witness cosigning). See
-[ROADMAP.md](ROADMAP.md) for the plan.
+**Status:** **the roadmap is complete — every milestone M0–M8 is built and confirmed.** A
+provable trust spine: a Rust Merkle log, C2SP signed checkpoints published as tile files
+(M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from independent
+TSAs (M2b), and multi-party **witness cosignatures** with quorum verification (M8). Change
+detection spans five layers over static pages, JS-rendered tools (M3b render collector), and
+scientific/tabular datasets — CSV/JSON, NetCDF/HDF, zip/xlsx (M4a/M4b) — plus reviewer-aid
+triage that ranks reworded passages and drafts plain-language summaries (M6). A federated
+overlay (M7) cross-references third-party archives (Wayback CDX) with Druid's attested
+record, badging what carries a proof. The public product: a browsable Astro record with RSS,
+webhook/email alerts, search, and in-browser (WASM) offline proof verification. Only
+OpenTimestamps (M2b-3) is deliberately deferred. See [ROADMAP.md](ROADMAP.md).
 
 ---
 

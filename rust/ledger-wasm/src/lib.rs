@@ -15,7 +15,10 @@ pub fn verify_bundle(json: &str) -> String {
         include_str!("../../ledger-core/roots/digicert_g4.crt").to_string(),
         include_str!("../../ledger-core/roots/freetsa.crt").to_string(),
     ];
-    match ledger_core::verify_bundle(json, &roots) {
+    // The browser verifier proves inclusion + anchors; it pins no witness keys, so it
+    // reports (doesn't require) any cosignatures — quorum enforcement is a native/service
+    // policy via `druid-verify --witness --quorum`.
+    match ledger_core::verify_bundle(json, &roots, &[], 0) {
         Ok(message) => format!("VALID {message}"),
         Err(error) => format!("INVALID {error}"),
     }

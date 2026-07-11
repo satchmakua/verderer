@@ -6,6 +6,7 @@
 //!   druid-ledger checkpoint  --dir D            -> the signed checkpoint text
 //!   druid-ledger pubkey      --dir D            -> the log public key (hex)
 //!   druid-ledger tiles       --dir D            -> (re)publish all C2SP tile files (M2c)
+//!   druid-ledger cosign      --dir D --name W --key-hex S -> a witness cosignature line (M8)
 
 use std::io::Read;
 
@@ -117,6 +118,34 @@ fn run() -> i32 {
                 1
             }
         },
+        "cosign" => {
+            let (Some(name), Some(key_hex)) = (opt(&args, "--name"), opt(&args, "--key-hex"))
+            else {
+                eprintln!("--name W and --key-hex S are required");
+                return 2;
+            };
+            let checkpoint = match ledger.signed_checkpoint() {
+                Ok(c) => c,
+                Err(e) => {
+                    eprintln!("{e}");
+                    return 1;
+                }
+            };
+            let ts = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map(|d| d.as_secs())
+                .unwrap_or(0);
+            match ledger_core::cosign_checkpoint(&checkpoint, &name, &key_hex, ts) {
+                Ok(line) => {
+                    println!("{line}");
+                    0
+                }
+                Err(e) => {
+                    eprintln!("{e}");
+                    1
+                }
+            }
+        }
         "tiles" => match ledger.write_tiles(0, ledger.size()) {
             Ok(count) => {
                 println!(

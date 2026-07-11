@@ -13,9 +13,12 @@
 //! Heuristic-free by construction: this crate deals only in bytes, hashes, and
 //! signatures.
 
+mod cosignature;
 mod note;
 mod rfc3161;
 
+pub use cosignature::{cosig_key_id, cosign_line, verify_cosign_line};
+pub use ed25519_dalek::VerifyingKey;
 pub use note::{key_id, sign_note, verify_note, NoteError};
 pub use rfc3161::{verify_rfc3161_token, AnchorInfo, ERR_UNTRUSTED_ROOT};
 
@@ -24,7 +27,7 @@ use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::PathBuf;
 
 use base64::Engine;
-use ed25519_dalek::{SigningKey, VerifyingKey};
+use ed25519_dalek::SigningKey;
 use sha2::{Digest, Sha256};
 use tlog_tiles::{
     check_record, prove_record, prove_tree, record_hash, stored_hash_index, stored_hashes,
@@ -54,13 +57,34 @@ fn multihash_sha256(data: &[u8]) -> String {
     format!("1220{}", hex::encode(Sha256::digest(data)))
 }
 
-fn vk_from_hex(h: &str) -> Result<VerifyingKey, String> {
+/// Parse a hex-encoded Ed25519 public key (used to pin the log key and witness keys).
+pub fn vk_from_hex(h: &str) -> Result<VerifyingKey, String> {
     let bytes = hex::decode(h).map_err(|e| e.to_string())?;
     let arr: [u8; 32] = bytes
         .as_slice()
         .try_into()
         .map_err(|_| "bad public key length")?;
     VerifyingKey::from_bytes(&arr).map_err(|e| e.to_string())
+}
+
+/// Produce a C2SP tlog-cosignature line for a checkpoint (M8 witness tooling). `seed_hex`
+/// is the witness's 32-byte Ed25519 seed; `timestamp` is Unix seconds.
+pub fn cosign_checkpoint(
+    checkpoint: &str,
+    name: &str,
+    seed_hex: &str,
+    timestamp: u64,
+) -> Result<String, String> {
+    let sep = checkpoint.find("\n\n").ok_or("malformed checkpoint")?;
+    let note_body = &checkpoint[..=sep];
+    let bytes = hex::decode(seed_hex).map_err(|e| e.to_string())?;
+    let seed: [u8; 32] = bytes.as_slice().try_into().map_err(|_| "bad key length")?;
+    Ok(cosign_line(
+        note_body,
+        name,
+        &SigningKey::from_bytes(&seed),
+        timestamp,
+    ))
 }
 
 /// Parse a checkpoint body (`origin\nsize\nbase64(root)\n`) into its parts. We parse
@@ -515,7 +539,16 @@ fn parse_proof(value: &serde_json::Value) -> Vec<Hash> {
 /// pins). Aggregation follows the C2SP witness model (ADR-0005): an internally-consistent
 /// anchor whose TSA root isn't pinned is reported "present but not verified" and claims
 /// no time bound; any other token failure is tamper-evidence and rejects the bundle.
-pub fn verify_bundle(json: &str, roots_pem: &[String]) -> Result<String, String> {
+///
+/// `witnesses` are pinned C2SP tlog-cosignature keys (name, public key); when `quorum > 0`
+/// the bundle's `cosignatures` must include valid cosignatures from at least `quorum`
+/// distinct pinned witnesses over this checkpoint, or the bundle is rejected (M8).
+pub fn verify_bundle(
+    json: &str,
+    roots_pem: &[String],
+    witnesses: &[(String, ed25519_dalek::VerifyingKey)],
+    quorum: usize,
+) -> Result<String, String> {
     let v: serde_json::Value = serde_json::from_str(json).map_err(|e| e.to_string())?;
     if v["schema"] != "druid.proofbundle/v1" {
         return Err("unexpected bundle schema".into());
@@ -619,9 +652,41 @@ pub fn verify_bundle(json: &str, roots_pem: &[String]) -> Result<String, String>
         ));
     }
 
+    // Witness cosignatures (M8): each is a C2SP cosignature line over the checkpoint's note
+    // body. Count distinct pinned witnesses that validly cosigned; require a quorum.
+    let sep = checkpoint.find("\n\n").ok_or("malformed checkpoint")?;
+    let note_body = &checkpoint[..=sep]; // note text incl. its trailing newline
+    let cosigs = v["cosignatures"].as_array().unwrap_or(&empty);
+    let mut cosigned: std::collections::BTreeSet<&str> = std::collections::BTreeSet::new();
+    for cosig in cosigs {
+        let line = cosig.as_str().ok_or("cosignature must be a string line")?;
+        for (name, wpub) in witnesses {
+            if verify_cosign_line(note_body, line, name, wpub).is_ok() {
+                cosigned.insert(name.as_str());
+                break;
+            }
+        }
+    }
+    if cosigned.len() < quorum {
+        return Err(format!(
+            "witness quorum not met: {} of {quorum} required cosignature(s) from pinned witnesses",
+            cosigned.len()
+        ));
+    }
+    let cosig_note = if quorum > 0 {
+        format!(
+            "; {}/{quorum} witness cosignature(s) verified",
+            cosigned.len()
+        )
+    } else if !cosigned.is_empty() {
+        format!("; {} witness cosignature(s) present", cosigned.len())
+    } else {
+        String::new()
+    };
+
     let url = observation["url"].as_str().unwrap_or("?");
     Ok(format!(
-        "bundle OK: {} artifact(s) match; observation of {url} included offline{anchor_note}",
+        "bundle OK: {} artifact(s) match; observation of {url} included offline{anchor_note}{cosig_note}",
         artifacts.len()
     ))
 }
