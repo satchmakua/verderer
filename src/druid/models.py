@@ -29,7 +29,8 @@ class Observation:
     raw_bytes_hash: str  # multihash of the response body
     response_headers_hash: str  # multihash of canonically-serialised headers
     schema: str = "druid.observation/v1"
-    rendered_dom_hash: str | None = None
+    rendered_dom_hash: str | None = None  # render collector: the post-JS DOM
+    captured_requests_hash: str | None = None  # render collector: manifest of the page's own API/data calls
     tls_cert_chain_hash: str | None = None
     warc_record_hash: str | None = None
 

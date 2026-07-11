@@ -15,6 +15,7 @@ from pathlib import Path
 
 from .anchors import Anchorer, anchored_hash
 from .collectors.base import Collector
+from .collectors.render import RenderCollector
 from .collectors.static import StaticCollector
 from .config import Target
 from .differ.dataset import dataset_diff
@@ -45,13 +46,31 @@ class Druid:
         targets: dict[str, Target],
         terms: list[str],
         collector: Collector | None = None,
+        collectors: dict[str, Collector] | None = None,
     ) -> None:
         self.data_dir = Path(data_dir)
         self.store = ContentAddressedStore(self.data_dir / "blobs")
         self.log = Ledger(self.data_dir / "ledger")
         self.targets = targets
         self.terms = terms
-        self.collector: Collector = collector or StaticCollector()
+        # `collector` forces one collector for every target (tests, single-collector runs);
+        # otherwise dispatch on `target.collector` against a registry keyed by type name.
+        self._forced_collector = collector
+        self.collectors: dict[str, Collector] = collectors or {
+            "static": StaticCollector(),
+            "render": RenderCollector(),
+        }
+
+    def _collector_for(self, target: Target) -> Collector:
+        if self._forced_collector is not None:
+            return self._forced_collector
+        try:
+            return self.collectors[target.collector]
+        except KeyError:
+            raise ValueError(
+                f"target {target.id} wants collector {target.collector!r}, "
+                f"which is not registered ({sorted(self.collectors)})"
+            ) from None
 
     def _latest_observation_for(self, target_id: str) -> Observation | None:
         latest: dict | None = None
@@ -64,8 +83,14 @@ class Druid:
     def observe(self, target_id: str) -> ObserveResult:
         target = self.targets[target_id]
         previous = self._latest_observation_for(target_id)
-        observation, body = self.collector.collect(target)
+        collected = self._collector_for(target).collect(target)
+        observation, body = collected.observation, collected.body
         self.store.put(body)
+        # Store any side artifacts (a render collector's captured API/data calls). They
+        # are already referenced by hash in the observation record; storing them makes
+        # those references resolvable and independently verifiable.
+        for artifact in collected.side_artifacts:
+            self.store.put(artifact)
 
         diffs: list[DiffRecord] = []
         if previous is not None and previous.raw_bytes_hash != observation.raw_bytes_hash:

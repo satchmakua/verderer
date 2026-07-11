@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from ..config import Target
 from ..hashing import multihash_sha256
 from ..models import Observation
-from .base import Fetcher, FetchResult
+from .base import Collected, Fetcher, FetchResult
 
 USER_AGENT = "DruidWatchdog/0.0 (+https://github.com/satchmakua/Druid) polite-archival-collector"
 
@@ -42,7 +42,7 @@ class StaticCollector:
     def __init__(self, fetcher: Fetcher = httpx_fetcher) -> None:
         self._fetch = fetcher
 
-    def collect(self, target: Target) -> tuple[Observation, bytes]:
+    def collect(self, target: Target) -> Collected:
         result = self._fetch(target.url)
         headers_canon = json.dumps(dict(sorted(result.headers.items())), separators=(",", ":")).encode()
         observation = Observation(
@@ -55,4 +55,4 @@ class StaticCollector:
             raw_bytes_hash=multihash_sha256(result.body),
             response_headers_hash=multihash_sha256(headers_canon),
         )
-        return observation, result.body
+        return Collected(observation=observation, body=result.body)

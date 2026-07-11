@@ -32,3 +32,14 @@ url = "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_sp
 kind = "dataset"
 collector = "static"
 criteria = "Congressionally-mandated dataset; a silent schema edit or re-baselining is high-signal."
+
+# A JavaScript tool (collector = "render" drives headless Chromium — needs the `render`
+# extra + `playwright install chromium`). The static shell is nearly empty; the map and
+# its screening scores load via the page's own API/data calls, which the render collector
+# captures alongside the post-JS DOM.
+[[target]]
+id = "epa-ejscreen"
+title = "EPA EJScreen environmental-justice screening tool"
+url = "https://ejscreen.epa.gov/mapper/"
+collector = "render"
+criteria = "JS-rendered EJ screening tool; prior removal history — the map + scores arrive via API/data calls."

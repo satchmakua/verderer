@@ -18,7 +18,8 @@ four-layer change detection (terms, regulatory numbers, dataset schema/distribut
 and a public product: a browsable Astro record with RSS feeds, webhook/email alerts,
 search, and in-browser (WASM) offline proof verification. The log itself is published as C2SP
 tile files (M2c), so verifiers can fetch tiles and recompute proofs with no live
-service. Next up: detection breadth (M3b render collector, M4b NetCDF/xarray). See
+service, and a headless-browser render collector (M3b) captures JS-rendered pages plus
+their API/data calls. Next up: scientific/geospatial datasets (M4b NetCDF/xarray). See
 [ROADMAP.md](ROADMAP.md) for the plan.
 
 ---
@@ -101,11 +102,12 @@ neither the source nor Druid. Runtime state lives in `./druid-data/` (gitignored
 
 ## Tech stack
 
-Python 3.11+ pipeline — `httpx`, `BeautifulSoup`, `cryptography` — with a
-content-addressed store and an append-only signed ledger. The M1 trust kernel adds a
-**Rust** tile-based Merkle log (C2SP tlog-tiles) + a WASM offline verifier; later
-milestones add Playwright/`xarray` collectors, FastAPI + SQLite/Litestream, and an Astro
-public record on Cloudflare R2/Pages. See [DESIGN.md §3](DESIGN.md).
+Python 3.11+ pipeline — `httpx`, `BeautifulSoup`, `cryptography`, `pandas`, and (optional)
+`playwright` for the render collector — with a content-addressed store and an append-only
+signed ledger. The M1 trust kernel adds a **Rust** tile-based Merkle log (C2SP tlog-tiles)
++ a WASM offline verifier; later milestones add an `xarray` collector, FastAPI +
+SQLite/Litestream, and an Astro public record on Cloudflare R2/Pages. See
+[DESIGN.md §3](DESIGN.md).
 
 ## License
 

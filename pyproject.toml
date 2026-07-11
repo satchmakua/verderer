@@ -24,6 +24,11 @@ dev = [
   "ruff>=0.6",
   "mypy>=1.11",
 ]
+# The render collector (M3b) drives headless Chromium. Optional — the core install and
+# the test suite stay light; after installing, run `playwright install chromium`.
+render = [
+  "playwright>=1.44",
+]
 
 [project.scripts]
 druid = "druid.cli:main"

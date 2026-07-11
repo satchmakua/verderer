@@ -96,9 +96,17 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
     **Test:** a page whose "reporting threshold is 10 ppb" becomes "15 ppb" →
     `NumericThresholdChange [High] {from: 10 ppb, to: 15 ppb}`; a page changing years/
     counts emits nothing. `pytest` green.
-  - [ ] **M3b — Render collector.** A Playwright headless collector capturing the
-    rendered DOM + the page's underlying API/data calls (for JS tools).
-    **Test:** a JS-rendered fixture is observed with its data calls captured.
+  - [x] **M3b — Render collector.** _Confirmed 2026-07-10._ A Playwright headless
+    collector (`collectors/render.py`, behind an injectable `RenderEngine` port so tests
+    need no browser) captures the post-JS **rendered DOM** as the attested artifact and
+    the page's own **API/data calls** (XHR/fetch) as content-addressed side artifacts
+    referenced by a canonical request manifest (`captured_requests_hash`). The pipeline
+    dispatches on `target.collector`; detection runs on the rendered content. Playwright
+    is an optional `render` extra.
+    **Test:** a JS-rendered fixture is observed with its data calls captured. _(Passes:
+    a fake engine offline + a live localhost JS page rendered by real headless Chromium →
+    the fetched `/api/scores.json` body is captured and retrievable by hash, the mutated
+    DOM is attested and tile-verifiable.)_
 
 - **M4 — Dataset diffing (split).**
   - [x] **M4a — Tabular (CSV/JSON) schema + distributional diff.** _Confirmed
