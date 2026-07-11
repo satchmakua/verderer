@@ -19,6 +19,7 @@ from .collectors.render import RenderCollector
 from .collectors.static import StaticCollector
 from .config import Target
 from .differ.dataset import dataset_diff
+from .differ.embedding import Embedder, embedding_triage
 from .differ.normalize import normalize_bytes
 from .differ.numeric import numeric_watch
 from .differ.termwatch import term_watch
@@ -47,12 +48,17 @@ class Druid:
         terms: list[str],
         collector: Collector | None = None,
         collectors: dict[str, Collector] | None = None,
+        embedder: Embedder | None = None,
     ) -> None:
         self.data_dir = Path(data_dir)
         self.store = ContentAddressedStore(self.data_dir / "blobs")
         self.log = Ledger(self.data_dir / "ledger")
         self.targets = targets
         self.terms = terms
+        # Optional L3 (embedding triage): when provided, it interprets a text change that
+        # L1/L2 didn't explain; when absent, the pipeline keeps the coarse ContentEdit
+        # fallback. A best-effort reviewer signal, never in a leaf.
+        self.embedder = embedder
         # `collector` forces one collector for every target (tests, single-collector runs);
         # otherwise dispatch on `target.collector` against a registry keyed by type name.
         self._forced_collector = collector
@@ -137,18 +143,34 @@ class Druid:
             to_hash=observation.raw_bytes_hash,
         )
         if not diffs and prev_text != curr_text:
-            diffs.append(
-                DiffRecord(
+            if self.embedder is not None:
+                # L3 ranks reworded passages for review; it inspects only added/reworded
+                # passages, so it can be silent on a pure deletion or a change confined to
+                # very short sentences.
+                diffs += embedding_triage(
+                    prev_text,
+                    curr_text,
+                    self.embedder,
                     target_id=observation.target_id,
-                    from_observation_hash=previous.raw_bytes_hash,
-                    to_observation_hash=observation.raw_bytes_hash,
                     detected_at=now,
-                    diff_type=DiffType.ContentEdit,
-                    severity="Medium",
-                    layer="L0-normalize",
-                    evidence={"note": "normalised content changed; no watched term moved"},
+                    from_hash=previous.raw_bytes_hash,
+                    to_hash=observation.raw_bytes_hash,
                 )
-            )
+            if not diffs:
+                # Floor: a normalised text change that no layer itemised must still be
+                # flagged, never dropped — enabling L3 must not lose signal L0 would catch.
+                diffs.append(
+                    DiffRecord(
+                        target_id=observation.target_id,
+                        from_observation_hash=previous.raw_bytes_hash,
+                        to_observation_hash=observation.raw_bytes_hash,
+                        detected_at=now,
+                        diff_type=DiffType.ContentEdit,
+                        severity="Medium",
+                        layer="L0-normalize",
+                        evidence={"note": "normalised content changed; no watched term moved"},
+                    )
+                )
         return diffs
 
     def timeline(self) -> list[dict]:

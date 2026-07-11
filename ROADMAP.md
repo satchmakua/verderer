@@ -162,10 +162,18 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 
 ## Phase 4 — Force multipliers
 
-- [ ] **M6 — Embedding triage + LLM summaries (reviewer aid).** L3 embeddings rank
-  reworded passages; L5 Claude summaries for reviewers only.
+- [x] **M6 — Embedding triage + LLM summaries (reviewer aid).** _Confirmed 2026-07-10._
+  **L3** (`differ/embedding.py`, injectable `Embedder`) segments a text change L1/L2
+  couldn't explain, embeds each changed passage, and ranks it against its closest prior
+  passage: a semantically distant rewrite → `ContentEdit` for review, a near-duplicate
+  stays quiet. **L5** (`triage.py`, injectable `Summarizer`, `druid triage`) drafts a
+  plain-language Claude summary of a reworded passage into a **review sidecar**
+  (`druid-data/review/`), clearly labelled best-effort and **never** in a ledger leaf.
+  Both are an optional `triage` extra (sentence-transformers / anthropic).
   **Test:** a reworded-but-not-term-flagged edit is surfaced for review with a
-  plain-language summary; the trust core is untouched.
+  plain-language summary; the trust core is untouched. _(Passes: L3 flags the reworded
+  passage as `ContentEdit [L3-embedding]`; the summary lands in the sidecar with the
+  ledger entry count unchanged and `verify` still VALID.)_
 
 - [ ] **M7 — Federated overlay index + verification badging.** Harvest Wayback CDX /
   OSF / Dataverse / Perma.cc / PEDP metadata into unified search; badge

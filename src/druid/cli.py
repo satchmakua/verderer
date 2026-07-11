@@ -27,11 +27,11 @@ def _repo_data_dir() -> Path:
     return Path(__file__).resolve().parents[2] / "data"
 
 
-def _build(args: argparse.Namespace) -> Druid:
+def _build(args: argparse.Namespace, *, embedder: object = None) -> Druid:
     data = _repo_data_dir()
     targets = load_targets(args.targets or data / "targets.toml")
     terms = load_terms(args.terms or data / "terms.toml")
-    return Druid(args.data_dir, targets=targets, terms=terms)
+    return Druid(args.data_dir, targets=targets, terms=terms, embedder=embedder)  # type: ignore[arg-type]
 
 
 def cmd_targets(args: argparse.Namespace) -> int:
@@ -42,7 +42,12 @@ def cmd_targets(args: argparse.Namespace) -> int:
 
 
 def cmd_observe(args: argparse.Namespace) -> int:
-    druid = _build(args)
+    embedder = None
+    if getattr(args, "embed", False):
+        from .differ.embedding import sentence_transformer_embedder
+
+        embedder = sentence_transformer_embedder()  # heavy: loads the model (triage extra)
+    druid = _build(args, embedder=embedder)
     if args.target_id not in druid.targets:
         print(f"unknown target: {args.target_id} (try `druid targets`)")
         return 2
@@ -139,6 +144,29 @@ def cmd_tiles(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_triage(args: argparse.Namespace) -> int:
+    from .triage import claude_summarizer, summarize_event
+
+    druid = _build(args)
+    if args.target_id not in druid.targets:
+        print(f"unknown target: {args.target_id} (try `druid targets`)")
+        return 2
+    try:
+        review = summarize_event(druid, args.target_id, claude_summarizer(args.model))
+    except Exception as error:  # missing anthropic / no credentials / network
+        print(f"triage failed: {error}")
+        print("  (needs the `triage` extra + Claude credentials; this makes a billable API call)")
+        return 1
+    if review is None:
+        print(f"no reworded (L3 ContentEdit) change to summarize for {args.target_id}")
+        print("  observe with `--embed` across a reworded change first")
+        return 0
+    print(f"reviewer summary for {args.target_id} (best-effort, NOT attested):")
+    print(f"  {review['summary']}")
+    print(f"  saved to {args.data_dir / 'review'}/  ({review['disclaimer']})")
+    return 0
+
+
 def cmd_export(args: argparse.Namespace) -> int:
     from .web.export import export_site
 
@@ -223,6 +251,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("targets", help="list curated targets")
     observe = sub.add_parser("observe", help="observe one target now")
     observe.add_argument("target_id")
+    observe.add_argument("--embed", action="store_true", help="enable L3 embedding triage (needs the `triage` extra)")
     sub.add_parser("log", help="print the observation / diff timeline")
     sub.add_parser("verify", help="verify the ledger chain and signed head")
     anchor = sub.add_parser("anchor", help="anchor the current checkpoint with independent TSAs")
@@ -237,6 +266,9 @@ def main(argv: list[str] | None = None) -> int:
     verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
     verify_bundle.add_argument("path", type=Path)
     verify_bundle.add_argument("--root", type=Path, action="append", help="pinned TSA root PEM (repeatable) to verify anchors")
+    triage = sub.add_parser("triage", help="draft a plain-language reviewer summary of a reworded change (L5)")
+    triage.add_argument("target_id")
+    triage.add_argument("--model", default="claude-opus-4-8", help="Claude model for the summary")
     sub.add_parser("tiles", help="(re)publish the C2SP tile files for the current ledger")
     export = sub.add_parser("export", help="export the public record (record.json + RSS feeds) for the site")
     export.add_argument("--out", type=Path, default=Path("site-data"), help="output directory")
@@ -257,6 +289,7 @@ def main(argv: list[str] | None = None) -> int:
         "anchor": cmd_anchor,
         "bundle": cmd_bundle,
         "verify-bundle": cmd_verify_bundle,
+        "triage": cmd_triage,
         "tiles": cmd_tiles,
         "export": cmd_export,
         "notify": cmd_notify,

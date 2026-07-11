@@ -38,6 +38,12 @@ science = [
   "h5py>=3.10",
   "openpyxl>=3.1",     # .xlsx
 ]
+# Reviewer triage (M6): L3 embedding similarity + L5 Claude change summaries. Optional and
+# outside the trust core — both are best-effort reviewer aids, never attested.
+triage = [
+  "sentence-transformers>=3",  # L3 embeddings
+  "anthropic>=0.69",           # L5 summaries (billable; needs credentials)
+]
 
 [project.scripts]
 druid = "druid.cli:main"
