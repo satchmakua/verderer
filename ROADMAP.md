@@ -202,12 +202,104 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
   2-cosignature bundle → `VALID … 2/2 witness cosignature(s) verified`; `--quorum 3` →
   `INVALID witness quorum not met`; an unpinned witness's cosignature does not count.)_
 
+## Phase 5 — From capability to a running, faithful watchdog
+
+M0–M8 proved every *capability* in isolation. Phase 5 makes Druid **actually operate** —
+politely, on its own, and interoperably — so it protects real data instead of demoing.
+**No mocks on any production path.** Injected fakes are a *test* device only; every
+milestone here is proven against the real thing (real robots.txt, real WARC, real
+schedule, real network) as well as offline.
+
+- [ ] **M9 — Polite collection layer.** Close the stated hard constraint ("robots-aware,
+  rate-limited") that M0–M8 only half-met. A `politeness.py` layer, injected into the
+  `static` and `render` collectors behind the existing seams (with an injectable clock +
+  robots fetcher so it is fully offline-testable): **robots.txt** fetch/cache/respect per
+  host (honor `Disallow` and `Crawl-delay`), **per-host rate-limiting** with a minimum
+  interval + **exponential backoff with jitter** on transient errors, and **conditional
+  GET** (`ETag`/`If-Modified-Since` → a `304` means *no new observation is logged*). The
+  identifiable UA stays; never fetch an auth-walled or CAPTCHA'd resource.
+  **Test:** a `Disallow`-ed path is not fetched; two rapid fetches to one host are spaced
+  ≥ the min interval (fake clock); a `Crawl-delay` is honored; a `304` yields no new leaf;
+  a transient `503` retries with backoff then succeeds — all offline via injected
+  clock/robots/fetch, plus one live polite fetch of a real target. `pytest` green.
+
+- [ ] **M10 — The scheduler (continuous operation).** The piece that turns a manual demo
+  into a watchdog: `druid run` re-observes the curated set on a **per-target cadence**
+  (interval + jitter), persists per-target schedule state (last run, next due, stored
+  `ETag`), observes only what is *due* through the M9 polite layer, appends any diffs, and
+  **fires the M5c notify pipeline** on each new diff — idempotently, surviving restarts. A
+  `--once` mode for cron/systemd and a long-lived loop for a service; a deployment doc
+  (systemd unit / cron / Docker). This is what makes M5c alerts fire on their own.
+  **Test:** with a fake clock, a due target is re-observed and a changed page produces a
+  diff **and** a notify delivery; a not-yet-due target is skipped; schedule state persists
+  across a restart; `--once` processes exactly the due set; a failed target is retried,
+  not lost. `pytest` green.
+
+- [ ] **M11 — Faithful WARC capture + archive interop.** Make Druid genuinely
+  interoperable with the rescue ecosystem (Wayback / End-of-Term / EDGI), not
+  self-referential. Each observation writes a standards **WARC** record (request +
+  response) via `warcio`; `warc_record_hash` is populated and attested in the observation
+  leaf; the raw artifact is recoverable from the WARC. `druid export` ships the WARCs; the
+  record/overlay link them. Populates the reserved field DESIGN §2/§7 promised.
+  **Test:** an observation produces a valid WARC whose response payload hashes to
+  `raw_bytes_hash`; a warcio-independent reader replays the captured bytes; `warc_record_hash`
+  verifies against the stored WARC; the export includes the WARC. `pytest` green.
+
+## Phase 6 — Depth, precision, and production
+
+- [ ] **M12 — Detection precision.** Cut the misses and false positives found while
+  building the earlier layers. (a) **L2 `pint` cross-unit normalization** — `10 ppb` vs
+  `0.010 ppm` is *not* a change, but a real threshold move across units *is* caught. (b)
+  **Structure-aware diffing** — preserve block structure (headings, lists, and **tables**)
+  through L0 so a single table-cell edit is localized and attributed, not smeared into
+  flat-text noise. (c) **Rendered-DOM noise suppression** — strip nonces / CSRF tokens /
+  timestamps / session ids before diffing a rendered DOM so re-renders don't false-fire.
+  (d) Fix the L4 **index-column** false positive on truncation.
+  **Test:** cross-unit-equal values emit no `NumericThresholdChange`, a real cross-unit
+  move is flagged; a one-cell table change yields a localized diff naming the cell; a page
+  with a rotating nonce yields no diff; a truncated dataset emits no spurious index-column
+  `DistributionalShift`. `pytest` green.
+
+- [ ] **M13 — Consistency gossip + OpenTimestamps (completes the trust core).** Close the
+  last "trust the operator" gaps. (a) **Consistency proofs** surfaced to verifiers: prove
+  that checkpoint A is a prefix of a later checkpoint B — the log never forked, shrank, or
+  rewrote history — via `druid-verify consistency`, with the bundle/site carrying what a
+  client needs to gossip two checkpoints. (b) **M2b-3 — OpenTimestamps**: an OTS proof +
+  the Bitcoin block header needed to bound time **offline** (a distinct `anchors` type),
+  the maximally adversary-resistant "existed no later than" anchor.
+  **Test:** a consistency proof between two real checkpoints validates; a forged history (a
+  changed leaf, or a shorter tree claiming to extend a longer one) is rejected; an OTS
+  anchor validates offline against its carried header; a forged OTS is rejected. `cargo
+  test` + `pytest` green.
+
+- [ ] **M14 — Production deployment & scale.** Make it deployable, multi-party for real,
+  and proven at scale. (a) An **R2/S3 store adapter** behind the existing
+  `ContentAddressedStore` port (dev = filesystem, prod = R2), selected by config. (b) A
+  **read API** (FastAPI over the record/overlay) + a **Cloudflare Pages/Workers deploy**
+  workflow that publishes the site, record, feeds, tiles, bundles, and WARCs, and
+  **submits each checkpoint to ≥2 independent mirrors + the Wayback Machine** (DESIGN §6.3
+  multi-mirror). (c) An independently-deployable **`druid-witness`** service a third party
+  actually runs (polls the checkpoint, verifies consistency, cosigns) — turning M8 from an
+  in-process demo into real multi-party gossip. (d) A **richer curated set** — ≥12
+  justified targets + an expanded term dictionary with published criteria — plus
+  **property-based / fuzz tests** for the differ and verifier and a **scale test** (a
+  100k-leaf log and a large dataset within a stated budget).
+  **Test:** the pipeline runs unchanged against the R2 adapter (integration, creds-gated);
+  the deploy workflow publishes a live site + a checkpoint mirrored to a third party; a
+  **separately-run** witness cosigns and a bundle meets quorum end to end; the
+  differ/verifier survive a fuzz corpus; the 100k-leaf log + large-dataset diff stay within
+  budget. CI green.
+
 ---
 
 **North star:** A skeptical third party can verify, offline and trusting neither the
 government nor Druid, exactly what a source said and when — and Druid flags the
-specific meaningful change, classified and alertable.
+specific meaningful change, classified and alertable — over a curated set that Druid
+**observes continuously, politely, and interoperably**, deployed for real.
 
-**Status: the roadmap is complete.** Every milestone M0–M8 is built and confirmed; only
-**M2b-3** (OpenTimestamps) remains deliberately deferred (its offline time bound needs a
-carried Bitcoin block header — a distinct anchor type, valuable but not on the spine).
+**Status:** the **core roadmap M0–M8 is complete and confirmed** (2026-07-10) — every
+capability is proven. **Phase 5–6 (M9–M14) is the "real tool" arc**: it turns those
+capabilities into a self-running, polite, interoperable, precise, deeply-verifiable, and
+deployed watchdog, filling the gaps M0–M8 deliberately left. **Next up: M9.** Guiding
+rule for this arc — *nothing mocked on a production path; prove every milestone against
+the real thing.*
