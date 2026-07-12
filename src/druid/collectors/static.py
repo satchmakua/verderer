@@ -8,6 +8,7 @@ later milestone.)
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from datetime import UTC, datetime
 
 from ..config import Target
@@ -22,10 +23,14 @@ def _utc_now() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def httpx_fetcher(url: str, *, timeout: float = 30.0) -> FetchResult:
+def httpx_fetcher(url: str, *, timeout: float = 30.0, headers: Mapping[str, str] | None = None) -> FetchResult:
+    """Plain-HTTP GET with our identifiable UA. ``headers`` carries optional conditional-GET
+    validators (``If-None-Match`` / ``If-Modified-Since``) supplied by the politeness layer;
+    a ``304`` response is returned faithfully (an empty body) for that layer to interpret."""
     import httpx  # imported lazily so offline tests never need the dependency
 
-    with httpx.Client(follow_redirects=True, timeout=timeout, headers={"User-Agent": USER_AGENT}) as client:
+    request_headers = {"User-Agent": USER_AGENT, **(dict(headers) if headers else {})}
+    with httpx.Client(follow_redirects=True, timeout=timeout, headers=request_headers) as client:
         response = client.get(url)
         return FetchResult(
             url=str(response.url),

@@ -15,8 +15,8 @@ from pathlib import Path
 
 from .anchors import Anchorer, anchored_hash
 from .collectors.base import Collector
-from .collectors.render import RenderCollector
-from .collectors.static import StaticCollector
+from .collectors.render import RenderCollector, playwright_engine
+from .collectors.static import StaticCollector, httpx_fetcher
 from .config import Target
 from .differ.dataset import dataset_diff
 from .differ.embedding import Embedder, embedding_triage
@@ -25,6 +25,7 @@ from .differ.numeric import numeric_watch
 from .differ.termwatch import term_watch
 from .ledger.core import Ledger
 from .models import DiffRecord, DiffType, Observation
+from .politeness import CollectionSkipped, NotModified, PolitenessPolicy
 from .store import ContentAddressedStore
 from .witness import Witness
 
@@ -35,9 +36,16 @@ def _utc_now() -> str:
 
 @dataclass(frozen=True, slots=True)
 class ObserveResult:
-    observation: Observation
+    """The outcome of one ``observe`` call. ``status`` distinguishes a new attested
+    observation (``observed``) from a polite no-op — ``unchanged`` (a conditional-GET
+    ``304``) or ``skipped`` (robots.txt disallowed the URL). ``observation`` is ``None``
+    for the no-op outcomes (nothing was fetched or logged)."""
+
+    observation: Observation | None
     diffs: list[DiffRecord]
     is_first: bool
+    status: str = "observed"  # "observed" | "unchanged" | "skipped"
+    reason: str = ""
 
 
 class Druid:
@@ -50,6 +58,7 @@ class Druid:
         collector: Collector | None = None,
         collectors: dict[str, Collector] | None = None,
         embedder: Embedder | None = None,
+        politeness: PolitenessPolicy | None = None,
     ) -> None:
         self.data_dir = Path(data_dir)
         self.store = ContentAddressedStore(self.data_dir / "blobs")
@@ -63,10 +72,20 @@ class Druid:
         # `collector` forces one collector for every target (tests, single-collector runs);
         # otherwise dispatch on `target.collector` against a registry keyed by type name.
         self._forced_collector = collector
-        self.collectors: dict[str, Collector] = collectors or {
-            "static": StaticCollector(),
-            "render": RenderCollector(),
-        }
+        self.politeness: PolitenessPolicy | None = politeness
+        if collector is None and collectors is None:
+            # Default (production) collectors are polite by construction (M9): one shared
+            # policy coordinates robots.txt, per-host rate-limiting/backoff, and
+            # conditional GET across the static + render seams, persisting validators under
+            # the data dir. Injected collectors opt in explicitly (or stay bare for tests).
+            if self.politeness is None:
+                self.politeness = PolitenessPolicy(state_path=self.data_dir / "politeness-state.json")
+            self.collectors: dict[str, Collector] = {
+                "static": StaticCollector(fetcher=self.politeness.fetcher(httpx_fetcher)),
+                "render": RenderCollector(engine=self.politeness.engine(playwright_engine)),
+            }
+        else:
+            self.collectors = collectors or {}
 
     def _collector_for(self, target: Target) -> Collector:
         if self._forced_collector is not None:
@@ -90,7 +109,18 @@ class Druid:
     def observe(self, target_id: str) -> ObserveResult:
         target = self.targets[target_id]
         previous = self._latest_observation_for(target_id)
-        collected = self._collector_for(target).collect(target)
+        is_first = previous is None
+        try:
+            collected = self._collector_for(target).collect(target)
+        except NotModified:
+            # Conditional GET said 304: the bytes match the last observation, so there is
+            # nothing new to attest. A polite no-op — no leaf, no diff.
+            return ObserveResult(observation=None, diffs=[], is_first=is_first, status="unchanged")
+        except CollectionSkipped as skip:
+            # robots.txt disallowed this URL for our UA — we never fetched it.
+            return ObserveResult(
+                observation=None, diffs=[], is_first=is_first, status="skipped", reason=str(skip)
+            )
         observation, body = collected.observation, collected.body
         self.store.put(body)
         # Store any side artifacts (a render collector's captured API/data calls). They
@@ -108,7 +138,7 @@ class Druid:
         for diff in diffs:
             self.log.append(diff.to_record())
 
-        return ObserveResult(observation=observation, diffs=diffs, is_first=previous is None)
+        return ObserveResult(observation=observation, diffs=diffs, is_first=is_first, status="observed")
 
     def _diff(
         self, target: Target, previous: Observation, observation: Observation, body: bytes

@@ -56,10 +56,17 @@ def cmd_observe(args: argparse.Namespace) -> int:
     except Exception as error:  # network/parse failures should not crash the CLI
         print(f"observe failed for {args.target_id}: {error}")
         return 1
+    if result.status == "unchanged":
+        print(f"{args.target_id}: unchanged (304 Not Modified) - no new observation logged")
+        return 0
+    if result.status == "skipped":
+        print(f"{args.target_id}: skipped - {result.reason}")
+        return 0
     obs = result.observation
+    assert obs is not None  # status == "observed" always carries an observation
     tag = "first observation" if result.is_first else f"{len(result.diffs)} change(s)"
     print(f"observed {obs.target_id} [{obs.http_status}] {obs.url}")
-    print(f"  content {obs.raw_bytes_hash[:18]}…  at {obs.fetched_at}  ({tag})")
+    print(f"  content {obs.raw_bytes_hash[:18]}...  at {obs.fetched_at}  ({tag})")
     for diff in result.diffs:
         print(f"  ! {diff.diff_type} [{diff.severity}] {diff.evidence}")
     return 0
@@ -74,7 +81,7 @@ def cmd_log(args: argparse.Namespace) -> int:
     for row in rows:
         if row.get("schema") == "druid.observation/v1":
             when, tid = row["fetched_at"], row["target_id"]
-            print(f"OBS  {when}  {tid:22} [{row['http_status']}] {row['raw_bytes_hash'][:14]}…")
+            print(f"OBS  {when}  {tid:22} [{row['http_status']}] {row['raw_bytes_hash'][:14]}...")
         else:
             when, tid = row["detected_at"], row["target_id"]
             print(f"DIFF {when}  {tid:22} {row['diff_type']} [{row['severity']}] {row.get('evidence')}")

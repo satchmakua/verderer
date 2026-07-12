@@ -12,17 +12,21 @@ ecosystem (EDGI, PEDP, End-of-Term, Data Rescue Project) — adding the two thin
 them treat as primary: **provable observation integrity** and **classified manipulation
 detection**.
 
-**Status:** **the roadmap is complete — every milestone M0–M8 is built and confirmed.** A
-provable trust spine: a Rust Merkle log, C2SP signed checkpoints published as tile files
-(M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from independent
-TSAs (M2b), and multi-party **witness cosignatures** with quorum verification (M8). Change
-detection spans five layers over static pages, JS-rendered tools (M3b render collector), and
+**Status:** **the core roadmap M0–M8 is complete and confirmed**, and the Phase 5–6 "real
+tool" arc is underway — **M9 (polite collection) is built and confirmed.** A provable trust
+spine: a Rust Merkle log, C2SP signed checkpoints published as tile files (M2c) so verifiers
+recompute proofs with no live service, RFC 3161 anchors from independent TSAs (M2b), and
+multi-party **witness cosignatures** with quorum verification (M8). Change detection spans
+five layers over static pages, JS-rendered tools (M3b render collector), and
 scientific/tabular datasets — CSV/JSON, NetCDF/HDF, zip/xlsx (M4a/M4b) — plus reviewer-aid
 triage that ranks reworded passages and drafts plain-language summaries (M6). A federated
 overlay (M7) cross-references third-party archives (Wayback CDX) with Druid's attested
 record, badging what carries a proof. The public product: a browsable Astro record with RSS,
-webhook/email alerts, search, and in-browser (WASM) offline proof verification. Only
-OpenTimestamps (M2b-3) is deliberately deferred. See [ROADMAP.md](ROADMAP.md).
+webhook/email alerts, search, and in-browser (WASM) offline proof verification. Collection is
+now **polite by construction** (M9): robots.txt (Disallow + Crawl-delay), per-host
+rate-limiting with backoff, and conditional GET (a `304` logs nothing). Next: M10 (the
+`druid run` scheduler for continuous operation). Only OpenTimestamps (M2b-3) is deliberately
+deferred. See [ROADMAP.md](ROADMAP.md).
 
 ---
 
@@ -99,7 +103,7 @@ neither the source nor Druid. Runtime state lives in `./druid-data/` (gitignored
 | Doc | What's in it |
 |---|---|
 | [DESIGN.md](DESIGN.md) | The full design and rationale — the single source of truth. |
-| [ROADMAP.md](ROADMAP.md) | The milestone checklist (M0–M8). |
+| [ROADMAP.md](ROADMAP.md) | The milestone checklist (M0–M9 done; M10–M14 in Phase 5–6). |
 | [`docs/`](docs/) | Architecture decision records (ADRs). |
 
 ## Tech stack
