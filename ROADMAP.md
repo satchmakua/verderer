@@ -210,8 +210,8 @@ politely, on its own, and interoperably — so it protects real data instead of 
 milestone here is proven against the real thing (real robots.txt, real WARC, real
 schedule, real network) as well as offline.
 
-- [ ] **M9 — Polite collection layer.** Close the stated hard constraint ("robots-aware,
-  rate-limited") that M0–M8 only half-met. A `politeness.py` layer, injected into the
+- [x] **M9 — Polite collection layer.** _Confirmed 2026-07-11._ Close the stated hard
+  constraint ("robots-aware, rate-limited") that M0–M8 only half-met. A `politeness.py` layer, injected into the
   `static` and `render` collectors behind the existing seams (with an injectable clock +
   robots fetcher so it is fully offline-testable): **robots.txt** fetch/cache/respect per
   host (honor `Disallow` and `Crawl-delay`), **per-host rate-limiting** with a minimum
@@ -300,6 +300,7 @@ specific meaningful change, classified and alertable — over a curated set that
 **Status:** the **core roadmap M0–M8 is complete and confirmed** (2026-07-10) — every
 capability is proven. **Phase 5–6 (M9–M14) is the "real tool" arc**: it turns those
 capabilities into a self-running, polite, interoperable, precise, deeply-verifiable, and
-deployed watchdog, filling the gaps M0–M8 deliberately left. **Next up: M9.** Guiding
+deployed watchdog, filling the gaps M0–M8 deliberately left. **M9 (polite collection) is
+built and confirmed (2026-07-11); next up: M10** (the `druid run` scheduler). Guiding
 rule for this arc — *nothing mocked on a production path; prove every milestone against
 the real thing.*

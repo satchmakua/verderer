@@ -28,6 +28,7 @@ decides only *whether and when* to fetch, never what is attested.
 from __future__ import annotations
 
 import json
+import os
 import random
 import time
 from collections.abc import Callable, Mapping
@@ -263,17 +264,27 @@ class PolitenessPolicy:
     def _load_validators(self) -> dict[str, dict[str, str]]:
         if self.state_path is None or not self.state_path.exists():
             return {}
-        data = json.loads(self.state_path.read_text(encoding="utf-8"))
-        validators = data.get("validators", {})
-        return {str(k): dict(v) for k, v in validators.items()}
+        try:
+            data = json.loads(self.state_path.read_text(encoding="utf-8"))
+            validators = data["validators"]
+            return {str(k): dict(v) for k, v in validators.items()}
+        except (OSError, ValueError, TypeError, KeyError, AttributeError):
+            # A corrupt/partial courtesy cache (e.g. a crash mid-write, a truncated file)
+            # must never crash the CLI — least of all the trust-core read paths
+            # (`druid verify` / `log`), which do not depend on politeness at all. Discard
+            # it; the next successful fetch rebuilds it (worst case: one unconditional GET).
+            return {}
 
     def _save_validators(self) -> None:
         if self.state_path is None:
             return
         self.state_path.parent.mkdir(parents=True, exist_ok=True)
-        self.state_path.write_text(
-            json.dumps({"validators": self._validators}, indent=2, sort_keys=True), encoding="utf-8"
-        )
+        # Write-then-rename so a crash / disk-full / concurrent run can never leave a
+        # half-written state file that would fail to parse on the next load. os.replace is
+        # atomic within a filesystem on both POSIX and Windows.
+        tmp = self.state_path.with_name(self.state_path.name + ".tmp")
+        tmp.write_text(json.dumps({"validators": self._validators}, indent=2, sort_keys=True), encoding="utf-8")
+        os.replace(tmp, self.state_path)
 
     def conditional_headers(self, url: str) -> dict[str, str]:
         validators = self._validators.get(url)
@@ -292,6 +303,17 @@ class PolitenessPolicy:
         fresh = {k: v for k, v in {"etag": etag, "last_modified": last_modified}.items() if v}
         if fresh:
             self._validators[url] = fresh
+            self._save_validators()
+
+    def forget(self, url: str) -> None:
+        """Drop any stored conditional-GET validator for ``url``, forcing the next fetch to
+        be unconditional (a full ``200``). The pipeline calls this before the *first*
+        observation of a target so a validator that has desynced from the ledger — a crash
+        between saving the validator and appending the leaf, a ledger rebuild that leaves
+        this cache behind, or two targets pointed at one URL — can never let a ``304``
+        silently suppress a target's *baseline* attestation. A ``304`` may only ever
+        suppress a leaf relative to a genuine prior observation of that same target."""
+        if self._validators.pop(url, None) is not None:
             self._save_validators()
 
     # -- public wrappers ---------------------------------------------------------------

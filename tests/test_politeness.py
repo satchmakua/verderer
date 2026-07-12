@@ -8,6 +8,7 @@ kernel isn't built.
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping
 from pathlib import Path
 
@@ -56,6 +57,23 @@ class CannedFetcher:
     def __call__(self, url: str, *, timeout: float = 30.0, headers: Mapping[str, str] | None = None) -> FetchResult:
         self.seen_headers.append(dict(headers or {}))
         return self._responses.pop(0) if len(self._responses) > 1 else self._responses[0]
+
+
+class ConditionalServer:
+    """A fake origin: returns 304 when the request's If-None-Match matches its current
+    ETag, else 200 with the body. Records the request headers it saw."""
+
+    def __init__(self, etag: str, body: bytes = b"<html>climate ok</html>") -> None:
+        self.etag = etag
+        self.body = body
+        self.seen_headers: list[dict[str, str]] = []
+
+    def __call__(self, url: str, *, timeout: float = 30.0, headers: Mapping[str, str] | None = None) -> FetchResult:
+        h = dict(headers or {})
+        self.seen_headers.append(h)
+        if h.get("If-None-Match") == self.etag:
+            return FetchResult(url=url, status=304, headers={"ETag": self.etag}, body=b"")
+        return FetchResult(url=url, status=200, headers={"ETag": self.etag}, body=self.body)
 
 
 def _ok(body: bytes = b"<html>hello</html>", *, etag: str | None = None, status: int = 200) -> FetchResult:
@@ -246,6 +264,36 @@ def test_validators_persist_across_policy_instances(tmp_path: Path) -> None:
     assert inner2.seen_headers[0].get("If-None-Match") == '"vX"'
 
 
+def test_forget_drops_validator_so_next_fetch_is_unconditional() -> None:
+    server = ConditionalServer(etag='"v1"')
+    policy = PolitenessPolicy(clock=FakeClock(), robots_fetcher=lambda _u: None, min_interval=0.0)
+    policy.fetch("https://example.gov/p", server)  # records validator v1
+    policy.forget("https://example.gov/p")
+    # After forget, no conditional header is sent, so the server returns a full 200.
+    result = policy.fetch("https://example.gov/p", server)
+    assert result.status == 200
+    assert server.seen_headers[-1] == {}
+
+
+def test_corrupt_state_file_fails_open(tmp_path: Path) -> None:
+    # A crash mid-write can leave truncated JSON; loading it must not raise (it would crash
+    # every CLI command, including the trust-core read paths that don't use politeness).
+    state = tmp_path / "pol.json"
+    state.write_text("{ this is not valid json", encoding="utf-8")
+    policy = PolitenessPolicy(clock=FakeClock(), robots_fetcher=lambda _u: None, min_interval=0.0, state_path=state)
+    assert policy.conditional_headers("https://example.gov/p") == {}  # failed open to empty
+    assert policy.fetch("https://example.gov/p", CannedFetcher([_ok(status=200)])).status == 200
+
+
+def test_state_save_is_atomic(tmp_path: Path) -> None:
+    state = tmp_path / "pol.json"
+    policy = PolitenessPolicy(clock=FakeClock(), robots_fetcher=lambda _u: None, min_interval=0.0, state_path=state)
+    policy.fetch("https://example.gov/p", CannedFetcher([_ok(status=200, etag='"v1"')]))
+    assert state.exists()
+    assert not (tmp_path / "pol.json.tmp").exists()  # no temp file left behind
+    json.loads(state.read_text(encoding="utf-8"))  # the written file is valid JSON
+
+
 # --- render path: robots + rate-limit (no conditional GET) -----------------------------
 
 
@@ -326,6 +374,45 @@ def test_pipeline_transient_then_success_logs_one_leaf(tmp_path: Path, ledger_bu
     assert result.status == "observed"
     assert result.observation is not None and result.observation.http_status == 200
     assert clock.sleeps == [1.0]  # one backoff before the retry succeeded
+
+
+def test_first_observe_ignores_stale_validator_and_records_baseline(tmp_path: Path, ledger_built: None) -> None:
+    # Regression (adversarial review): a validator can outlive/precede any leaf — a crash
+    # between saving it and appending the leaf, a ledger rebuild that leaves the cache, or
+    # two targets on one URL. The FIRST observe of a target must never let such a validator
+    # produce a 304 that suppresses the baseline: the pipeline forgets it and fetches fully.
+    (tmp_path / "pol.json").write_text(
+        json.dumps({"validators": {TARGET.url: {"etag": '"v1"'}}}), encoding="utf-8"
+    )
+    server = ConditionalServer(etag='"v1"')  # would 304 if If-None-Match v1 were sent
+    druid = _druid(tmp_path, server, robots=None)
+    result = druid.observe("t")
+    assert result.status == "observed" and result.is_first  # baseline recorded, not "unchanged"
+    assert server.seen_headers[0] == {}  # the stale validator was dropped -> unconditional GET
+    assert _entry_count(druid) == 1
+
+
+def test_304_without_baseline_fails_loud(tmp_path: Path, ledger_built: None) -> None:
+    # If a polite collector is wired but the pipeline does not own the policy (so it cannot
+    # forget), a 304 with no baseline is a genuine desync — it must fail loudly, never be
+    # silently recorded as "unchanged" with no leaf.
+    (tmp_path / "pol.json").write_text(
+        json.dumps({"validators": {TARGET.url: {"etag": '"v1"'}}}), encoding="utf-8"
+    )
+    policy = PolitenessPolicy(
+        clock=FakeClock(), robots_fetcher=lambda _u: None, min_interval=0.0, state_path=tmp_path / "pol.json"
+    )
+    druid = Druid(
+        tmp_path / "data",
+        targets={"t": TARGET},
+        terms=[],
+        collectors={"static": StaticCollector(fetcher=policy.fetcher(ConditionalServer(etag='"v1"')))},
+        # deliberately NOT passing politeness=policy, so the pipeline cannot forget
+    )
+    assert druid.politeness is None
+    with pytest.raises(RuntimeError, match="no baseline"):
+        druid.observe("t")
+    assert _entry_count(druid) == 0  # nothing logged — loud failure, not a silent blind spot
 
 
 def test_default_collectors_are_polite(tmp_path: Path) -> None:

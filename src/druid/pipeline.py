@@ -110,12 +110,27 @@ class Druid:
         target = self.targets[target_id]
         previous = self._latest_observation_for(target_id)
         is_first = previous is None
+        if is_first and self.politeness is not None:
+            # No attested baseline for this target yet: force an unconditional fetch so a
+            # stale or cross-target conditional validator cannot produce a spurious 304 that
+            # silently suppresses the baseline. (Validators are URL-keyed courtesy state; the
+            # ledger baseline is target-keyed — this reconciles the two.)
+            self.politeness.forget(target.url)
         try:
             collected = self._collector_for(target).collect(target)
         except NotModified:
             # Conditional GET said 304: the bytes match the last observation, so there is
             # nothing new to attest. A polite no-op — no leaf, no diff.
-            return ObserveResult(observation=None, diffs=[], is_first=is_first, status="unchanged")
+            if is_first:
+                # A 304 with no baseline is a validator/ledger desync the pipeline could not
+                # pre-empt (e.g. an injected collector whose policy the pipeline does not
+                # own). Never record it as a clean "unchanged" — that would be a silent
+                # missing baseline, the exact blind spot a watchdog must not have. Fail loud.
+                raise RuntimeError(
+                    f"conditional GET returned 304 for {target_id} but no baseline observation "
+                    f"exists (stale validator); clear druid-data/politeness-state.json and re-observe"
+                ) from None
+            return ObserveResult(observation=None, diffs=[], is_first=False, status="unchanged")
         except CollectionSkipped as skip:
             # robots.txt disallowed this URL for our UA — we never fetched it.
             return ObserveResult(
