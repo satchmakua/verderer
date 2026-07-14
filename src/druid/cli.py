@@ -210,7 +210,7 @@ def cmd_export(args: argparse.Namespace) -> int:
     info = export_site(druid, args.out, base_url=args.base_url)
     print(
         f"exported public record -> {info['out']}: {info['targets']} target(s), "
-        f"{info['events']} event(s), {info['tiles']} tile file(s)"
+        f"{info['events']} event(s), {info['tiles']} tile file(s), {info['warcs']} WARC(s)"
     )
     print("  record.json + feed.xml (+ per-target feeds/); subscribe to feed.xml for alerts")
     print("  checkpoint + tile/ published: verifiers can recompute proofs from the tiles alone")

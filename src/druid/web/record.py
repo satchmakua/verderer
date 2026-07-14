@@ -11,13 +11,19 @@ from ..pipeline import Druid
 RECORD_SCHEMA = "druid.record/v1"
 
 
-def _observation_view(leaf_hash: str, record: dict[str, Any]) -> dict[str, Any]:
+def _observation_view(leaf_hash: str, record: dict[str, Any], *, warc_available: bool) -> dict[str, Any]:
+    warc_hash = record.get("warc_record_hash")
     return {
         "id": leaf_hash,  # permanent: the ledger leaf hash
         "content_hash": record.get("raw_bytes_hash"),
         "fetched_at": record.get("fetched_at"),
         "http_status": record.get("http_status"),
         "url": record.get("url"),
+        # M11: the standards WARC archiving this fetch. `warc_record_hash` is the attested
+        # fact (always shown); the `warc` download link is advertised only when the blob is
+        # actually available to ship — never advertise a hash a download can't back.
+        "warc_record_hash": warc_hash,
+        "warc": f"warc/{warc_hash[4:]}.warc" if warc_hash and warc_available else None,
     }
 
 
@@ -68,7 +74,11 @@ def build_record(druid: Druid) -> dict[str, Any]:
         record = entry.record
         schema = record.get("schema")
         if schema == "druid.observation/v1":
-            _bucket(record.get("target_id"))["observations"].append(_observation_view(entry.leaf_hash, record))
+            warc_hash = record.get("warc_record_hash")
+            warc_available = isinstance(warc_hash, str) and druid.store.has(warc_hash)
+            _bucket(record.get("target_id"))["observations"].append(
+                _observation_view(entry.leaf_hash, record, warc_available=warc_available)
+            )
         elif schema == "druid.diff/v1":
             event = _event_view(entry.leaf_hash, record)
             _bucket(record.get("target_id"))["events"].append(event)

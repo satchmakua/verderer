@@ -16,6 +16,7 @@ dependencies = [
   "cryptography>=43",
   "beautifulsoup4>=4.12",
   "pandas>=2.2",
+  "warcio>=1.7",       # faithful WARC capture + archive interop (M11)
 ]
 
 [project.optional-dependencies]

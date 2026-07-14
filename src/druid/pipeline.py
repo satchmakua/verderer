@@ -9,12 +9,12 @@ records are appended as their own leaves *alongside* the observation.
 from __future__ import annotations
 
 import base64
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 
 from .anchors import Anchorer, anchored_hash
-from .collectors.base import Collector
+from .collectors.base import Capture, Collector
 from .collectors.render import RenderCollector, playwright_engine
 from .collectors.static import StaticCollector, httpx_fetcher
 from .config import Target
@@ -172,6 +172,14 @@ class Druid:
         for artifact in collected.side_artifacts:
             self.store.put(artifact)
 
+        # Archive the fetch as a standards WARC (M11): a faithful, interoperable capture of
+        # the request + response, stored content-addressed and attested in the leaf via
+        # warc_record_hash — so the raw artifact is recoverable from a WARC any archive
+        # replays. Built after the dedup check (which never sees warc_record_hash), so a
+        # byte-identical re-observation never builds or stores a redundant WARC.
+        if collected.capture is not None:
+            observation = self._archive_warc(observation, body, collected.capture)
+
         diffs: list[DiffRecord] = []
         if previous is not None and previous.raw_bytes_hash != observation.raw_bytes_hash:
             diffs = self._diff(target, previous, observation, body)
@@ -182,6 +190,33 @@ class Druid:
             self.log.append(diff.to_record())
 
         return ObserveResult(observation=observation, diffs=diffs, is_first=is_first, status="observed")
+
+    def _archive_warc(self, observation: Observation, body: bytes, capture: Capture) -> Observation:
+        """Build the WARC for this observation, store it content-addressed, and return the
+        observation carrying its ``warc_record_hash``. The WARC's archived payload hashes to
+        ``raw_bytes_hash`` (the same bytes), so the artifact is recoverable from the WARC.
+
+        Best-effort: WARC is an interop/archival feature *layered on* the trust core, never a
+        prerequisite for it. If archiving fails (e.g. a pathological URL warcio can't encode),
+        the observation is still attested — just without a ``warc_record_hash`` — rather than
+        losing the observation entirely (which, under the M10 scheduler, would retry-loop the
+        target forever and blind the watchdog to it)."""
+        from .warc import build_warc  # lazy: warcio only loads when actually archiving
+
+        try:
+            warc_bytes = build_warc(
+                target_uri=capture.target_uri,
+                fetched_at=capture.fetched_at,
+                payload=body,
+                record_type=capture.record_type,
+                status=capture.status,
+                response_headers=capture.response_headers,
+                content_type=capture.content_type,
+            )
+        except Exception:
+            return observation  # attest without a WARC rather than dropping the observation
+        warc_hash = self.store.put(warc_bytes)
+        return replace(observation, warc_record_hash=warc_hash)
 
     def _diff(
         self, target: Target, previous: Observation, observation: Observation, body: bytes

@@ -32,13 +32,32 @@ class Fetcher(Protocol):
 
 
 @dataclass(frozen=True, slots=True)
+class Capture:
+    """What a collector saw on the wire, enough for the pipeline to archive the observation
+    as a standards WARC (M11). ``record_type="response"`` is a real HTTP fetch (a request +
+    response record pair, payload = the response body); ``"resource"`` is a derived artifact
+    like a rendered DOM (a single resource record). The payload is the collector's ``body``,
+    so it isn't duplicated here. DESIGN §2/§7."""
+
+    target_uri: str  # final URL after redirects (WARC-Target-URI)
+    fetched_at: str  # RFC3339 UTC, = Observation.fetched_at (WARC-Date)
+    record_type: str = "response"  # "response" | "resource"
+    status: int = 200
+    response_headers: Mapping[str, str] = field(default_factory=dict)
+    content_type: str = "application/octet-stream"
+
+
+@dataclass(frozen=True, slots=True)
 class Collected:
-    """A collector's output: the attested observation, its primary artifact bytes, and
-    any additional content-addressed blobs (already referenced by hash in the record)."""
+    """A collector's output: the attested observation, its primary artifact bytes, any
+    additional content-addressed blobs (already referenced by hash in the record), and —
+    when the collector fetched something archivable — a :class:`Capture` the pipeline turns
+    into a WARC referenced by ``Observation.warc_record_hash``."""
 
     observation: Observation
     body: bytes  # the primary artifact -> Observation.raw_bytes_hash (diffed + bundled)
     side_artifacts: tuple[bytes, ...] = ()  # extra blobs to store (e.g. captured requests)
+    capture: Capture | None = None  # WARC source (M11); None = no archival capture
 
 
 class Collector(Protocol):

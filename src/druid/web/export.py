@@ -45,6 +45,23 @@ def export_site(druid: Druid, out_dir: Path, *, base_url: str = "https://druid.e
             encoding="utf-8",
         )
 
+    # M11: ship the WARCs. Each observation's archived capture is written to warc/<hash>.warc
+    # (content-addressed name), so the published record is a standards web archive a third
+    # party can ingest/replay, and the record.json's `warc` links resolve.
+    warcs = 0
+    warc_out = out / "warc"
+    warc_out.mkdir(exist_ok=True)
+    seen: set[str] = set()
+    for target in record["targets"]:
+        for obs in target["observations"]:
+            warc_hash = obs.get("warc_record_hash")
+            if not warc_hash or warc_hash in seen:
+                continue
+            seen.add(warc_hash)
+            if druid.store.has(warc_hash):
+                (warc_out / f"{warc_hash[4:]}.warc").write_bytes(druid.store.get(warc_hash))
+                warcs += 1
+
     # M2c: publish the log itself — the signed checkpoint + the C2SP tile files. Static
     # files only (CDN-friendly); a verifier fetches them and recomputes proofs, trusting
     # nothing but the checkpoint signature.
@@ -64,4 +81,5 @@ def export_site(druid: Druid, out_dir: Path, *, base_url: str = "https://druid.e
         "targets": len(record["targets"]),
         "events": len(record["events"]),
         "tiles": tiles,
+        "warcs": warcs,
     }

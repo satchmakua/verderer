@@ -13,8 +13,9 @@ them treat as primary: **provable observation integrity** and **classified manip
 detection**.
 
 **Status:** **the core roadmap M0–M8 is complete and confirmed**, and the Phase 5–6 "real
-tool" arc is underway — **M9 (polite collection) and M10 (the scheduler) are built and
-confirmed.** A provable trust spine: a Rust Merkle log, C2SP signed checkpoints published as
+tool" arc is underway — **M9 (polite collection), M10 (the scheduler), and M11 (faithful WARC
+capture) are built and confirmed.** A provable trust spine: a Rust Merkle log, C2SP signed
+checkpoints published as
 tile files (M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from
 independent TSAs (M2b), and multi-party **witness cosignatures** with quorum verification
 (M8). Change detection spans five layers over static pages, JS-rendered tools (M3b render
@@ -27,8 +28,11 @@ Collection is **polite by construction** (M9): robots.txt (Disallow + Crawl-dela
 rate-limiting with backoff, and conditional GET (a `304` logs nothing). And it now **runs
 itself** (M10): `druid run` re-observes the curated set on each target's cadence, appends
 diffs, and fires alerts on its own — restart-safe, with `--once` for cron/systemd (see
-[docs/deployment.md](docs/deployment.md)). Next: M11 (faithful WARC capture + archive
-interop). Only OpenTimestamps (M2b-3) is deliberately deferred. See [ROADMAP.md](ROADMAP.md).
+[docs/deployment.md](docs/deployment.md)). Every observation is archived as a standards
+**WARC** (M11) — attested by `warc_record_hash`, recoverable by any archive tool, shipped by
+`druid export` — so Druid interoperates with the rescue ecosystem (Wayback / End-of-Term /
+EDGI) instead of being self-referential. Next: M12 (detection precision). Only OpenTimestamps
+(M2b-3) is deliberately deferred. See [ROADMAP.md](ROADMAP.md).
 
 ---
 

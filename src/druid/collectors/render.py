@@ -25,7 +25,7 @@ from datetime import UTC, datetime
 from ..config import Target
 from ..hashing import multihash_sha256
 from ..models import Observation
-from .base import Collected, RenderedCall, RenderEngine, RenderResult
+from .base import Capture, Collected, RenderedCall, RenderEngine, RenderResult
 
 USER_AGENT = "DruidWatchdog/0.0 (+https://github.com/satchmakua/Druid) polite-archival-collector; headless"
 
@@ -137,16 +137,28 @@ class RenderCollector:
 
         headers_canon = json.dumps(dict(sorted(result.headers.items())), separators=(",", ":")).encode()
         dom_hash = multihash_sha256(result.rendered_dom)
+        fetched_at = _utc_now()
         observation = Observation(
             target_id=target.id,
             url=result.final_url,
             collector_type=self.type,
             collector_version=self.version,
-            fetched_at=_utc_now(),
+            fetched_at=fetched_at,
             http_status=result.status,
             raw_bytes_hash=dom_hash,  # the primary artifact IS the rendered DOM
             response_headers_hash=multihash_sha256(headers_canon),
             rendered_dom_hash=dom_hash,  # explicit: this body is a post-JS DOM
             captured_requests_hash=multihash_sha256(manifest_bytes),
         )
-        return Collected(observation=observation, body=result.rendered_dom, side_artifacts=side_artifacts)
+        # The rendered DOM is a *derived* artifact (post-JS), not a byte-for-byte HTTP
+        # response, so it is archived as a WARC `resource` record — the honest type.
+        capture = Capture(
+            target_uri=result.final_url,
+            fetched_at=fetched_at,
+            record_type="resource",
+            status=result.status,
+            content_type="text/html; charset=utf-8",
+        )
+        return Collected(
+            observation=observation, body=result.rendered_dom, side_artifacts=side_artifacts, capture=capture
+        )

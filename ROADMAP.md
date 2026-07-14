@@ -235,8 +235,8 @@ schedule, real network) as well as offline.
   across a restart; `--once` processes exactly the due set; a failed target is retried,
   not lost. `pytest` green.
 
-- [ ] **M11 — Faithful WARC capture + archive interop.** Make Druid genuinely
-  interoperable with the rescue ecosystem (Wayback / End-of-Term / EDGI), not
+- [x] **M11 — Faithful WARC capture + archive interop.** _Confirmed 2026-07-12._ Make
+  Druid genuinely interoperable with the rescue ecosystem (Wayback / End-of-Term / EDGI), not
   self-referential. Each observation writes a standards **WARC** record (request +
   response) via `warcio`; `warc_record_hash` is populated and attested in the observation
   leaf; the raw artifact is recoverable from the WARC. `druid export` ships the WARCs; the
@@ -300,7 +300,7 @@ specific meaningful change, classified and alertable — over a curated set that
 **Status:** the **core roadmap M0–M8 is complete and confirmed** (2026-07-10) — every
 capability is proven. **Phase 5–6 (M9–M14) is the "real tool" arc**: it turns those
 capabilities into a self-running, polite, interoperable, precise, deeply-verifiable, and
-deployed watchdog, filling the gaps M0–M8 deliberately left. **M9 (polite collection) and
-M10 (the `druid run` scheduler) are built and confirmed; next up: M11** (faithful WARC
-capture + archive interop). Guiding rule for this arc — *nothing mocked on a production
+deployed watchdog, filling the gaps M0–M8 deliberately left. **M9 (polite collection), M10
+(the `druid run` scheduler), and M11 (faithful WARC capture) are built and confirmed; next up:
+M12** (detection precision). Guiding rule for this arc — *nothing mocked on a production
 path; prove every milestone against the real thing.*
