@@ -10,7 +10,9 @@ from druid.notify import (
     Subscription,
     build_email,
     dispatch,
+    load_state,
     matches,
+    save_state,
 )
 
 HIGH_NUMERIC = {
@@ -84,6 +86,23 @@ def test_failed_delivery_is_not_marked_and_retries() -> None:
 
     second = dispatch([HIGH_NUMERIC], subs, {"webhook": flaky}, state)
     assert second and "error" not in second[0]  # retried and succeeded
+
+
+def test_corrupt_notify_state_fails_open(tmp_path: Path) -> None:
+    # Regression (M10 review): the `druid run` loop loads notify state every tick. A corrupt
+    # file (a crash mid-write) must not raise — it would kill the watchdog and re-crash on
+    # every restart. Fail open to an empty (nothing-delivered) state instead.
+    (tmp_path / "notify-state.json").write_text("{ truncated", encoding="utf-8")
+    state = load_state(tmp_path)
+    assert state.delivered == set()
+
+
+def test_notify_state_save_is_atomic(tmp_path: Path) -> None:
+    state = DispatchState(delivered={"a:1", "b:2"})
+    save_state(tmp_path, state)
+    path = tmp_path / "notify-state.json"
+    assert path.exists() and not (tmp_path / "notify-state.json.tmp").exists()
+    assert load_state(tmp_path).delivered == {"a:1", "b:2"}  # round-trips
 
 
 def test_webhook_notifier_posts_alert_payload() -> None:

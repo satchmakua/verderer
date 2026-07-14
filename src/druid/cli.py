@@ -14,10 +14,14 @@ import argparse
 import json
 import subprocess
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .config import load_targets, load_terms
 from .ledger.core import LedgerBinaryNotFound, find_binary
 from .pipeline import Druid
+
+if TYPE_CHECKING:
+    from .scheduler import TickResult
 
 DEFAULT_DATA_DIR = Path("druid-data")
 
@@ -57,7 +61,8 @@ def cmd_observe(args: argparse.Namespace) -> int:
         print(f"observe failed for {args.target_id}: {error}")
         return 1
     if result.status == "unchanged":
-        print(f"{args.target_id}: unchanged (304 Not Modified) - no new observation logged")
+        detail = f" ({result.reason})" if result.reason else ""
+        print(f"{args.target_id}: unchanged{detail} - no new observation logged")
         return 0
     if result.status == "skipped":
         print(f"{args.target_id}: skipped - {result.reason}")
@@ -259,6 +264,70 @@ def cmd_notify(args: argparse.Namespace) -> int:
     return 1 if failed and not sent else 0
 
 
+def _build_notify_fn(args: argparse.Namespace):  # type: ignore[no-untyped-def]
+    """Wire the real M5c notify pipeline as a scheduler seam: (druid) -> deliveries."""
+    from .notify import (
+        HttpWebhookNotifier,
+        Notifier,
+        SmtpEmailNotifier,
+        dispatch,
+        events,
+        load_state,
+        load_subscriptions,
+        save_state,
+    )
+
+    subs_path = args.subscriptions or _repo_data_dir() / "subscriptions.toml"
+    subscriptions = load_subscriptions(subs_path)
+    notifiers: dict[str, Notifier] = {
+        "webhook": HttpWebhookNotifier(),
+        "email": SmtpEmailNotifier(args.smtp_host, args.smtp_port, args.email_from),
+    }
+
+    def notify_fn(druid: Druid) -> list[dict[str, object]]:
+        state = load_state(args.data_dir)
+        deliveries = dispatch(events(druid), subscriptions, notifiers, state)
+        save_state(args.data_dir, state)
+        return deliveries
+
+    return notify_fn
+
+
+def _print_tick(r: TickResult) -> None:
+    print(
+        f"due {r.due_count}: {len(r.observed)} observed, {len(r.unchanged)} unchanged, "
+        f"{len(r.skipped)} skipped, {len(r.errored)} error(s); "
+        f"{r.diffs} new diff(s), {r.deliveries} alert(s) sent"
+    )
+    for tid in r.observed:
+        print(f"  observed  {tid}")
+    for tid in r.unchanged:
+        print(f"  unchanged {tid}")
+    for tid in r.skipped:
+        print(f"  skipped   {tid} (robots)")
+    for err in r.errored:
+        print(f"  ERROR     {err}")
+    if r.notify_error:
+        print(f"  notify failed (observation unaffected, will retry): {r.notify_error}")
+
+
+def cmd_run(args: argparse.Namespace) -> int:
+    from .scheduler import Scheduler
+
+    druid = _build(args)
+    notify_fn = None if args.no_notify else _build_notify_fn(args)
+    scheduler = Scheduler(druid, notify=notify_fn)
+    if args.once:
+        _print_tick(scheduler.run_due())
+        return 0
+    print(f"druid run: watching {len(druid.targets)} target(s) on their cadence; Ctrl-C to stop")
+    try:
+        scheduler.run_forever(poll_cap=args.poll)
+    except KeyboardInterrupt:
+        print("stopped")
+    return 0
+
+
 def cmd_cosign(args: argparse.Namespace) -> int:
     from .witness import load_or_create_witness
 
@@ -341,6 +410,14 @@ def main(argv: list[str] | None = None) -> int:
     notify.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
     notify.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
     notify.add_argument("--email-from", default="druid@localhost", help="From: address for email alerts")
+    run = sub.add_parser("run", help="continuously re-observe due targets on their cadence + fire alerts (M10)")
+    run.add_argument("--once", action="store_true", help="process exactly the due set once and exit (cron/systemd)")
+    run.add_argument("--poll", type=float, default=300.0, help="max seconds to sleep between wakeups in the loop")
+    run.add_argument("--no-notify", action="store_true", help="observe + diff but do not fire the alert pipeline")
+    run.add_argument("--subscriptions", type=Path, default=None, help="override subscriptions.toml")
+    run.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
+    run.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
+    run.add_argument("--email-from", default="druid@localhost", help="From: address for email alerts")
 
     args = parser.parse_args(argv)
     dispatch = {
@@ -357,5 +434,6 @@ def main(argv: list[str] | None = None) -> int:
         "tiles": cmd_tiles,
         "export": cmd_export,
         "notify": cmd_notify,
+        "run": cmd_run,
     }
     return dispatch[args.cmd](args)

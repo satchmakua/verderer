@@ -34,6 +34,20 @@ def _utc_now() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _same_content(previous: Observation, observation: Observation) -> bool:
+    """Whether ``observation`` is byte-for-byte identical to the last one — the attested
+    artifact bytes, the HTTP status, and (render collector) the captured-requests manifest
+    all match. Used to suppress re-logging an unchanged observation when a conditional GET
+    could not (no validator), so a continuously-running ledger doesn't grow without change.
+    A status flip (200→451/404) or a captured-requests change is *not* identical and is
+    logged."""
+    return (
+        previous.http_status == observation.http_status
+        and previous.raw_bytes_hash == observation.raw_bytes_hash
+        and previous.captured_requests_hash == observation.captured_requests_hash
+    )
+
+
 @dataclass(frozen=True, slots=True)
 class ObserveResult:
     """The outcome of one ``observe`` call. ``status`` distinguishes a new attested
@@ -130,13 +144,27 @@ class Druid:
                     f"conditional GET returned 304 for {target_id} but no baseline observation "
                     f"exists (stale validator); clear druid-data/politeness-state.json and re-observe"
                 ) from None
-            return ObserveResult(observation=None, diffs=[], is_first=False, status="unchanged")
+            return ObserveResult(
+                observation=None, diffs=[], is_first=False, status="unchanged", reason="304 Not Modified"
+            )
         except CollectionSkipped as skip:
             # robots.txt disallowed this URL for our UA — we never fetched it.
             return ObserveResult(
                 observation=None, diffs=[], is_first=is_first, status="skipped", reason=str(skip)
             )
         observation, body = collected.observation, collected.body
+        if previous is not None and _same_content(previous, observation):
+            # Byte-identical to this target's last attested observation, but the conditional
+            # GET couldn't spare the fetch (the response carried no validator — a 404, or a
+            # server that sends no ETag). Nothing new to attest: the existing leaf already
+            # commits to exactly these bytes+status, the blob is already stored, and
+            # re-logging identical leaves every scheduler cycle would bloat the ledger
+            # without adding evidence. Freshness (that we re-checked) lives in the scheduler
+            # state, not the ledger — the same outcome as a 304.
+            return ObserveResult(
+                observation=None, diffs=[], is_first=False, status="unchanged",
+                reason="content identical to last observation",
+            )
         self.store.put(body)
         # Store any side artifacts (a render collector's captured API/data calls). They
         # are already referenced by hash in the observation record; storing them makes

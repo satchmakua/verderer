@@ -87,3 +87,63 @@ def test_tampering_breaks_verification(tmp_path: Path, ledger_built: None) -> No
 
     ok, _ = druid.log.verify()
     assert not ok  # tampering with a stored leaf is detected
+
+
+# --- M10: don't re-log a byte-identical observation (sustainable continuous operation) ---
+
+
+def _status_druid(tmp_path: Path, responses: list[tuple[int, bytes]], cursor: dict[str, int]) -> Druid:
+    def fake(url: str, *, timeout: float = 30.0) -> FetchResult:
+        status, body = responses[min(cursor["i"], len(responses) - 1)]
+        return FetchResult(url=url, status=status, headers={}, body=body)
+
+    return Druid(
+        tmp_path / "data",
+        targets={"t": Target(id="t", title="T", url="https://example.gov/t")},
+        terms=["climate change"],
+        collector=StaticCollector(fetcher=fake),
+    )
+
+
+def _obs_count(druid: Druid) -> int:
+    return sum(1 for e in druid.log.entries() if e.record.get("schema") == "druid.observation/v1")
+
+
+def test_identical_reobservation_is_not_relogged(tmp_path: Path, ledger_built: None) -> None:
+    # A 404 (or any no-validator response) can't be spared by a conditional GET, so the
+    # scheduler re-fetches it. Re-logging the byte-identical leaf every cycle would bloat the
+    # ledger; instead the pipeline treats it like a 304 — no new leaf.
+    cursor = {"i": 0}
+    druid = _status_druid(tmp_path, [(404, b"<html>not found</html>")], cursor)
+    first = druid.observe("t")
+    assert first.status == "observed" and first.is_first
+    second = druid.observe("t")
+    assert second.status == "unchanged" and second.observation is None
+    assert _obs_count(druid) == 1  # the identical 404 was not re-logged
+
+
+def test_status_flip_with_identical_body_is_logged(tmp_path: Path, ledger_built: None) -> None:
+    # A 200 -> 451 (unavailable for legal reasons) with a byte-identical cached body is a
+    # real change: it must be attested, not deduped away.
+    cursor = {"i": 0}
+    body = b"<html>same bytes different status</html>"
+    druid = _status_druid(tmp_path, [(200, body), (451, body)], cursor)
+    druid.observe("t")
+    cursor["i"] = 1
+    second = druid.observe("t")
+    assert second.status == "observed"
+    assert _obs_count(druid) == 2
+
+
+def test_reappearance_after_404_is_logged_with_diff(tmp_path: Path, ledger_built: None) -> None:
+    cursor = {"i": 0}
+    live = b"<html>EPA works on climate change.</html>"
+    druid = _status_druid(tmp_path, [(200, live), (404, b"<html>gone</html>"), (200, live)], cursor)
+    druid.observe("t")  # 200 live
+    cursor["i"] = 1
+    druid.observe("t")  # 404 -> logged (content changed)
+    cursor["i"] = 2
+    third = druid.observe("t")  # 200 live again -> logged (a reappearance, not a duplicate)
+    assert third.status == "observed"
+    assert _obs_count(druid) == 3
+    assert third.diffs  # the reappearance is a detected change

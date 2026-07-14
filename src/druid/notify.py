@@ -11,6 +11,7 @@ new subscription still receives the historical events it matches. Senders are in
 from __future__ import annotations
 
 import json
+import os
 import smtplib
 import tomllib
 from dataclasses import dataclass, field
@@ -166,14 +167,26 @@ def load_state(data_dir: Path) -> DispatchState:
     path = Path(data_dir) / "notify-state.json"
     if not path.exists():
         return DispatchState()
-    data = json.loads(path.read_text(encoding="utf-8"))
-    return DispatchState(delivered=set(data.get("delivered", [])))
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return DispatchState(delivered=set(data["delivered"]))
+    except (OSError, ValueError, TypeError, KeyError):
+        # A corrupt/partial state file (a crash mid-write) must never crash the caller —
+        # least of all the M10 `druid run` loop, which loads this every tick and would
+        # otherwise die and re-crash on restart. Start fresh; the worst case is that a few
+        # already-sent alerts resend, which is far better than a dead watchdog. The atomic
+        # write below makes such corruption unlikely in the first place.
+        return DispatchState()
 
 
 def save_state(data_dir: Path, state: DispatchState) -> None:
     path = Path(data_dir) / "notify-state.json"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps({"delivered": sorted(state.delivered)}, indent=2), encoding="utf-8")
+    # Write-then-rename so an interrupted write can never leave a half-written file that
+    # would fail to parse on the next load (os.replace is atomic within a filesystem).
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(json.dumps({"delivered": sorted(state.delivered)}, indent=2), encoding="utf-8")
+    os.replace(tmp, path)
 
 
 def dispatch(

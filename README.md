@@ -13,20 +13,22 @@ them treat as primary: **provable observation integrity** and **classified manip
 detection**.
 
 **Status:** **the core roadmap M0–M8 is complete and confirmed**, and the Phase 5–6 "real
-tool" arc is underway — **M9 (polite collection) is built and confirmed.** A provable trust
-spine: a Rust Merkle log, C2SP signed checkpoints published as tile files (M2c) so verifiers
-recompute proofs with no live service, RFC 3161 anchors from independent TSAs (M2b), and
-multi-party **witness cosignatures** with quorum verification (M8). Change detection spans
-five layers over static pages, JS-rendered tools (M3b render collector), and
-scientific/tabular datasets — CSV/JSON, NetCDF/HDF, zip/xlsx (M4a/M4b) — plus reviewer-aid
-triage that ranks reworded passages and drafts plain-language summaries (M6). A federated
-overlay (M7) cross-references third-party archives (Wayback CDX) with Druid's attested
-record, badging what carries a proof. The public product: a browsable Astro record with RSS,
-webhook/email alerts, search, and in-browser (WASM) offline proof verification. Collection is
-now **polite by construction** (M9): robots.txt (Disallow + Crawl-delay), per-host
-rate-limiting with backoff, and conditional GET (a `304` logs nothing). Next: M10 (the
-`druid run` scheduler for continuous operation). Only OpenTimestamps (M2b-3) is deliberately
-deferred. See [ROADMAP.md](ROADMAP.md).
+tool" arc is underway — **M9 (polite collection) and M10 (the scheduler) are built and
+confirmed.** A provable trust spine: a Rust Merkle log, C2SP signed checkpoints published as
+tile files (M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from
+independent TSAs (M2b), and multi-party **witness cosignatures** with quorum verification
+(M8). Change detection spans five layers over static pages, JS-rendered tools (M3b render
+collector), and scientific/tabular datasets — CSV/JSON, NetCDF/HDF, zip/xlsx (M4a/M4b) — plus
+reviewer-aid triage that ranks reworded passages and drafts plain-language summaries (M6). A
+federated overlay (M7) cross-references third-party archives (Wayback CDX) with Druid's
+attested record, badging what carries a proof. The public product: a browsable Astro record
+with RSS, webhook/email alerts, search, and in-browser (WASM) offline proof verification.
+Collection is **polite by construction** (M9): robots.txt (Disallow + Crawl-delay), per-host
+rate-limiting with backoff, and conditional GET (a `304` logs nothing). And it now **runs
+itself** (M10): `druid run` re-observes the curated set on each target's cadence, appends
+diffs, and fires alerts on its own — restart-safe, with `--once` for cron/systemd (see
+[docs/deployment.md](docs/deployment.md)). Next: M11 (faithful WARC capture + archive
+interop). Only OpenTimestamps (M2b-3) is deliberately deferred. See [ROADMAP.md](ROADMAP.md).
 
 ---
 
@@ -54,6 +56,8 @@ python -m druid verify-bundle proof.json          # verify it offline — anchor
 python -m druid tiles                             # (re)publish the C2SP tile files for the ledger
 python -m druid export --out web/public           # build the public record: record.json + RSS + checkpoint + tiles
 python -m druid notify --dry-run                   # push alerts to webhook/email subscriptions (data/subscriptions.toml)
+python -m druid run --once                          # observe every due target once + fire alerts (cron/systemd)
+python -m druid run                                 # long-lived watchdog loop (see docs/deployment.md)
 ```
 
 ### The public record (Astro site)

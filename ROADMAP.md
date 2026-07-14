@@ -223,8 +223,8 @@ schedule, real network) as well as offline.
   a transient `503` retries with backoff then succeeds — all offline via injected
   clock/robots/fetch, plus one live polite fetch of a real target. `pytest` green.
 
-- [ ] **M10 — The scheduler (continuous operation).** The piece that turns a manual demo
-  into a watchdog: `druid run` re-observes the curated set on a **per-target cadence**
+- [x] **M10 — The scheduler (continuous operation).** _Confirmed 2026-07-12._ The piece
+  that turns a manual demo into a watchdog: `druid run` re-observes the curated set on a **per-target cadence**
   (interval + jitter), persists per-target schedule state (last run, next due, stored
   `ETag`), observes only what is *due* through the M9 polite layer, appends any diffs, and
   **fires the M5c notify pipeline** on each new diff — idempotently, surviving restarts. A
@@ -300,7 +300,7 @@ specific meaningful change, classified and alertable — over a curated set that
 **Status:** the **core roadmap M0–M8 is complete and confirmed** (2026-07-10) — every
 capability is proven. **Phase 5–6 (M9–M14) is the "real tool" arc**: it turns those
 capabilities into a self-running, polite, interoperable, precise, deeply-verifiable, and
-deployed watchdog, filling the gaps M0–M8 deliberately left. **M9 (polite collection) is
-built and confirmed (2026-07-11); next up: M10** (the `druid run` scheduler). Guiding
-rule for this arc — *nothing mocked on a production path; prove every milestone against
-the real thing.*
+deployed watchdog, filling the gaps M0–M8 deliberately left. **M9 (polite collection) and
+M10 (the `druid run` scheduler) are built and confirmed; next up: M11** (faithful WARC
+capture + archive interop). Guiding rule for this arc — *nothing mocked on a production
+path; prove every milestone against the real thing.*

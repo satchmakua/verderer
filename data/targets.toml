@@ -1,12 +1,18 @@
 # Curated, high-value targets — depth over breadth (DESIGN §7). Selection criteria are
 # published alongside each entry (mandate status, prior alteration history, etc.).
 # M0 seeds three; the set is expanded deliberately, never by crawling all of .gov.
+#
+# `interval` is the M10 scheduler's per-target re-observation cadence ("6h"/"12h"/"1d"/…);
+# defaults to 1d. Fast-moving or deletion-risk targets are watched more often; a large
+# dataset that changes rarely is watched less. The polite layer (M9) conditional-GETs, so a
+# frequent cadence on an unchanged page costs only a 304.
 
 [[target]]
 id = "epa-ghgrp"
 title = "EPA Greenhouse Gas Reporting Program"
 url = "https://www.epa.gov/ghgreporting"
 collector = "static"
+interval = "12h"
 criteria = "Congressionally mandated reporting program — high-signal if altered."
 
 [[target]]
@@ -14,6 +20,7 @@ id = "epa-climate-indicators"
 title = "EPA Climate Change Indicators"
 url = "https://www.epa.gov/climate-indicators"
 collector = "static"
+interval = "12h"
 criteria = "Core climate-change reference content; prior removal/alteration history."
 
 [[target]]
@@ -21,6 +28,7 @@ id = "usgcrp"
 title = "U.S. Global Change Research Program (globalchange.gov)"
 url = "https://www.globalchange.gov/"
 collector = "static"
+interval = "6h"
 criteria = "Host of the National Climate Assessments; site shut down in 2025 — deletion/redirect watch."
 
 # A tabular dataset target (kind = "dataset" routes it to the L4 schema/distributional
@@ -31,6 +39,7 @@ title = "EPA GHGRP facility-level emissions (data download)"
 url = "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip"
 kind = "dataset"
 collector = "static"
+interval = "1d"
 criteria = "Congressionally-mandated dataset; a silent schema edit or re-baselining is high-signal."
 
 # A JavaScript tool (collector = "render" drives headless Chromium — needs the `render`
