@@ -20,8 +20,9 @@ from .collectors.static import StaticCollector, httpx_fetcher
 from .config import Target
 from .differ.dataset import dataset_diff
 from .differ.embedding import Embedder, embedding_triage
-from .differ.normalize import normalize_bytes
+from .differ.normalize import normalize_for_diff
 from .differ.numeric import numeric_watch
+from .differ.structure import structure_watch
 from .differ.termwatch import term_watch
 from .ledger.core import Ledger
 from .models import DiffRecord, DiffType, Observation
@@ -232,8 +233,11 @@ class Druid:
                 from_hash=previous.raw_bytes_hash,
                 to_hash=observation.raw_bytes_hash,
             )
-        prev_text = normalize_bytes(self.store.get(previous.raw_bytes_hash))
-        curr_text = normalize_bytes(body)
+        prev_body = self.store.get(previous.raw_bytes_hash)
+        # M12: normalize AND noise-suppress (timestamps/nonces/session ids) before diffing, so
+        # a re-render that changed nothing meaningful doesn't false-fire. Attested bytes untouched.
+        prev_text = normalize_for_diff(prev_body)
+        curr_text = normalize_for_diff(body)
         diffs = term_watch(
             prev_text,
             curr_text,
@@ -252,7 +256,18 @@ class Druid:
             to_hash=observation.raw_bytes_hash,
         )
         if not diffs and prev_text != curr_text:
-            if self.embedder is not None:
+            # M12: localise the change to the block it happened in (a table cell, a heading,
+            # a list item) — in place of the coarse floor — when the semantic layers didn't
+            # itemise it. Declines (returns []) if the change is too broad to localise.
+            diffs += structure_watch(
+                prev_body,
+                body,
+                target_id=observation.target_id,
+                detected_at=now,
+                from_hash=previous.raw_bytes_hash,
+                to_hash=observation.raw_bytes_hash,
+            )
+            if not diffs and self.embedder is not None:
                 # L3 ranks reworded passages for review; it inspects only added/reworded
                 # passages, so it can be silent on a pure deletion or a change confined to
                 # very short sentences.

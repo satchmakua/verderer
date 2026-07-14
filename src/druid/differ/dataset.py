@@ -51,6 +51,26 @@ def _numeric_stats(series: pd.Series) -> dict[str, float]:
     }
 
 
+# Column names that clearly mark a positional row index rather than data. Deliberately
+# excludes ambiguous ones ("#", "no", "no.") that often head real data ("No. of samples").
+_INDEX_NAMES = frozenset({"", "unnamed: 0", "index", "id", "row", "row_id", "rownum"})
+
+
+def _is_index_like(series: pd.Series, name: object) -> bool:
+    """Whether a column is a positional row index (row numbers), not data — so truncating
+    the table shifts its min/max/mean as a pure artifact, not a distributional signal (M12).
+    Detected by an index-y name, or by being a contiguous integer run 0..n-1 / 1..n."""
+    if str(name).strip().lower() in _INDEX_NAMES:
+        return True
+    numeric = pd.to_numeric(series, errors="coerce")
+    if numeric.empty or numeric.isna().any() or not bool((numeric % 1 == 0).all()):
+        return False
+    start = numeric.iloc[0]
+    if start not in (0, 1):
+        return False
+    return numeric.tolist() == [float(v) for v in range(int(start), int(start) + len(numeric))]
+
+
 def distribution_changed(before: dict[str, float], after: dict[str, float]) -> bool:
     # A re-baselining/scaling moves mean/min/max; truncation is caught separately by count.
     return any(
@@ -124,6 +144,13 @@ def _tabular_diff(prev: pd.DataFrame, curr: pd.DataFrame, record: RecordFn, *, s
                     {"change": "column_retyped", "column": col, "from": prev_dtype, "to": curr_dtype},
                 )
             )
+        # Skip the distributional check on a positional index column: truncation shifts its
+        # min/max/mean as an artifact, never a data signal (the row-count change already
+        # captures the truncation). M12 — no spurious index-column DistributionalShift. Require
+        # *both* versions to look like an index, so a real column that was a 0/1-based run only
+        # *before* a re-baseline (and isn't after) is still checked.
+        if _is_index_like(prev[col], col) and _is_index_like(curr[col], col):
+            continue
         before, after = _numeric_stats(prev[col]), _numeric_stats(curr[col])
         if before and after and distribution_changed(before, after):
             diffs.append(rec(DiffType.DistributionalShift, "High", {"column": col, "from": before, "to": after}))

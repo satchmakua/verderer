@@ -17,6 +17,7 @@ dependencies = [
   "beautifulsoup4>=4.12",
   "pandas>=2.2",
   "warcio>=1.7",       # faithful WARC capture + archive interop (M11)
+  "pint>=0.23",        # L2 cross-unit numeric normalization (M12)
 ]
 
 [project.optional-dependencies]
