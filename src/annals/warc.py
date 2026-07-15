@@ -1,11 +1,11 @@
 """Faithful WARC capture (DESIGN §2/§7, M11): archive each observation as a standards
-**WARC** record so Druid interoperates with the web-archiving ecosystem (Wayback,
+**WARC** record so Annals interoperates with the web-archiving ecosystem (Wayback,
 End-of-Term, EDGI) instead of being self-referential.
 
 The WARC is the *faithful capture* the design promised: the exact request + response bytes,
 in the ISO 28500 container every archive replays. It is stored content-addressed and
 referenced by ``Observation.warc_record_hash`` in the attested leaf, so the raw artifact is
-recoverable from a standards archive, and a third party can replay precisely what Druid was
+recoverable from a standards archive, and a third party can replay precisely what Annals was
 served.
 
 Two halves, deliberately split along the trust boundary:
@@ -13,7 +13,7 @@ Two halves, deliberately split along the trust boundary:
 * **Writing** goes through the audited ``warcio`` library, so the output is conformant ISO
   28500 that any archive tool ingests — no hand-rolled container.
 * **Reading** is a tiny dependency-free parser (:func:`iter_records` / :func:`archived_payload`)
-  so a verifier can pull the archived bytes back out **without trusting warcio or Druid** —
+  so a verifier can pull the archived bytes back out **without trusting warcio or Annals** —
   the same "open, dependency-light verifier" principle as the trust core. It doubles as the
   proof that the container is real WARC, not a warcio-specific dialect.
 
@@ -30,7 +30,7 @@ from collections.abc import Iterator, Mapping
 from http import HTTPStatus
 from urllib.parse import urlsplit
 
-DEFAULT_USER_AGENT = "DruidWatchdog/0.0 (+https://github.com/satchmakua/Druid) polite-archival-collector"
+DEFAULT_USER_AGENT = "AnnalsWatchdog/0.0 (+https://github.com/satchmakua/annals) polite-archival-collector"
 
 # HTTP headers that describe the *encoding on the wire*, not the decoded payload. The client
 # (httpx) transparently decompresses, so the stored artifact is the DECODED body — archiving
@@ -149,8 +149,15 @@ def iter_records(data: bytes) -> Iterator[tuple[dict[str, str], bytes]]:
             if not line:
                 break
             key, _, value = line.partition(b": ")
-            headers[key.decode("ascii").lower()] = value.decode("utf-8")
-        block_len = int(headers["content-length"])
+            headers[key.decode("ascii", "replace").lower()] = value.decode("utf-8", "replace")
+        if "content-length" not in headers:
+            raise ValueError("WARC record has no Content-Length")
+        try:
+            block_len = int(headers["content-length"])
+        except ValueError:
+            raise ValueError("WARC record has a non-integer Content-Length") from None
+        if block_len < 0:
+            raise ValueError("WARC record has a negative Content-Length")
         block = data[index : index + block_len]
         index += block_len
         yield headers, block

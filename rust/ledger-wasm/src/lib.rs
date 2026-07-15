@@ -1,9 +1,9 @@
-//! WASM bindings for Druid's offline proof-bundle verifier (M5b).
+//! WASM bindings for Annals' offline proof-bundle verifier (M5b).
 //!
 //! Compiles [`ledger_core::verify_bundle`] to WebAssembly so the public site can verify a
-//! downloaded `druid.proofbundle/v1` **in the browser**, trusting neither the government
-//! nor Druid's servers. Ships the same pinned DigiCert + FreeTSA roots as the native
-//! `druid-verify`, so real-TSA-anchored bundles verify with nothing extra.
+//! downloaded `annals.proofbundle/v1` **in the browser**, trusting neither the government
+//! nor Annals' servers. Ships the same pinned DigiCert + FreeTSA roots as the native
+//! `annals-verify`, so real-TSA-anchored bundles verify with nothing extra.
 
 use wasm_bindgen::prelude::*;
 
@@ -17,7 +17,7 @@ pub fn verify_bundle(json: &str) -> String {
     ];
     // The browser verifier proves inclusion + anchors; it pins no witness keys, so it
     // reports (doesn't require) any cosignatures — quorum enforcement is a native/service
-    // policy via `druid-verify --witness --quorum`.
+    // policy via `annals-verify --witness --quorum`.
     match ledger_core::verify_bundle(json, &roots, &[], 0) {
         Ok(message) => format!("VALID {message}"),
         Err(error) => format!("INVALID {error}"),

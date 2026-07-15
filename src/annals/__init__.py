@@ -1,4 +1,4 @@
-"""Druid — a verifiable, tamper-evident watchdog for public environmental data.
+"""Annals — a verifiable, tamper-evident watchdog for public environmental data.
 
 See DESIGN.md for the full design. The trust core (store + ledger + verifier) is kept
 free of heuristics; the differ's interpretation lives alongside, never inside, the

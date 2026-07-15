@@ -28,7 +28,7 @@ class Observation:
     http_status: int
     raw_bytes_hash: str  # multihash of the response body
     response_headers_hash: str  # multihash of canonically-serialised headers
-    schema: str = "druid.observation/v1"
+    schema: str = "annals.observation/v1"
     rendered_dom_hash: str | None = None  # render collector: the post-JS DOM
     captured_requests_hash: str | None = None  # render collector: manifest of the page's own API/data calls
     tls_cert_chain_hash: str | None = None
@@ -67,7 +67,7 @@ class DiffRecord:
     severity: Severity
     layer: str
     evidence: dict[str, Any]
-    schema: str = "druid.diff/v1"
+    schema: str = "annals.diff/v1"
 
     def to_record(self) -> dict[str, Any]:
         rec = asdict(self)

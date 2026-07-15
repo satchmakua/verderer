@@ -69,7 +69,7 @@ class ObserveResult:
     reason: str = ""
 
 
-class Druid:
+class Annals:
     def __init__(
         self,
         data_dir: Path,
@@ -123,7 +123,7 @@ class Druid:
         latest: dict | None = None
         for entry in self.log.entries():
             record = entry.record
-            if record.get("schema") == "druid.observation/v1" and record.get("target_id") == target_id:
+            if record.get("schema") == "annals.observation/v1" and record.get("target_id") == target_id:
                 latest = record
         return Observation.from_record(latest) if latest is not None else None
 
@@ -149,7 +149,7 @@ class Druid:
                 # missing baseline, the exact blind spot a watchdog must not have. Fail loud.
                 raise RuntimeError(
                     f"conditional GET returned 304 for {target_id} but no baseline observation "
-                    f"exists (stale validator); clear druid-data/politeness-state.json and re-observe"
+                    f"exists (stale validator); clear annals-data/politeness-state.json and re-observe"
                 ) from None
             return ObserveResult(
                 observation=None, diffs=[], is_first=False, status="unchanged", reason="304 Not Modified"
@@ -307,17 +307,17 @@ class Druid:
         return [entry.record for entry in self.log.entries()]
 
     def gossip_bundle(self, old_checkpoint: str) -> dict:
-        """A self-contained `druid.consistency/v1` proving the current checkpoint extends the
+        """A self-contained `annals.consistency/v1` proving the current checkpoint extends the
         client's earlier `old_checkpoint` (M13 gossip). It carries both signed checkpoints and
-        a C2SP consistency proof, so `druid-verify consistency` confirms — offline — that the
+        a C2SP consistency proof, so `annals-verify consistency` confirms — offline — that the
         log never forked, shrank, or rewrote history between them."""
         new_checkpoint = self.log.signed_checkpoint()
         old_size = _checkpoint_size(old_checkpoint)
         new_size = _checkpoint_size(new_checkpoint)
         proof = self.log.consistency_proof(old_size, new_size)
         return {
-            "schema": "druid.consistency/v1",
-            "origin": "druid.watchdog/m1-log",
+            "schema": "annals.consistency/v1",
+            "origin": "annals.watchdog/m1-log",
             "from": old_size,
             "to": new_size,
             "old_checkpoint": old_checkpoint,
@@ -394,17 +394,17 @@ class Druid:
         return anchors
 
     def bundle(self, target_id: str, index: int | None = None) -> dict:
-        """Assemble a self-verifying `druid.proofbundle/v1` for an observation (DESIGN §6.4).
+        """Assemble a self-verifying `annals.proofbundle/v1` for an observation (DESIGN §6.4).
 
         Picks the latest observation leaf for `target_id` (or the leaf at ledger `index`),
         and packages: the observation record, the raw response bytes (the artifact), the
         Merkle inclusion proof, and the signed checkpoint + pinned public key. The bundle
-        verifies offline via `druid-verify bundle` — trusting neither the source nor Druid.
+        verifies offline via `annals-verify bundle` — trusting neither the source nor Annals.
         """
         observations = [
             entry
             for entry in self.log.entries()
-            if entry.record.get("schema") == "druid.observation/v1"
+            if entry.record.get("schema") == "annals.observation/v1"
             and entry.record.get("target_id") == target_id
         ]
         if not observations:
@@ -421,8 +421,8 @@ class Druid:
         raw_hash = leaf.record["raw_bytes_hash"]
         raw_bytes = self.store.get(raw_hash)
         return {
-            "schema": "druid.proofbundle/v1",
-            "origin": "druid.watchdog/m1-log",
+            "schema": "annals.proofbundle/v1",
+            "origin": "annals.watchdog/m1-log",
             "observation": leaf.record,
             "artifacts": [
                 {

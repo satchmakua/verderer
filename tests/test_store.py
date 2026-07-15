@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from druid.store import ContentAddressedStore
+from annals.store import ContentAddressedStore
 
 
 def test_put_is_content_addressed_and_dedups(tmp_path: Path) -> None:

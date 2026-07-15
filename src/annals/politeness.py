@@ -1,5 +1,5 @@
 """Polite collection layer (DESIGN §2 hard constraint, §7): make every real fetch
-robots-aware, rate-limited, backed-off, and conditional — so Druid never becomes a load
+robots-aware, rate-limited, backed-off, and conditional — so Annals never becomes a load
 problem for a source, and re-observing an unchanged page costs the server (and the ledger)
 nothing.
 
@@ -96,7 +96,7 @@ class SystemClock:
 
 
 class ConditionalFetcher(Protocol):
-    """The network seam the polite fetcher wraps: like :class:`~druid.collectors.base.Fetcher`
+    """The network seam the polite fetcher wraps: like :class:`~annals.collectors.base.Fetcher`
     but able to carry conditional-GET request headers. ``httpx_fetcher`` satisfies it."""
 
     def __call__(self, url: str, *, timeout: float = ..., headers: Mapping[str, str] | None = ...) -> FetchResult: ...
@@ -110,7 +110,7 @@ class RobotsFetcher(Protocol):
 
 
 class RenderFetcher(Protocol):
-    """A headless-render seam (:class:`~druid.collectors.base.RenderEngine`) the polite
+    """A headless-render seam (:class:`~annals.collectors.base.RenderEngine`) the polite
     wrapper guards with robots + rate-limit + backoff (no conditional GET — a render always
     yields the current DOM)."""
 
@@ -271,7 +271,7 @@ class PolitenessPolicy:
         except (OSError, ValueError, TypeError, KeyError, AttributeError):
             # A corrupt/partial courtesy cache (e.g. a crash mid-write, a truncated file)
             # must never crash the CLI — least of all the trust-core read paths
-            # (`druid verify` / `log`), which do not depend on politeness at all. Discard
+            # (`annals verify` / `log`), which do not depend on politeness at all. Discard
             # it; the next successful fetch rebuilds it (worst case: one unconditional GET).
             return {}
 
@@ -373,7 +373,7 @@ class PolitenessPolicy:
     # -- collector adapters ------------------------------------------------------------
 
     def fetcher(self, inner: ConditionalFetcher) -> Fetcher:
-        """Adapt this policy into a :class:`~druid.collectors.base.Fetcher` the static
+        """Adapt this policy into a :class:`~annals.collectors.base.Fetcher` the static
         collector can use unchanged: it calls ``fetch(url)`` and gets a ``FetchResult`` or
         one of the collection signals."""
 
@@ -383,7 +383,7 @@ class PolitenessPolicy:
         return polite
 
     def engine(self, inner: RenderFetcher) -> RenderEngine:
-        """Adapt this policy into a :class:`~druid.collectors.base.RenderEngine`."""
+        """Adapt this policy into a :class:`~annals.collectors.base.RenderEngine`."""
 
         def polite(url: str, *, timeout: float = 30.0) -> RenderResult:
             return self.render(url, inner, timeout=timeout)

@@ -12,12 +12,12 @@ from pathlib import Path
 
 import pytest
 
-from druid.anchors import OpensslTsaAnchorer
-from druid.collectors.base import FetchResult
-from druid.collectors.static import StaticCollector
-from druid.config import Target
-from druid.ledger.core import find_binary
-from druid.pipeline import Druid
+from annals.anchors import OpensslTsaAnchorer
+from annals.collectors.base import FetchResult
+from annals.collectors.static import StaticCollector
+from annals.config import Target
+from annals.ledger.core import find_binary
+from annals.pipeline import Annals
 
 PAGE = b"<html><body><p>EPA reporting threshold is 10 ppb.</p></body></html>"
 
@@ -28,11 +28,11 @@ def openssl_available() -> None:
         pytest.skip("openssl not on PATH")
 
 
-def _make_druid(tmp_path: Path) -> Druid:
+def _make_annals(tmp_path: Path) -> Annals:
     def fake_fetch(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={"content-type": "text/html"}, body=PAGE)
 
-    return Druid(
+    return Annals(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://example.gov/t")},
         terms=["threshold"],
@@ -44,21 +44,21 @@ def _verify_bundle(bundle: dict, tmp_path: Path, root: Path, name: str) -> subpr
     path = tmp_path / f"{name}.json"
     path.write_text(json.dumps(bundle), encoding="utf-8")
     return subprocess.run(
-        [str(find_binary("druid-verify")), "bundle", str(path), "--root", str(root)],
+        [str(find_binary("annals-verify")), "bundle", str(path), "--root", str(root)],
         capture_output=True,
         encoding="utf-8",
     )
 
 
 def test_anchor_bundle_and_verify_offline(tmp_path: Path, ledger_built: None, openssl_available: None) -> None:
-    druid = _make_druid(tmp_path)
-    druid.observe("t")
+    annals = _make_annals(tmp_path)
+    annals.observe("t")
 
     anchorer = OpensslTsaAnchorer(tmp_path / "data" / "anchors" / "dev-tsa")
-    info = druid.anchor(anchorer)
+    info = annals.anchor(anchorer)
     assert info["tsa"] == "dev-tsa"
 
-    bundle = druid.bundle("t")
+    bundle = annals.bundle("t")
     assert len(bundle["anchors"]) == 1
     assert bundle["anchors"][0]["type"] == "rfc3161"
 
@@ -78,10 +78,10 @@ def test_unpinned_anchor_is_reported_not_fatal(tmp_path: Path, ledger_built: Non
     # An anchor from a TSA whose root isn't pinned is like an unknown C2SP witness
     # cosignature: it proves nothing and spoils nothing. The bundle stays VALID on the
     # inclusion proof, the anchor is reported unverified, and no time bound is claimed.
-    druid = _make_druid(tmp_path)
-    druid.observe("t")
-    druid.anchor(OpensslTsaAnchorer(tmp_path / "data" / "anchors" / "dev-tsa"))
-    bundle = druid.bundle("t")
+    annals = _make_annals(tmp_path)
+    annals.observe("t")
+    annals.anchor(OpensslTsaAnchorer(tmp_path / "data" / "anchors" / "dev-tsa"))
+    bundle = annals.bundle("t")
 
     other_root = tmp_path / "other-root.pem"
     OpensslTsaAnchorer(tmp_path / "other-tsa")  # generates an independent root
@@ -109,22 +109,22 @@ def test_live_digicert_anchor_verifies_with_embedded_root(
     --root (the verifier ships DigiCert's root pinned). Skips if the TSA is unreachable."""
     import httpx
 
-    from druid.anchors import HttpTsaAnchorer
+    from annals.anchors import HttpTsaAnchorer
 
-    druid = _make_druid(tmp_path)
-    druid.observe("t")
+    annals = _make_annals(tmp_path)
+    annals.observe("t")
     try:
-        druid.anchor(HttpTsaAnchorer("digicert"))
+        annals.anchor(HttpTsaAnchorer("digicert"))
     except (httpx.HTTPError, OSError) as error:
         pytest.skip(f"DigiCert TSA unreachable: {error}")
 
-    bundle = druid.bundle("t")
+    bundle = annals.bundle("t")
     assert any(a["tsa_name"] == "digicert" for a in bundle["anchors"])
     path = tmp_path / "live.json"
     path.write_text(json.dumps(bundle), encoding="utf-8")
     # No --root: the verifier trusts DigiCert's root by default.
     result = subprocess.run(
-        [str(find_binary("druid-verify")), "bundle", str(path)], capture_output=True, encoding="utf-8"
+        [str(find_binary("annals-verify")), "bundle", str(path)], capture_output=True, encoding="utf-8"
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "no later than" in result.stdout

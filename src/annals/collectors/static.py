@@ -16,7 +16,7 @@ from ..hashing import multihash_sha256
 from ..models import Observation
 from .base import Capture, Collected, Fetcher, FetchResult
 
-USER_AGENT = "DruidWatchdog/0.0 (+https://github.com/satchmakua/Druid) polite-archival-collector"
+USER_AGENT = "AnnalsWatchdog/0.0 (+https://github.com/satchmakua/annals) polite-archival-collector"
 
 
 def _utc_now() -> str:

@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..pipeline import Druid
+from ..pipeline import Annals
 
-RECORD_SCHEMA = "druid.record/v1"
+RECORD_SCHEMA = "annals.record/v1"
 
 
 def _observation_view(leaf_hash: str, record: dict[str, Any], *, warc_available: bool) -> dict[str, Any]:
@@ -41,10 +41,10 @@ def _event_view(leaf_hash: str, record: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def build_record(druid: Druid) -> dict[str, Any]:
+def build_record(annals: Annals) -> dict[str, Any]:
     """A JSON-serialisable snapshot of the public record for the UI + feeds."""
     targets: dict[str, dict[str, Any]] = {}
-    for target in druid.targets.values():
+    for target in annals.targets.values():
         targets[target.id] = {
             "id": target.id,
             "title": target.title,
@@ -70,16 +70,16 @@ def build_record(druid: Druid) -> dict[str, Any]:
         return targets[tid]
 
     all_events: list[dict[str, Any]] = []
-    for entry in druid.log.entries():
+    for entry in annals.log.entries():
         record = entry.record
         schema = record.get("schema")
-        if schema == "druid.observation/v1":
+        if schema == "annals.observation/v1":
             warc_hash = record.get("warc_record_hash")
-            warc_available = isinstance(warc_hash, str) and druid.store.has(warc_hash)
+            warc_available = isinstance(warc_hash, str) and annals.store.has(warc_hash)
             _bucket(record.get("target_id"))["observations"].append(
                 _observation_view(entry.leaf_hash, record, warc_available=warc_available)
             )
-        elif schema == "druid.diff/v1":
+        elif schema == "annals.diff/v1":
             event = _event_view(entry.leaf_hash, record)
             _bucket(record.get("target_id"))["events"].append(event)
             all_events.append(event)
@@ -88,8 +88,8 @@ def build_record(druid: Druid) -> dict[str, Any]:
     ordered = sorted(targets.values(), key=lambda t: t["id"])
     return {
         "schema": RECORD_SCHEMA,
-        "public_key": druid.log.public_key_hex,
-        "size": len(druid.log.entries()),
+        "public_key": annals.log.public_key_hex,
+        "size": len(annals.log.entries()),
         "targets": ordered,
         "events": all_events,
     }

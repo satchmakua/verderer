@@ -3,7 +3,7 @@ diff-type, and severity — over webhooks and email. RSS already ships (see `web
 this is the push side.
 
 Delivery is idempotent: a per-(subscription, event) key is recorded in
-`druid-data/notify-state.json`, so re-running `druid notify` never re-sends, and adding a
+`annals-data/notify-state.json`, so re-running `annals notify` never re-sends, and adding a
 new subscription still receives the historical events it matches. Senders are injectable
 (a port) so the whole path is testable offline.
 """
@@ -19,7 +19,7 @@ from email.message import EmailMessage
 from pathlib import Path
 from typing import Any, Protocol
 
-from .pipeline import Druid
+from .pipeline import Annals
 
 SEVERITY_ORDER = {"Info": 0, "Low": 1, "Medium": 2, "High": 3}
 
@@ -51,12 +51,12 @@ def load_subscriptions(path: Path) -> list[Subscription]:
     return subs
 
 
-def events(druid: Druid) -> list[dict[str, Any]]:
+def events(annals: Annals) -> list[dict[str, Any]]:
     """The classified diff events from the ledger, oldest-first (delivery order)."""
     out: list[dict[str, Any]] = []
-    for entry in druid.log.entries():
+    for entry in annals.log.entries():
         record = entry.record
-        if record.get("schema") != "druid.diff/v1":
+        if record.get("schema") != "annals.diff/v1":
             continue
         out.append(
             {
@@ -91,7 +91,7 @@ class Notifier(Protocol):
 
 
 def alert_payload(sub: Subscription, event: dict[str, Any]) -> dict[str, Any]:
-    return {"schema": "druid.alert/v1", "subscription": sub.name, **event}
+    return {"schema": "annals.alert/v1", "subscription": sub.name, **event}
 
 
 class HttpWebhookNotifier:
@@ -112,21 +112,21 @@ class HttpWebhookNotifier:
             sub.dest,
             json=payload,
             timeout=self.timeout,
-            headers={"User-Agent": "DruidWatchdog/0.0 (+https://github.com/satchmakua/Druid)"},
+            headers={"User-Agent": "AnnalsWatchdog/0.0 (+https://github.com/satchmakua/annals)"},
         ).raise_for_status()
 
 
 def build_email(sub: Subscription, event: dict[str, Any], *, from_addr: str) -> EmailMessage:
     msg = EmailMessage()
-    msg["Subject"] = f"[Druid] {event['diff_type']} [{event['severity']}] - {event['target_id']}"
+    msg["Subject"] = f"[Annals] {event['diff_type']} [{event['severity']}] - {event['target_id']}"
     msg["From"] = from_addr
     msg["To"] = sub.dest
     body = (
-        f"Druid detected a change on {event['target_id']}.\n\n"
+        f"Annals detected a change on {event['target_id']}.\n\n"
         f"  type:     {event['diff_type']} [{event['severity']}]\n"
         f"  detected: {event['detected_at']}\n"
         f"  evidence: {event['evidence']}\n\n"
-        f"This classification is Druid's best-effort, human-reviewable interpretation. The underlying\n"
+        f"This classification is Annals' best-effort, human-reviewable interpretation. The underlying\n"
         f"observations are cryptographically attested and offline-verifiable.\n\n"
         f"  event id: {event['id']}\n"
     )
@@ -141,7 +141,7 @@ class SmtpEmailNotifier:
         self,
         host: str = "localhost",
         port: int = 25,
-        from_addr: str = "druid@localhost",
+        from_addr: str = "annals@localhost",
         sender: Any = None,
     ) -> None:
         self.host = host
@@ -172,7 +172,7 @@ def load_state(data_dir: Path) -> DispatchState:
         return DispatchState(delivered=set(data["delivered"]))
     except (OSError, ValueError, TypeError, KeyError):
         # A corrupt/partial state file (a crash mid-write) must never crash the caller —
-        # least of all the M10 `druid run` loop, which loads this every tick and would
+        # least of all the M10 `annals run` loop, which loads this every tick and would
         # otherwise die and re-crash on restart. Start fresh; the worst case is that a few
         # already-sent alerts resend, which is far better than a dead watchdog. The atomic
         # write below makes such corruption unlikely in the first place.

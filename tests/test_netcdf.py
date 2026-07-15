@@ -10,8 +10,8 @@ import zipfile
 
 import pytest
 
-from druid.differ.dataset import dataset_diff, detect_format
-from druid.models import DiffType
+from annals.differ.dataset import dataset_diff, detect_format
+from annals.models import DiffType
 
 
 def _diff(a: bytes, b: bytes) -> list:
@@ -199,7 +199,7 @@ def test_netcdf_corrupt_curr_fails_soft(xarray_available) -> None:
 def test_canonical_rejects_non_finite() -> None:
     import pytest as _pytest
 
-    from druid.ledger.core import canonical
+    from annals.ledger.core import canonical
 
     with _pytest.raises(ValueError):
         canonical({"x": float("nan")})
@@ -211,7 +211,7 @@ def test_scalar_coerces_to_json_safe_types() -> None:
     import datetime
     import json
 
-    from druid.differ.netcdf import _scalar
+    from annals.differ.netcdf import _scalar
 
     assert _scalar("ppm") == "ppm"
     assert _scalar(42) == 42

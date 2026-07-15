@@ -27,7 +27,7 @@ from ..hashing import multihash_sha256
 from ..models import Observation
 from .base import Capture, Collected, RenderedCall, RenderEngine, RenderResult
 
-USER_AGENT = "DruidWatchdog/0.0 (+https://github.com/satchmakua/Druid) polite-archival-collector; headless"
+USER_AGENT = "AnnalsWatchdog/0.0 (+https://github.com/satchmakua/annals) polite-archival-collector; headless"
 
 # The resource types we treat as the page's data calls (not decoration).
 DATA_RESOURCE_TYPES = frozenset({"xhr", "fetch"})
@@ -41,7 +41,7 @@ def playwright_engine(url: str, *, timeout: float = 30.0, settle: float = 3.0) -
     """The default :class:`RenderEngine`: headless Chromium via Playwright.
 
     Lazily imports Playwright so the dependency is needed only when actually rendering
-    (``pip install 'druid[render]'`` + ``playwright install chromium``).
+    (``pip install 'annals[render]'`` + ``playwright install chromium``).
 
     Load strategy: wait for ``domcontentloaded`` (reliable — it always fires), then a
     *bounded* ``networkidle`` settle so client-side JS can issue its data calls, but
@@ -128,7 +128,7 @@ class RenderCollector:
             key=lambda c: (c["url"], c["method"], c["status"], c["response_hash"]),
         )
         manifest = {
-            "schema": "druid.captured_requests/v1",
+            "schema": "annals.captured_requests/v1",
             "final_url": result.final_url,
             "calls": manifest_calls,
         }

@@ -36,7 +36,9 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
-# Druid runtime state — blobs, ledger, and the local signing key. Never commit.
+# Annals runtime state — blobs, ledger, and the local signing key. Never commit.
+annals-data/
+# Legacy pre-rename runtime state (kept locally; not auto-migrated)
 druid-data/
 
 # Rust build output (Cargo.lock IS committed for the binaries — reproducible builds)

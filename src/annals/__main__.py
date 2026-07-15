@@ -1,4 +1,4 @@
-"""Enable `python -m druid`."""
+"""Enable `python -m annals`."""
 
 from __future__ import annotations
 

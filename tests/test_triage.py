@@ -7,11 +7,11 @@ import hashlib
 import re
 from pathlib import Path
 
-from druid.collectors.base import FetchResult
-from druid.collectors.static import StaticCollector
-from druid.config import Target
-from druid.pipeline import Druid
-from druid.triage import REVIEW_SCHEMA, claude_summarizer, summarize_event
+from annals.collectors.base import FetchResult
+from annals.collectors.static import StaticCollector
+from annals.config import Target
+from annals.pipeline import Annals
+from annals.triage import REVIEW_SCHEMA, claude_summarizer, summarize_event
 
 PREV = (
     "The agency remains firmly committed to aggressively reducing nationwide greenhouse pollution. "
@@ -38,57 +38,57 @@ class BagEmbedder:
         return out
 
 
-def _druid_with_reworded_event(tmp_path: Path) -> Druid:
+def _annals_with_reworded_event(tmp_path: Path) -> Annals:
     pages = {"i": 0, "bodies": [PREV.encode(), CURR_REWORDED.encode()]}
 
     def fake(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={}, body=pages["bodies"][pages["i"]])
 
-    druid = Druid(
+    annals = Annals(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://e.gov/t")},
         terms=["climate change"],
         collector=StaticCollector(fetcher=fake),
         embedder=BagEmbedder(),
     )
-    druid.observe("t")
+    annals.observe("t")
     pages["i"] = 1
-    druid.observe("t")
-    return druid
+    annals.observe("t")
+    return annals
 
 
 def test_summarize_event_writes_sidecar_not_ledger(tmp_path: Path, ledger_built: None) -> None:
-    druid = _druid_with_reworded_event(tmp_path)
-    entries_before = len(druid.log.entries())
+    annals = _annals_with_reworded_event(tmp_path)
+    entries_before = len(annals.log.entries())
 
     def fake_summarizer(before: str, after: str, *, context: str = "") -> str:
         assert "committed" in before and "reviewing" in after
         return "The passage weakens a firm commitment into a voluntary consideration."
 
-    review = summarize_event(druid, "t", fake_summarizer)
+    review = summarize_event(annals, "t", fake_summarizer)
     assert review is not None
     assert review["schema"] == REVIEW_SCHEMA
     assert "voluntary consideration" in review["summary"]
     assert "Not attested" in review["disclaimer"]
 
     # The trust core is untouched: the summary is a sidecar file, no new ledger leaf.
-    assert len(druid.log.entries()) == entries_before
+    assert len(annals.log.entries()) == entries_before
     sidecars = list((tmp_path / "data" / "review").glob("*.json"))
     assert len(sidecars) == 1
     assert "voluntary consideration" in sidecars[0].read_text(encoding="utf-8")
-    assert druid.log.verify()[0]  # ledger still verifies
+    assert annals.log.verify()[0]  # ledger still verifies
 
 
 def test_summarize_event_none_when_no_rework(tmp_path: Path, ledger_built: None) -> None:
-    druid = Druid(
+    annals = Annals(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://e.gov/t")},
         terms=[],
         collector=StaticCollector(fetcher=lambda u, *, timeout=30.0: FetchResult(u, 200, {}, PREV.encode())),
         embedder=BagEmbedder(),
     )
-    druid.observe("t")  # only one observation -> no diff at all
-    assert summarize_event(druid, "t", lambda b, a, *, context="": "x") is None
+    annals.observe("t")  # only one observation -> no diff at all
+    assert summarize_event(annals, "t", lambda b, a, *, context="": "x") is None
 
 
 class _FakeBlock:

@@ -5,7 +5,7 @@ so a verifier can require a **quorum** of cosignatures and stop trusting the log
 alone (a defence against a split-view / equivocating log — DESIGN §4). Each witness holds
 its own Ed25519 key; the verifier pins the witness public keys it trusts.
 
-Cosigning itself goes through the Rust trust core (`druid-ledger cosign`), which
+Cosigning itself goes through the Rust trust core (`annals-ledger cosign`), which
 implements the exact C2SP cosignature/v1 format — no bespoke crypto here. This module only
 generates/loads witness keys and stores the resulting cosignature lines alongside the
 checkpoint they cover, so a proof bundle can carry them.

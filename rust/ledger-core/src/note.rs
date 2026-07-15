@@ -90,9 +90,9 @@ mod tests {
 
     #[test]
     fn sign_then_verify_roundtrips() {
-        let text = "druid.watchdog/m1-log\n3\nTszzRgjTG6xce+z2AG31kAXYKBgQVtCSCE40HmuwBb0=\n";
-        let note = sign_note(text, "druid.watchdog/m1-log", &key());
-        let got = verify_note(&note, "druid.watchdog/m1-log", &key().verifying_key()).unwrap();
+        let text = "annals.watchdog/m1-log\n3\nTszzRgjTG6xce+z2AG31kAXYKBgQVtCSCE40HmuwBb0=\n";
+        let note = sign_note(text, "annals.watchdog/m1-log", &key());
+        let got = verify_note(&note, "annals.watchdog/m1-log", &key().verifying_key()).unwrap();
         assert_eq!(got, text);
     }
 

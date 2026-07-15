@@ -1,44 +1,50 @@
-# Druid
+# Annals
+
+*(formerly Druid)*
 
 > An immutable, provable record of what the government's environmental data said — and how it is being changed.
 
-Druid continuously observes a curated set of high-value U.S. government environmental
+Annals continuously observes a curated set of high-value U.S. government environmental
 pages and datasets, cryptographically attests every observation in a tamper-evident
 ledger, detects *meaningful* change (definition swaps, threshold edits, silent dataset
 shifts — not byte noise), and emits a public, citable, self-verifying record. Its
 differentiator: a **downloadable proof bundle** anyone can verify **offline**, trusting
-neither the government nor Druid's operators. Complementary to the volunteer rescue
+neither the government nor Annals' operators. Complementary to the volunteer rescue
 ecosystem (EDGI, PEDP, End-of-Term, Data Rescue Project) — adding the two things none of
 them treat as primary: **provable observation integrity** and **classified manipulation
 detection**.
 
 **Status:** **the core roadmap M0–M8 is complete and confirmed**, and the Phase 5–6 "real
-tool" arc is underway — **M9–M12 and M13a are built and confirmed** (polite collection, the
-scheduler, faithful WARC capture, detection-precision refinements, and consistency-proof
-gossip). A provable trust spine: a Rust Merkle log, C2SP signed checkpoints published as
+tool" arc is underway — **M9–M12, M13a, and M14d-1 are built and confirmed** (polite
+collection, the scheduler, faithful WARC capture, detection-precision refinements,
+consistency-proof gossip, and property/fuzz + scale hardening). A provable trust spine: a Rust
+Merkle log, C2SP signed checkpoints published as
 tile files (M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from
 independent TSAs (M2b), and multi-party **witness cosignatures** with quorum verification
 (M8). Change detection spans five layers over static pages, JS-rendered tools (M3b render
 collector), and scientific/tabular datasets — CSV/JSON, NetCDF/HDF, zip/xlsx (M4a/M4b) — plus
 reviewer-aid triage that ranks reworded passages and drafts plain-language summaries (M6). A
-federated overlay (M7) cross-references third-party archives (Wayback CDX) with Druid's
+federated overlay (M7) cross-references third-party archives (Wayback CDX) with Annals'
 attested record, badging what carries a proof. The public product: a browsable Astro record
 with RSS, webhook/email alerts, search, and in-browser (WASM) offline proof verification.
 Collection is **polite by construction** (M9): robots.txt (Disallow + Crawl-delay), per-host
 rate-limiting with backoff, and conditional GET (a `304` logs nothing). And it now **runs
-itself** (M10): `druid run` re-observes the curated set on each target's cadence, appends
+itself** (M10): `annals run` re-observes the curated set on each target's cadence, appends
 diffs, and fires alerts on its own — restart-safe, with `--once` for cron/systemd (see
 [docs/deployment.md](docs/deployment.md)). Every observation is archived as a standards
 **WARC** (M11) — attested by `warc_record_hash`, recoverable by any archive tool, shipped by
-`druid export` — so Druid interoperates with the rescue ecosystem (Wayback / End-of-Term /
+`annals export` — so Annals interoperates with the rescue ecosystem (Wayback / End-of-Term /
 EDGI) instead of being self-referential. Detection got sharper (M12): pint cross-unit
 numerics (`10 ppb` == `0.010 ppm`), structure/table-aware localized diffs, rendered-DOM noise
 suppression, and an index-column truncation fix. And **gossip** closes the equivocation gap
-(M13a): `druid verify-consistency` proves — offline, under a pinned key — that a later
-checkpoint *extends* an earlier one, so a forked, shrunk, or rewritten log is caught. Next:
-M14 (production deploy + scale). OpenTimestamps (M2b-3 / M13b) stays deferred until a real
-Bitcoin-confirmed fixture can be verified (no synthetic anchors on the trust path). See
-[ROADMAP.md](ROADMAP.md).
+(M13a): `annals verify-consistency` proves — offline, under a pinned key — that a later
+checkpoint *extends* an earlier one, so a forked, shrunk, or rewritten log is caught. And the
+core is now **stress-tested** (M14d-1): Hypothesis fuzzing proves the differ and the WARC
+reader never crash on untrusted bytes, and a 100k-leaf scale test proves inclusion/consistency
+proofs stay logarithmic. Next: the rest of M14 (R2 store adapter, Cloudflare deploy + mirrors,
+an independently-run witness, a richer curated set). OpenTimestamps (M2b-3 / M13b) stays
+deferred until a real Bitcoin-confirmed fixture can be verified (no synthetic anchors on the
+trust path). See [ROADMAP.md](ROADMAP.md).
 
 ---
 
@@ -56,26 +62,26 @@ python -m venv .venv
 source .venv/Scripts/activate        # Windows Git Bash; PowerShell: .venv\Scripts\Activate.ps1
 pip install -e ".[dev]"              # once
 
-python -m druid targets              # list the curated targets
-python -m druid observe epa-ghgrp    # fetch + content-address + diff + append a signed leaf
-python -m druid log                  # print the observation / diff timeline
-python -m druid verify               # recompute the Merkle tree + check the signed checkpoint
-python -m druid anchor --tsa digicert,freetsa     # timestamp via independent TSAs (over HTTP)
-python -m druid bundle epa-ghgrp -o proof.json    # export a self-verifying proof bundle
-python -m druid verify-bundle proof.json          # verify it offline — anchors included
-python -m druid tiles                             # (re)publish the C2SP tile files for the ledger
-python -m druid export --out web/public           # build the public record: record.json + RSS + checkpoint + tiles
-python -m druid notify --dry-run                   # push alerts to webhook/email subscriptions (data/subscriptions.toml)
-python -m druid run --once                          # observe every due target once + fire alerts (cron/systemd)
-python -m druid run                                 # long-lived watchdog loop (see docs/deployment.md)
-python -m druid consistency -o gossip.json          # prove the current checkpoint extends a recorded baseline (M13a)
-python -m druid verify-consistency gossip.json --pubkey <hex>   # a client verifies a gossip bundle offline
+python -m annals targets              # list the curated targets
+python -m annals observe epa-ghgrp    # fetch + content-address + diff + append a signed leaf
+python -m annals log                  # print the observation / diff timeline
+python -m annals verify               # recompute the Merkle tree + check the signed checkpoint
+python -m annals anchor --tsa digicert,freetsa     # timestamp via independent TSAs (over HTTP)
+python -m annals bundle epa-ghgrp -o proof.json    # export a self-verifying proof bundle
+python -m annals verify-bundle proof.json          # verify it offline — anchors included
+python -m annals tiles                             # (re)publish the C2SP tile files for the ledger
+python -m annals export --out web/public           # build the public record: record.json + RSS + checkpoint + tiles
+python -m annals notify --dry-run                   # push alerts to webhook/email subscriptions (data/subscriptions.toml)
+python -m annals run --once                          # observe every due target once + fire alerts (cron/systemd)
+python -m annals run                                 # long-lived watchdog loop (see docs/deployment.md)
+python -m annals consistency -o gossip.json          # prove the current checkpoint extends a recorded baseline (M13a)
+python -m annals verify-consistency gossip.json --pubkey <hex>   # a client verifies a gossip bundle offline
 ```
 
 ### The public record (Astro site)
 
 ```bash
-python -m druid export --out web/public           # generate record.json + feed.xml from the ledger
+python -m annals export --out web/public           # generate record.json + feed.xml from the ledger
 cp web/public/record.json web/src/data/           # (the `npm --prefix web run export` script does both)
 cd web && npm install
 npm run build:wasm                                # compile the verifier to WASM (needs Rust + wasm-bindgen-cli)
@@ -86,29 +92,29 @@ A browsable, static-leaning record: recent classified changes, per-target timeli
 (attested observations + diffs with evidence), per-event permalinks, a subscribable **RSS
 feed** (`/feed.xml`, plus per-target feeds), and a **`/verify` page that checks a downloaded
 proof bundle entirely in your browser** (WebAssembly — nothing uploaded, trusting neither
-the source nor Druid). The home page has client-side search over the classified changes,
-and `druid notify` pushes new events to webhook/email subscriptions. The site also serves
+the source nor Annals). The home page has client-side search over the classified changes,
+and `annals notify` pushes new events to webhook/email subscriptions. The site also serves
 the log itself — `/checkpoint` plus the C2SP `/tile/…` files — so an independent verifier
 can fetch tiles and recompute inclusion proofs with no live service (M2c).
 
-The anchor gives a **time bound** ("existed no later than T"): `druid anchor` submits the
+The anchor gives a **time bound** ("existed no later than T"): `annals anchor` submits the
 checkpoint to independent third-party TSAs (**DigiCert**, **FreeTSA**), whose roots ship
 pinned in the verifier — so `verify-bundle` checks those anchors offline with no extra
 flags. An offline, self-hosted dev TSA is available via `--tsa dev` (proves the mechanism,
-not independence; verify it with `--root druid-data/ledger/dev-tsa-root.pem`).
+not independence; verify it with `--root annals-data/ledger/dev-tsa-root.pem`).
 
-`observe` a target twice with content that changed in between and Druid flags the
+`observe` a target twice with content that changed in between and Annals flags the
 specific change (e.g. a watched term disappearing). `verify` proves the ledger hasn't
 been altered — corrupt any stored leaf and it reports `INVALID`. The trust core
 (`rust/ledger-core`) also produces inclusion/consistency proofs and an **offline**
-verifier (`druid-verify`) that confirms a record against a signed checkpoint trusting
-neither the source nor Druid. Runtime state lives in `./druid-data/` (gitignored).
+verifier (`annals-verify`) that confirms a record against a signed checkpoint trusting
+neither the source nor Annals. Runtime state lives in `./annals-data/` (gitignored).
 
 ### Commands
 
 | Command | What it does |
 |---|---|
-| `python -m druid observe <id>` | Observe one target now |
+| `python -m annals observe <id>` | Observe one target now |
 | `pytest` | Run the tests |
 | `ruff check . && mypy src` | Lint + typecheck |
 

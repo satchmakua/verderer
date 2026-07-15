@@ -2,12 +2,12 @@
 
 from pathlib import Path
 
-from druid.collectors.base import FetchResult
-from druid.collectors.static import StaticCollector
-from druid.config import Target
-from druid.differ.dataset import dataset_diff, parse_table
-from druid.models import DiffType
-from druid.pipeline import Druid
+from annals.collectors.base import FetchResult
+from annals.collectors.static import StaticCollector
+from annals.config import Target
+from annals.differ.dataset import dataset_diff, parse_table
+from annals.models import DiffType
+from annals.pipeline import Annals
 
 CSV = b"year,co2_ppm,site\n2020,412.5,A\n2021,414.2,B\n2022,416.0,C\n"
 CSV_DROP_COL = b"year,site\n2020,A\n2021,B\n2022,C\n"  # co2_ppm removed
@@ -56,13 +56,13 @@ def test_pipeline_routes_dataset_targets_to_l4(tmp_path: Path, ledger_built: Non
     def fake(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={"content-type": "text/csv"}, body=pages[min(cursor["i"], 1)])
 
-    druid = Druid(
+    annals = Annals(
         tmp_path / "data",
         targets={"ds": Target(id="ds", title="DS", url="https://example.gov/d.csv", kind="dataset")},
         terms=[],
         collector=StaticCollector(fetcher=fake),
     )
-    druid.observe("ds")
+    annals.observe("ds")
     cursor["i"] = 1
-    result = druid.observe("ds")
+    result = annals.observe("ds")
     assert any(d.diff_type is DiffType.SchemaChange for d in result.diffs)

@@ -1,12 +1,12 @@
-//! `druid-verify` — the independent verifier.
+//! `annals-verify` — the independent verifier.
 //!
-//!   druid-verify log         --dir D    recompute the whole log vs. its signed checkpoint
-//!   druid-verify inclusion              (JSON bundle on stdin) verify a record offline
-//!   druid-verify tiles       --tiles D  (JSON on stdin) reconstruct the proof from tile files
-//!   druid-verify consistency            (JSON on stdin) prove one checkpoint extends another (M13)
+//!   annals-verify log         --dir D    recompute the whole log vs. its signed checkpoint
+//!   annals-verify inclusion              (JSON bundle on stdin) verify a record offline
+//!   annals-verify tiles       --tiles D  (JSON on stdin) reconstruct the proof from tile files
+//!   annals-verify consistency            (JSON on stdin) prove one checkpoint extends another (M13)
 //!
 //! The `inclusion` mode takes no directory and contacts no service: it is the offline,
-//! transferable check at the heart of Druid's value (DESIGN §6.4). stdin JSON:
+//! transferable check at the heart of Annals' value (DESIGN §6.4). stdin JSON:
 //!   {"record_b64": "...", "index": N, "proof": ["<hex>", ...],
 //!    "checkpoint": "<signed note>", "pubkey_hex": "<hex>"}
 //!
@@ -194,11 +194,11 @@ fn run() -> i32 {
             }
         }
         Some("bundle") => {
-            // druid-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]
+            // annals-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]
             // Verify a downloaded proof bundle offline; pinned TSA roots verify any anchors,
             // pinned witness keys + a quorum require C2SP cosignatures (M8).
             let Some(path) = args.get(1).filter(|a| !a.starts_with("--")) else {
-                eprintln!("usage: druid-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]");
+                eprintln!("usage: annals-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]");
                 return 2;
             };
             // Ship the independent third-party TSA roots we trust by default (M2b-2);
@@ -266,9 +266,13 @@ fn run() -> i32 {
                 }
             }
         }
+        Some("--version") | Some("version") => {
+            println!("annals-verify {}", env!("CARGO_PKG_VERSION"));
+            0
+        }
         _ => {
             eprintln!(
-                "usage: druid-verify log --dir D | druid-verify inclusion (JSON on stdin) | druid-verify tiles --tiles D (JSON on stdin) | druid-verify consistency (JSON on stdin) | druid-verify bundle <file.json>"
+                "usage: annals-verify log --dir D | annals-verify inclusion (JSON on stdin) | annals-verify tiles --tiles D (JSON on stdin) | annals-verify consistency (JSON on stdin) | annals-verify bundle <file.json>"
             );
             2
         }

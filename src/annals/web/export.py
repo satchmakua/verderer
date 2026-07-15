@@ -11,15 +11,15 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from ..pipeline import Druid, _checkpoint_size
+from ..pipeline import Annals, _checkpoint_size
 from .feed import SITE_TITLE, render_rss
 from .record import build_record
 
 
-def export_site(druid: Druid, out_dir: Path, *, base_url: str = "https://druid.example") -> dict[str, Any]:
+def export_site(annals: Annals, out_dir: Path, *, base_url: str = "https://annals.example") -> dict[str, Any]:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    record = build_record(druid)
+    record = build_record(annals)
 
     (out / "record.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
     (out / "feed.xml").write_text(
@@ -58,15 +58,15 @@ def export_site(druid: Druid, out_dir: Path, *, base_url: str = "https://druid.e
             if not warc_hash or warc_hash in seen:
                 continue
             seen.add(warc_hash)
-            if druid.store.has(warc_hash):
-                (warc_out / f"{warc_hash[4:]}.warc").write_bytes(druid.store.get(warc_hash))
+            if annals.store.has(warc_hash):
+                (warc_out / f"{warc_hash[4:]}.warc").write_bytes(annals.store.get(warc_hash))
                 warcs += 1
 
     # M2c: publish the log itself — the signed checkpoint + the C2SP tile files. Static
     # files only (CDN-friendly); a verifier fetches them and recomputes proofs, trusting
     # nothing but the checkpoint signature.
     tiles = 0
-    ledger_dir = druid.data_dir / "ledger"
+    ledger_dir = annals.data_dir / "ledger"
     consistency = 0
     if (ledger_dir / "checkpoint").exists():
         shutil.copyfile(ledger_dir / "checkpoint", out / "checkpoint")
@@ -74,7 +74,7 @@ def export_site(druid: Druid, out_dir: Path, *, base_url: str = "https://druid.e
         # published one, so a client following the site can verify — offline — that the log
         # never forked, shrank, or rewrote history between exports. The chain of published
         # checkpoints is the gossip carrier a static site needs (DESIGN §6.3). Its own marker,
-        # distinct from `druid consistency`'s, so the two tools don't consume each other's chain.
+        # distinct from `annals consistency`'s, so the two tools don't consume each other's chain.
         current_cp = (ledger_dir / "checkpoint").read_text(encoding="utf-8")
         published = ledger_dir / "export-published-checkpoint"
         previous_cp = published.read_text(encoding="utf-8") if published.exists() else None
@@ -84,11 +84,11 @@ def export_site(druid: Druid, out_dir: Path, *, base_url: str = "https://druid.e
             grew = False  # a corrupt marker -> skip the link this pass, re-baseline below
         if grew:
             assert previous_cp is not None
-            bundle = druid.gossip_bundle(previous_cp)
+            bundle = annals.gossip_bundle(previous_cp)
             # Never publish a bundle that doesn't verify: a self-consistency failure means the
             # operator's own log forked/corrupted — surface it (don't advance the chain) rather
             # than shipping a broken proof.
-            ok, _ = druid.log.verify_consistency(bundle["old_checkpoint"], bundle["new_checkpoint"], bundle["proof"])
+            ok, _ = annals.log.verify_consistency(bundle["old_checkpoint"], bundle["new_checkpoint"], bundle["proof"])
             if ok:
                 (out / "consistency.json").write_text(json.dumps(bundle, indent=2), encoding="utf-8")
                 consistency = 1

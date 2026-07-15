@@ -1,6 +1,6 @@
 """The scheduler (DESIGN §7, M10): the piece that turns a manual demo into a watchdog.
 
-`druid observe <t>` is a one-shot. To actually *watch* a corpus, Druid must re-observe the
+`annals observe <t>` is a one-shot. To actually *watch* a corpus, Annals must re-observe the
 curated set on its own, on a per-target cadence, forever — politely (through the M9 layer),
 appending any diffs, and firing the M5c alert pipeline the moment a meaningful change lands,
 without a human in the loop. This module is that loop.
@@ -10,7 +10,7 @@ Design:
 * **Per-target cadence.** Each target carries an ``interval_seconds`` (``data/targets.toml``,
   ``interval = "6h"``). After an attempt, the next due time is ``now + interval ± jitter``
   (jitter de-synchronises targets so they don't all hit a host in the same second).
-* **Persisted schedule state.** ``druid-data/schedule-state.json`` records each target's last
+* **Persisted schedule state.** ``annals-data/schedule-state.json`` records each target's last
   run, next-due time, last status, and consecutive-failure count — so a restart resumes
   exactly where it left off (a target already observed 10 minutes ago is not re-hit). The
   stored ``ETag``/``Last-Modified`` that drives conditional GET lives in the M9 politeness
@@ -40,7 +40,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
 
-from .pipeline import Druid, ObserveResult
+from .pipeline import Annals, ObserveResult
 
 # A failed target retries after this base delay, doubling per consecutive failure, capped at
 # both `RETRY_MAX` and the target's own cadence (never wait longer than a normal cycle).
@@ -49,7 +49,7 @@ RETRY_MAX_SECONDS = 3600.0
 
 # The notify seam: given the pipeline, deliver any new diff events and return the deliveries.
 # Injected so the scheduler is testable without webhooks/SMTP; the CLI wires the real M5c path.
-NotifyFn = Callable[[Druid], list[dict[str, object]]]
+NotifyFn = Callable[[Annals], list[dict[str, object]]]
 
 
 class WallClock(Protocol):
@@ -125,7 +125,7 @@ class TickResult:
 class Scheduler:
     def __init__(
         self,
-        druid: Druid,
+        annals: Annals,
         *,
         clock: WallClock | None = None,
         notify: NotifyFn | None = None,
@@ -133,12 +133,12 @@ class Scheduler:
         jitter: Callable[[float, float], float] = _default_jitter,
         state_path: Path | None = None,
     ) -> None:
-        self.druid = druid
+        self.annals = annals
         self.clock: WallClock = clock or SystemWallClock()
         self._notify = notify
         self.jitter_fraction = jitter_fraction
         self._jitter = jitter
-        self.state_path = Path(state_path) if state_path is not None else druid.data_dir / "schedule-state.json"
+        self.state_path = Path(state_path) if state_path is not None else annals.data_dir / "schedule-state.json"
         self.entries: dict[str, ScheduleEntry] = self._load_state()
 
     # -- state persistence -------------------------------------------------------------
@@ -176,7 +176,7 @@ class Scheduler:
     def due_targets(self, now: float) -> list[str]:
         """Curated targets whose next-due time has arrived, in a stable order."""
         due = []
-        for target_id in self.druid.targets:
+        for target_id in self.annals.targets:
             if self._entry(target_id, now).next_due <= now:
                 due.append(target_id)
         return due
@@ -184,7 +184,7 @@ class Scheduler:
     def next_wakeup(self, now: float) -> float:
         """The soonest next-due time across all targets (epoch seconds); the loop sleeps to
         it. ``now`` when something is already due."""
-        upcoming = [self._entry(tid, now).next_due for tid in self.druid.targets]
+        upcoming = [self._entry(tid, now).next_due for tid in self.annals.targets]
         return min(upcoming) if upcoming else now
 
     def _reschedule(self, entry: ScheduleEntry, target_interval: float, now: float, *, failed: bool) -> None:
@@ -214,9 +214,9 @@ class Scheduler:
         failure is recorded and retried, so one bad target can't halt the run."""
         now = self.clock.now()
         entry = self._entry(target_id, now)
-        interval = self.druid.targets[target_id].interval_seconds
+        interval = self.annals.targets[target_id].interval_seconds
         try:
-            outcome: ObserveResult = self.druid.observe(target_id)
+            outcome: ObserveResult = self.annals.observe(target_id)
         except Exception as error:  # transient/parse failure — retry soon, do not lose it
             entry.last_status = "error"
             self._reschedule(entry, interval, now, failed=True)
@@ -247,7 +247,7 @@ class Scheduler:
         # never take down the watchdog loop — observation of every target has already happened.
         if self._notify is not None:
             try:
-                deliveries = self._notify(self.druid)
+                deliveries = self._notify(self.annals)
                 result.deliveries = len([d for d in deliveries if "error" not in d])
             except Exception as error:
                 result.notify_error = str(error)

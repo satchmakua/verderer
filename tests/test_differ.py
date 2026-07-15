@@ -1,5 +1,5 @@
-from druid.differ.normalize import normalize_html
-from druid.differ.termwatch import term_watch
+from annals.differ.normalize import normalize_html
+from annals.differ.termwatch import term_watch
 
 
 def test_normalize_strips_page_chrome() -> None:

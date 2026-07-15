@@ -14,11 +14,11 @@ from pathlib import Path
 
 import pytest
 
-from druid.collectors.base import FetchResult, RenderResult
-from druid.collectors.static import StaticCollector
-from druid.config import Target
-from druid.pipeline import Druid
-from druid.politeness import (
+from annals.collectors.base import FetchResult, RenderResult
+from annals.collectors.static import StaticCollector
+from annals.config import Target
+from annals.pipeline import Annals
+from annals.politeness import (
     CollectionSkipped,
     NotModified,
     PolitenessPolicy,
@@ -320,7 +320,7 @@ def test_render_is_rate_limited() -> None:
 TARGET = Target(id="t", title="T", url="https://example.gov/p", collector="static")
 
 
-def _druid(tmp_path: Path, inner: CannedFetcher, robots: str | None, clock: FakeClock | None = None) -> Druid:
+def _annals(tmp_path: Path, inner: CannedFetcher, robots: str | None, clock: FakeClock | None = None) -> Annals:
     policy = PolitenessPolicy(
         clock=clock or FakeClock(),
         robots_fetcher=lambda _u: robots,
@@ -328,7 +328,7 @@ def _druid(tmp_path: Path, inner: CannedFetcher, robots: str | None, clock: Fake
         jitter=lambda d: d,
         state_path=tmp_path / "pol.json",
     )
-    return Druid(
+    return Annals(
         tmp_path / "data",
         targets={"t": TARGET},
         terms=["climate"],
@@ -337,40 +337,40 @@ def _druid(tmp_path: Path, inner: CannedFetcher, robots: str | None, clock: Fake
     )
 
 
-def _entry_count(druid: Druid) -> int:
-    return len(list(druid.log.entries()))
+def _entry_count(annals: Annals) -> int:
+    return len(list(annals.log.entries()))
 
 
 def test_pipeline_304_yields_no_new_leaf(tmp_path: Path, ledger_built: None) -> None:
     inner = CannedFetcher([_ok(status=200, etag='"v1"'), _ok(status=304, etag='"v1"')])
-    druid = _druid(tmp_path, inner, robots=None)
-    first = druid.observe("t")
+    annals = _annals(tmp_path, inner, robots=None)
+    first = annals.observe("t")
     assert first.status == "observed" and first.is_first
-    count_after_first = _entry_count(druid)
+    count_after_first = _entry_count(annals)
 
-    second = druid.observe("t")
+    second = annals.observe("t")
     assert second.status == "unchanged"
     assert second.observation is None
-    assert _entry_count(druid) == count_after_first  # no leaf appended on a 304
-    assert druid.log.offline_verify(0)[0]  # the ledger is still valid
+    assert _entry_count(annals) == count_after_first  # no leaf appended on a 304
+    assert annals.log.offline_verify(0)[0]  # the ledger is still valid
 
 
 def test_pipeline_disallow_is_skipped_with_no_leaf(tmp_path: Path, ledger_built: None) -> None:
     inner = CannedFetcher([_ok(status=200)])
-    druid = _druid(tmp_path, inner, robots="User-agent: *\nDisallow: /p\n")
-    result = druid.observe("t")
+    annals = _annals(tmp_path, inner, robots="User-agent: *\nDisallow: /p\n")
+    result = annals.observe("t")
     assert result.status == "skipped"
     assert result.observation is None
     assert "robots" in result.reason
-    assert _entry_count(druid) == 0  # nothing fetched or logged
+    assert _entry_count(annals) == 0  # nothing fetched or logged
     assert inner.seen_headers == []
 
 
 def test_pipeline_transient_then_success_logs_one_leaf(tmp_path: Path, ledger_built: None) -> None:
     clock = FakeClock()
     inner = CannedFetcher([_ok(status=503), _ok(status=200, body=b"<html>climate ok</html>")])
-    druid = _druid(tmp_path, inner, robots=None, clock=clock)
-    result = druid.observe("t")
+    annals = _annals(tmp_path, inner, robots=None, clock=clock)
+    result = annals.observe("t")
     assert result.status == "observed"
     assert result.observation is not None and result.observation.http_status == 200
     assert clock.sleeps == [1.0]  # one backoff before the retry succeeded
@@ -385,11 +385,11 @@ def test_first_observe_ignores_stale_validator_and_records_baseline(tmp_path: Pa
         json.dumps({"validators": {TARGET.url: {"etag": '"v1"'}}}), encoding="utf-8"
     )
     server = ConditionalServer(etag='"v1"')  # would 304 if If-None-Match v1 were sent
-    druid = _druid(tmp_path, server, robots=None)
-    result = druid.observe("t")
+    annals = _annals(tmp_path, server, robots=None)
+    result = annals.observe("t")
     assert result.status == "observed" and result.is_first  # baseline recorded, not "unchanged"
     assert server.seen_headers[0] == {}  # the stale validator was dropped -> unconditional GET
-    assert _entry_count(druid) == 1
+    assert _entry_count(annals) == 1
 
 
 def test_304_without_baseline_fails_loud(tmp_path: Path, ledger_built: None) -> None:
@@ -402,25 +402,25 @@ def test_304_without_baseline_fails_loud(tmp_path: Path, ledger_built: None) -> 
     policy = PolitenessPolicy(
         clock=FakeClock(), robots_fetcher=lambda _u: None, min_interval=0.0, state_path=tmp_path / "pol.json"
     )
-    druid = Druid(
+    annals = Annals(
         tmp_path / "data",
         targets={"t": TARGET},
         terms=[],
         collectors={"static": StaticCollector(fetcher=policy.fetcher(ConditionalServer(etag='"v1"')))},
         # deliberately NOT passing politeness=policy, so the pipeline cannot forget
     )
-    assert druid.politeness is None
+    assert annals.politeness is None
     with pytest.raises(RuntimeError, match="no baseline"):
-        druid.observe("t")
-    assert _entry_count(druid) == 0  # nothing logged — loud failure, not a silent blind spot
+        annals.observe("t")
+    assert _entry_count(annals) == 0  # nothing logged — loud failure, not a silent blind spot
 
 
 def test_default_collectors_are_polite(tmp_path: Path) -> None:
-    # A Druid built without injected collectors wires a real PolitenessPolicy into both the
+    # A Annals built without injected collectors wires a real PolitenessPolicy into both the
     # static and render seams — polite by construction (the M9 hard constraint).
-    druid = Druid(tmp_path / "data", targets={}, terms=[])
-    assert druid.politeness is not None
-    assert set(druid.collectors) == {"static", "render"}
+    annals = Annals(tmp_path / "data", targets={}, terms=[])
+    assert annals.politeness is not None
+    assert set(annals.collectors) == {"static", "render"}
 
 
 # --- gated live test: one real polite fetch of a curated target ------------------------
@@ -436,7 +436,7 @@ def network() -> None:
 
 
 def test_live_polite_fetch_of_real_target(network: None) -> None:  # pragma: no cover - gated
-    from druid.collectors.static import httpx_fetcher
+    from annals.collectors.static import httpx_fetcher
 
     policy = PolitenessPolicy(min_interval=1.0)  # real clock, real robots fetcher
     url = "https://www.epa.gov/ghgreporting"

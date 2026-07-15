@@ -10,7 +10,7 @@ from email.utils import format_datetime
 from typing import Any
 from xml.etree import ElementTree as ET
 
-SITE_TITLE = "Druid - verifiable environmental-data watchdog"
+SITE_TITLE = "Annals - verifiable environmental-data watchdog"
 
 
 def _rfc822(iso: str | None) -> str:
@@ -37,7 +37,7 @@ def render_rss(events: list[dict[str, Any]], *, title: str, link: str, descripti
     ET.SubElement(channel, "title").text = title
     ET.SubElement(channel, "link").text = link
     ET.SubElement(channel, "description").text = description
-    ET.SubElement(channel, "generator").text = "druid"
+    ET.SubElement(channel, "generator").text = "annals"
     for event in events[:200]:
         item = ET.SubElement(channel, "item")
         ET.SubElement(item, "title").text = (

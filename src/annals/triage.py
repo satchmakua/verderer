@@ -2,7 +2,7 @@
 
 A plain-language draft of *what changed and whether it plausibly alters meaning*, to help
 a human reviewer triage an L3-surfaced rewrite faster. It is a drafting aid and **never an
-authority**: the summary is written to a review sidecar (`druid-data/review/`), clearly
+authority**: the summary is written to a review sidecar (`annals-data/review/`), clearly
 labelled best-effort, and is **never** placed in a ledger leaf — the trust core neither
 sees nor attests it. The summarizer is injected behind the :class:`Summarizer` port so
 tests need no API and no network; the default calls Claude (an optional `triage` extra).
@@ -15,9 +15,9 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from .models import DiffType
-from .pipeline import Druid
+from .pipeline import Annals
 
-REVIEW_SCHEMA = "druid.review/v1"
+REVIEW_SCHEMA = "annals.review/v1"
 DISCLAIMER = (
     "Best-effort LLM draft for a human reviewer. Not attested, not in the ledger, "
     "never a verified fact about the source. See DESIGN 4.2 / 6.2."
@@ -64,13 +64,13 @@ def claude_summarizer(model: str = "claude-opus-4-8", *, client: Any = None) -> 
     return summarize
 
 
-def _latest_reworded_event(druid: Druid, target_id: str) -> dict[str, Any] | None:
+def _latest_reworded_event(annals: Annals, target_id: str) -> dict[str, Any] | None:
     """The most recent L3 rewrite (a `ContentEdit` carrying before/after passages) for a
     target — the thing a reviewer most wants explained."""
     latest: dict[str, Any] | None = None
-    for row in druid.timeline():
+    for row in annals.timeline():
         if (
-            row.get("schema") == "druid.diff/v1"
+            row.get("schema") == "annals.diff/v1"
             and row.get("target_id") == target_id
             and row.get("diff_type") == str(DiffType.ContentEdit)
             and "to" in row.get("evidence", {})
@@ -79,17 +79,17 @@ def _latest_reworded_event(druid: Druid, target_id: str) -> dict[str, Any] | Non
     return latest
 
 
-def _review_dir(druid: Druid) -> Path:
-    return druid.data_dir / "review"
+def _review_dir(annals: Annals) -> Path:
+    return annals.data_dir / "review"
 
 
-def summarize_event(druid: Druid, target_id: str, summarizer: Summarizer) -> dict[str, Any] | None:
+def summarize_event(annals: Annals, target_id: str, summarizer: Summarizer) -> dict[str, Any] | None:
     """Draft a reviewer summary for the latest L3 rewrite of `target_id` and persist it to
     the review sidecar. Returns the review record, or None if there is nothing to explain.
 
     The sidecar lives outside the ledger by design: re-running re-drafts it, and nothing
     here is ever attested."""
-    event = _latest_reworded_event(druid, target_id)
+    event = _latest_reworded_event(annals, target_id)
     if event is None:
         return None
     evidence = event["evidence"]
@@ -105,7 +105,7 @@ def summarize_event(druid: Druid, target_id: str, summarizer: Summarizer) -> dic
         "summary": summary,
         "disclaimer": DISCLAIMER,
     }
-    review_dir = _review_dir(druid)
+    review_dir = _review_dir(annals)
     review_dir.mkdir(parents=True, exist_ok=True)
     key = f"{event.get('to_observation_hash', 'unknown')[:18]}.json"
     (review_dir / key).write_text(json.dumps(review, indent=2), encoding="utf-8")

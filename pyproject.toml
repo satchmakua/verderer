@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "druid-watchdog"
+name = "annals"
 version = "0.0.1"
 description = "A verifiable, tamper-evident watchdog for public environmental data."
 readme = "README.md"
@@ -25,6 +25,7 @@ dev = [
   "pytest>=8",
   "ruff>=0.6",
   "mypy>=1.11",
+  "hypothesis>=6",     # property-based / fuzz tests for the differ + verifier (M14)
 ]
 # The render collector (M3b) drives headless Chromium. Optional — the core install and
 # the test suite stay light; after installing, run `playwright install chromium`.
@@ -48,10 +49,10 @@ triage = [
 ]
 
 [project.scripts]
-druid = "druid.cli:main"
+annals = "annals.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/druid"]
+packages = ["src/annals"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

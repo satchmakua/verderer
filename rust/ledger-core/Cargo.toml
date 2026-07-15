@@ -3,7 +3,7 @@ name = "ledger-core"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-description = "Druid's trust core: a tlog Merkle log with C2SP signed checkpoints and an offline verifier."
+description = "Annals' trust core: a tlog Merkle log with C2SP signed checkpoints and an offline verifier."
 
 [dependencies]
 tlog_tiles = "0.2"
@@ -37,9 +37,9 @@ getrandom = { version = "0.2", features = ["js"] }
 tempfile = "3"
 
 [[bin]]
-name = "druid-ledger"
-path = "src/bin/druid-ledger.rs"
+name = "annals-ledger"
+path = "src/bin/annals-ledger.rs"
 
 [[bin]]
-name = "druid-verify"
-path = "src/bin/druid-verify.rs"
+name = "annals-verify"
+path = "src/bin/annals-verify.rs"

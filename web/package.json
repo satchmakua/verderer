@@ -1,5 +1,5 @@
 {
-  "name": "druid-web",
+  "name": "annals-web",
   "type": "module",
   "version": "0.0.1",
   "private": true,
@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "build:wasm": "cd ../rust && cargo build -p ledger-wasm --target wasm32-unknown-unknown --release && wasm-bindgen --target web --no-typescript --out-dir ../web/public/wasm target/wasm32-unknown-unknown/release/ledger_wasm.wasm",
-    "export": "python -m druid export --out public && node -e \"require('fs').copyFileSync('public/record.json','src/data/record.json')\""
+    "export": "python -m annals export --out public && node -e \"require('fs').copyFileSync('public/record.json','src/data/record.json')\""
   },
   "dependencies": {
     "astro": "^6"

@@ -1,5 +1,5 @@
-from druid.differ.numeric import extract, numeric_watch
-from druid.models import DiffType
+from annals.differ.numeric import extract, numeric_watch
+from annals.models import DiffType
 
 
 def test_extracts_regulatory_quantity_only_near_a_keyword() -> None:

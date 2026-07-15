@@ -1,4 +1,4 @@
-//! Druid's trust core (M1).
+//! Annals' trust core (M1).
 //!
 //! A tamper-evident append-only Merkle log built on the [`tlog_tiles`] crate's
 //! implementation of the C2SP tlog algorithms, with C2SP signed checkpoints (Ed25519
@@ -36,7 +36,7 @@ use tlog_tiles::{
 };
 
 /// The checkpoint origin and note key name. A stable, schema-less identifier.
-pub const ORIGIN: &str = "druid.watchdog/m1-log";
+pub const ORIGIN: &str = "annals.watchdog/m1-log";
 
 /// The C2SP tlog-tiles tile height: tiles of 2^8 = 256 hashes (M2c).
 pub const TILE_HEIGHT: u8 = 8;
@@ -589,7 +589,7 @@ fn parse_proof(value: &serde_json::Value) -> Vec<Hash> {
         .unwrap_or_default()
 }
 
-/// Verify a `druid.proofbundle/v1` fully offline (DESIGN §6.4): the artifact bytes hash
+/// Verify a `annals.proofbundle/v1` fully offline (DESIGN §6.4): the artifact bytes hash
 /// to the observation's referenced content, the leaf is exactly that observation, and the
 /// leaf is included under a validly-signed checkpoint. Trust routes through nothing live.
 ///
@@ -608,7 +608,7 @@ pub fn verify_bundle(
     quorum: usize,
 ) -> Result<String, String> {
     let v: serde_json::Value = serde_json::from_str(json).map_err(|e| e.to_string())?;
-    if v["schema"] != "druid.proofbundle/v1" {
+    if v["schema"] != "annals.proofbundle/v1" {
         return Err("unexpected bundle schema".into());
     }
 
