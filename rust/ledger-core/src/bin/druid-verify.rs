@@ -1,8 +1,9 @@
 //! `druid-verify` — the independent verifier.
 //!
-//!   druid-verify log       --dir D    recompute the whole log vs. its signed checkpoint
-//!   druid-verify inclusion            (JSON bundle on stdin) verify a record offline
-//!   druid-verify tiles     --tiles D  (JSON on stdin) reconstruct the proof from tile files
+//!   druid-verify log         --dir D    recompute the whole log vs. its signed checkpoint
+//!   druid-verify inclusion              (JSON bundle on stdin) verify a record offline
+//!   druid-verify tiles       --tiles D  (JSON on stdin) reconstruct the proof from tile files
+//!   druid-verify consistency            (JSON on stdin) prove one checkpoint extends another (M13)
 //!
 //! The `inclusion` mode takes no directory and contacts no service: it is the offline,
 //! transferable check at the heart of Druid's value (DESIGN §6.4). stdin JSON:
@@ -16,7 +17,9 @@
 use std::io::Read;
 
 use base64::Engine;
-use ledger_core::{verify_bundle, verify_inclusion, verify_inclusion_from_tiles, Ledger};
+use ledger_core::{
+    verify_bundle, verify_consistency, verify_inclusion, verify_inclusion_from_tiles, Ledger,
+};
 use tlog_tiles::Hash;
 
 fn opt(args: &[String], key: &str) -> Option<String> {
@@ -147,6 +150,49 @@ fn run() -> i32 {
                 }
             }
         }
+        Some("consistency") => {
+            // (JSON on stdin) verify that new_checkpoint's tree extends old_checkpoint's (M13):
+            //   {"old_checkpoint": "...", "new_checkpoint": "...", "proof": ["<hex>", ...],
+            //    "pubkey_hex": "..."}
+            let mut s = String::new();
+            if std::io::stdin().read_to_string(&mut s).is_err() {
+                eprintln!("failed to read JSON from stdin");
+                return 1;
+            }
+            let value: serde_json::Value = match serde_json::from_str(&s) {
+                Ok(v) => v,
+                Err(e) => {
+                    eprintln!("{e}");
+                    return 1;
+                }
+            };
+            let proof: Vec<Hash> = value["proof"]
+                .as_array()
+                .map(|arr| {
+                    arr.iter()
+                        .filter_map(|x| x.as_str())
+                        .filter_map(|h| hex::decode(h).ok())
+                        .filter_map(|b| <[u8; 32]>::try_from(b.as_slice()).ok())
+                        .map(Hash)
+                        .collect()
+                })
+                .unwrap_or_default();
+            match verify_consistency(
+                value["old_checkpoint"].as_str().unwrap_or(""),
+                value["new_checkpoint"].as_str().unwrap_or(""),
+                &proof,
+                value["pubkey_hex"].as_str().unwrap_or(""),
+            ) {
+                Ok(msg) => {
+                    println!("CONSISTENT {msg}");
+                    0
+                }
+                Err(e) => {
+                    println!("INCONSISTENT {e}");
+                    1
+                }
+            }
+        }
         Some("bundle") => {
             // druid-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]
             // Verify a downloaded proof bundle offline; pinned TSA roots verify any anchors,
@@ -222,7 +268,7 @@ fn run() -> i32 {
         }
         _ => {
             eprintln!(
-                "usage: druid-verify log --dir D | druid-verify inclusion (JSON on stdin) | druid-verify tiles --tiles D (JSON on stdin) | druid-verify bundle <file.json>"
+                "usage: druid-verify log --dir D | druid-verify inclusion (JSON on stdin) | druid-verify tiles --tiles D (JSON on stdin) | druid-verify consistency (JSON on stdin) | druid-verify bundle <file.json>"
             );
             2
         }

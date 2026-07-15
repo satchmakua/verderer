@@ -11,7 +11,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from ..pipeline import Druid
+from ..pipeline import Druid, _checkpoint_size
 from .feed import SITE_TITLE, render_rss
 from .record import build_record
 
@@ -67,8 +67,34 @@ def export_site(druid: Druid, out_dir: Path, *, base_url: str = "https://druid.e
     # nothing but the checkpoint signature.
     tiles = 0
     ledger_dir = druid.data_dir / "ledger"
+    consistency = 0
     if (ledger_dir / "checkpoint").exists():
         shutil.copyfile(ledger_dir / "checkpoint", out / "checkpoint")
+        # M13 gossip: publish a consistency proof linking this checkpoint to the previously-
+        # published one, so a client following the site can verify — offline — that the log
+        # never forked, shrank, or rewrote history between exports. The chain of published
+        # checkpoints is the gossip carrier a static site needs (DESIGN §6.3). Its own marker,
+        # distinct from `druid consistency`'s, so the two tools don't consume each other's chain.
+        current_cp = (ledger_dir / "checkpoint").read_text(encoding="utf-8")
+        published = ledger_dir / "export-published-checkpoint"
+        previous_cp = published.read_text(encoding="utf-8") if published.exists() else None
+        try:
+            grew = previous_cp is not None and _checkpoint_size(previous_cp) < _checkpoint_size(current_cp)
+        except (ValueError, IndexError):
+            grew = False  # a corrupt marker -> skip the link this pass, re-baseline below
+        if grew:
+            assert previous_cp is not None
+            bundle = druid.gossip_bundle(previous_cp)
+            # Never publish a bundle that doesn't verify: a self-consistency failure means the
+            # operator's own log forked/corrupted — surface it (don't advance the chain) rather
+            # than shipping a broken proof.
+            ok, _ = druid.log.verify_consistency(bundle["old_checkpoint"], bundle["new_checkpoint"], bundle["proof"])
+            if ok:
+                (out / "consistency.json").write_text(json.dumps(bundle, indent=2), encoding="utf-8")
+                consistency = 1
+                published.write_text(current_cp, encoding="utf-8")  # advance only a proven chain
+        else:
+            published.write_text(current_cp, encoding="utf-8")  # first export / re-baseline
     tile_dir = ledger_dir / "tile"
     if tile_dir.exists():
         # Mirror, don't merge: partials the ledger has pruned must not linger here.
@@ -82,4 +108,5 @@ def export_site(druid: Druid, out_dir: Path, *, base_url: str = "https://druid.e
         "events": len(record["events"]),
         "tiles": tiles,
         "warcs": warcs,
+        "consistency": consistency,
     }

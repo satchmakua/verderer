@@ -13,9 +13,9 @@ them treat as primary: **provable observation integrity** and **classified manip
 detection**.
 
 **Status:** **the core roadmap M0–M8 is complete and confirmed**, and the Phase 5–6 "real
-tool" arc is underway — **M9–M12 are built and confirmed** (polite collection, the scheduler,
-faithful WARC capture, and detection-precision refinements). A provable trust spine: a Rust
-Merkle log, C2SP signed checkpoints published as
+tool" arc is underway — **M9–M12 and M13a are built and confirmed** (polite collection, the
+scheduler, faithful WARC capture, detection-precision refinements, and consistency-proof
+gossip). A provable trust spine: a Rust Merkle log, C2SP signed checkpoints published as
 tile files (M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from
 independent TSAs (M2b), and multi-party **witness cosignatures** with quorum verification
 (M8). Change detection spans five layers over static pages, JS-rendered tools (M3b render
@@ -33,8 +33,11 @@ diffs, and fires alerts on its own — restart-safe, with `--once` for cron/syst
 `druid export` — so Druid interoperates with the rescue ecosystem (Wayback / End-of-Term /
 EDGI) instead of being self-referential. Detection got sharper (M12): pint cross-unit
 numerics (`10 ppb` == `0.010 ppm`), structure/table-aware localized diffs, rendered-DOM noise
-suppression, and an index-column truncation fix. Next: M13 (consistency-proof gossip +
-OpenTimestamps). Only OpenTimestamps (M2b-3) is deliberately deferred. See
+suppression, and an index-column truncation fix. And **gossip** closes the equivocation gap
+(M13a): `druid verify-consistency` proves — offline, under a pinned key — that a later
+checkpoint *extends* an earlier one, so a forked, shrunk, or rewritten log is caught. Next:
+M14 (production deploy + scale). OpenTimestamps (M2b-3 / M13b) stays deferred until a real
+Bitcoin-confirmed fixture can be verified (no synthetic anchors on the trust path). See
 [ROADMAP.md](ROADMAP.md).
 
 ---
@@ -65,6 +68,8 @@ python -m druid export --out web/public           # build the public record: rec
 python -m druid notify --dry-run                   # push alerts to webhook/email subscriptions (data/subscriptions.toml)
 python -m druid run --once                          # observe every due target once + fire alerts (cron/systemd)
 python -m druid run                                 # long-lived watchdog loop (see docs/deployment.md)
+python -m druid consistency -o gossip.json          # prove the current checkpoint extends a recorded baseline (M13a)
+python -m druid verify-consistency gossip.json --pubkey <hex>   # a client verifies a gossip bundle offline
 ```
 
 ### The public record (Astro site)

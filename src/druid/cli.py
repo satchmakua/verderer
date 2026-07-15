@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING
 
 from .config import load_targets, load_terms
 from .ledger.core import LedgerBinaryNotFound, find_binary
-from .pipeline import Druid
+from .pipeline import Druid, _checkpoint_size
 
 if TYPE_CHECKING:
     from .scheduler import TickResult
@@ -346,6 +346,83 @@ def cmd_cosign(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_consistency(args: argparse.Namespace) -> int:
+    """Gossip: prove the current checkpoint extends a previously-recorded one (M13).
+
+    Records a baseline the first time; on later runs it proves — offline — that the log has
+    only *grown* from that baseline (never forked/shrank/rewrote) and advances the baseline.
+    """
+    druid = _build(args)
+    if not druid.log.entries():
+        print("nothing to gossip - run `druid observe <target>` first")
+        return 1
+    # A distinct marker from the export chain (each tool keeps its own gossip baseline).
+    marker = args.data_dir / "ledger" / "gossip-baseline-checkpoint"
+    current = druid.log.signed_checkpoint()
+    previous_size = None
+    if marker.exists():
+        try:
+            previous_size = _checkpoint_size(marker.read_text(encoding="utf-8"))
+        except (OSError, ValueError, IndexError):
+            previous_size = None  # a corrupt marker -> re-record a fresh baseline below
+    if previous_size is None:
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        marker.write_text(current, encoding="utf-8")
+        print(f"recorded gossip baseline at tree size {_checkpoint_size(current)}")
+        return 0
+    previous = marker.read_text(encoding="utf-8")
+    if previous_size >= _checkpoint_size(current):
+        print(f"no new entries since the baseline (size {previous_size}) - nothing to prove")
+        return 0
+    bundle = druid.gossip_bundle(previous)
+    ok, message = druid.log.verify_consistency(bundle["old_checkpoint"], bundle["new_checkpoint"], bundle["proof"])
+    if args.output:
+        args.output.write_text(json.dumps(bundle, indent=2), encoding="utf-8")
+        print(f"wrote gossip bundle -> {args.output}")
+    print(message)
+    if ok:
+        marker.write_text(current, encoding="utf-8")  # advance the gossip baseline
+    return 0 if ok else 1
+
+
+def cmd_verify_consistency(args: argparse.Namespace) -> int:
+    """Verify a downloaded `druid.consistency/v1` bundle offline — the log never forked.
+
+    Soundness note: pin Druid's public key with `--pubkey` (obtained from a trusted channel).
+    A gossip proof is only meaningful against a *pinned* key — verifying a bundle under the key
+    it carries proves it is internally consistent, not that it is Druid's real log (an attacker
+    can fabricate a self-consistent history under their own key)."""
+    try:
+        verifier = find_binary("druid-verify")
+    except LedgerBinaryNotFound as error:
+        print(str(error))
+        return 1
+    bundle = json.loads(args.path.read_text(encoding="utf-8"))
+    bundle_key = str(bundle.get("pubkey_hex", ""))
+    if args.pubkey:
+        if bundle_key and bundle_key != args.pubkey:
+            print(f"INCONSISTENT bundle is signed by {bundle_key[:16]}..., not the pinned key {args.pubkey[:16]}...")
+            return 1
+        key = args.pubkey
+    else:
+        key = bundle_key
+        print(
+            "warning: no --pubkey pinned - this proves the bundle is internally consistent, NOT "
+            "that it is Druid's real log. Pin Druid's key with --pubkey for a trust decision."
+        )
+    payload = {
+        "old_checkpoint": bundle["old_checkpoint"],
+        "new_checkpoint": bundle["new_checkpoint"],
+        "proof": bundle["proof"],
+        "pubkey_hex": key,
+    }
+    result = subprocess.run(
+        [str(verifier), "consistency"], input=json.dumps(payload).encode("utf-8"), capture_output=True
+    )
+    print((result.stdout or result.stderr).decode(errors="replace").strip())
+    return 0 if result.returncode == 0 else 1
+
+
 def cmd_verify_bundle(args: argparse.Namespace) -> int:
     try:
         verifier = find_binary("druid-verify")
@@ -388,6 +465,15 @@ def main(argv: list[str] | None = None) -> int:
     cosign = sub.add_parser("cosign", help="have a witness co-sign the current checkpoint (M8)")
     cosign.add_argument("--name", required=True, help="witness name (a stable identifier)")
     cosign.add_argument("--key-file", type=Path, required=True, help="witness key file (created if absent)")
+    consistency = sub.add_parser("consistency", help="gossip: prove the current checkpoint extends a recorded one (M13)")
+    consistency.add_argument("-o", "--output", type=Path, default=None, help="write the gossip bundle to a file")
+    verify_consistency = sub.add_parser(
+        "verify-consistency", help="verify a downloaded druid.consistency/v1 gossip bundle offline"
+    )
+    verify_consistency.add_argument("path", type=Path)
+    verify_consistency.add_argument(
+        "--pubkey", default=None, help="pin Druid's public key (hex) - required for a real trust decision"
+    )
     verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
     verify_bundle.add_argument("path", type=Path)
     verify_bundle.add_argument("--root", type=Path, action="append", help="pinned TSA root PEM (repeatable) to verify anchors")
@@ -435,5 +521,7 @@ def main(argv: list[str] | None = None) -> int:
         "export": cmd_export,
         "notify": cmd_notify,
         "run": cmd_run,
+        "consistency": cmd_consistency,
+        "verify-consistency": cmd_verify_consistency,
     }
     return dispatch[args.cmd](args)

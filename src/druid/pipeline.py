@@ -35,6 +35,12 @@ def _utc_now() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _checkpoint_size(checkpoint: str) -> int:
+    """The tree size a signed checkpoint commits to — line 2 of the C2SP note body
+    (origin / size / root). Parsed, not trusted; the Rust verifier checks the signature."""
+    return int(checkpoint.splitlines()[1])
+
+
 def _same_content(previous: Observation, observation: Observation) -> bool:
     """Whether ``observation`` is byte-for-byte identical to the last one — the attested
     artifact bytes, the HTTP status, and (render collector) the captured-requests manifest
@@ -299,6 +305,26 @@ class Druid:
 
     def timeline(self) -> list[dict]:
         return [entry.record for entry in self.log.entries()]
+
+    def gossip_bundle(self, old_checkpoint: str) -> dict:
+        """A self-contained `druid.consistency/v1` proving the current checkpoint extends the
+        client's earlier `old_checkpoint` (M13 gossip). It carries both signed checkpoints and
+        a C2SP consistency proof, so `druid-verify consistency` confirms — offline — that the
+        log never forked, shrank, or rewrote history between them."""
+        new_checkpoint = self.log.signed_checkpoint()
+        old_size = _checkpoint_size(old_checkpoint)
+        new_size = _checkpoint_size(new_checkpoint)
+        proof = self.log.consistency_proof(old_size, new_size)
+        return {
+            "schema": "druid.consistency/v1",
+            "origin": "druid.watchdog/m1-log",
+            "from": old_size,
+            "to": new_size,
+            "old_checkpoint": old_checkpoint,
+            "new_checkpoint": new_checkpoint,
+            "proof": proof,
+            "pubkey_hex": self.log.public_key_hex,
+        }
 
     def _anchors_dir(self) -> Path:
         return self.data_dir / "ledger" / "anchors"

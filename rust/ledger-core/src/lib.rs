@@ -30,9 +30,9 @@ use base64::Engine;
 use ed25519_dalek::SigningKey;
 use sha2::{Digest, Sha256};
 use tlog_tiles::{
-    check_record, prove_record, prove_tree, record_hash, stored_hash_index, stored_hashes,
-    tree_hash, Checkpoint, Error as TlogError, Hash, HashReader, RecordProof, Tile, TileHashReader,
-    TileReader, TreeProof,
+    check_record, check_tree, prove_record, prove_tree, record_hash, stored_hash_index,
+    stored_hashes, tree_hash, Checkpoint, Error as TlogError, Hash, HashReader, RecordProof, Tile,
+    TileHashReader, TileReader, TreeProof,
 };
 
 /// The checkpoint origin and note key name. A stable, schema-less identifier.
@@ -514,6 +514,64 @@ pub fn verify_inclusion(
     Ok(format!(
         "record {index} included in tree size {size}, root {}",
         hex::encode(root.0)
+    ))
+}
+
+/// Offline **consistency** verification (M13, the gossip primitive) — no ledger directory,
+/// no live service. Given two signed checkpoints of the *same* log and a C2SP consistency
+/// proof, confirm that the `new` tree **extends** the `old` tree: the log never forked,
+/// shrank, or rewrote history between them.
+///
+/// This is the answer to an equivocating operator (Adversary B): a client that saw an
+/// earlier checkpoint can confirm a later one is the same append-only log. A changed leaf
+/// gives a different root the proof can't bridge; a shorter tree claiming to extend a longer
+/// one is rejected; two different roots at the *same* size is a caught equivocation.
+pub fn verify_consistency(
+    old_checkpoint: &str,
+    new_checkpoint: &str,
+    proof: &TreeProof,
+    public_hex: &str,
+) -> Result<String, String> {
+    let vk = vk_from_hex(public_hex)?;
+    let old_body = verify_note(old_checkpoint, ORIGIN, &vk).map_err(|e| e.to_string())?;
+    let new_body = verify_note(new_checkpoint, ORIGIN, &vk).map_err(|e| e.to_string())?;
+    let (_o_old, old_size, old_root) = parse_body(&old_body)?;
+    let (_o_new, new_size, new_root) = parse_body(&new_body)?;
+
+    // Edge cases the C2SP check_tree (which requires 1 <= n <= t) doesn't cover, each a real
+    // gossip outcome rather than a proof to run.
+    if old_size == 0 {
+        return Ok(format!(
+            "the empty tree is a prefix of size {new_size} (root {})",
+            hex::encode(new_root.0)
+        ));
+    }
+    if old_size > new_size {
+        return Err(format!(
+            "new tree size {new_size} is SMALLER than the old size {old_size} - the log shrank"
+        ));
+    }
+    if old_size == new_size {
+        return if old_root.0 == new_root.0 {
+            Ok(format!("identical checkpoint at size {new_size}"))
+        } else {
+            Err(format!(
+                "two different roots at the same size {new_size} - the log equivocated (a fork)"
+            ))
+        };
+    }
+    check_tree(
+        proof,
+        new_size,
+        Hash(new_root.0),
+        old_size,
+        Hash(old_root.0),
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(format!(
+        "size {new_size} (root {}) consistently extends size {old_size} (root {}) - no fork or rewrite",
+        hex::encode(new_root.0),
+        hex::encode(old_root.0)
     ))
 }
 

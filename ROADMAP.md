@@ -260,17 +260,28 @@ schedule, real network) as well as offline.
   with a rotating nonce yields no diff; a truncated dataset emits no spurious index-column
   `DistributionalShift`. `pytest` green.
 
-- [ ] **M13 — Consistency gossip + OpenTimestamps (completes the trust core).** Close the
-  last "trust the operator" gaps. (a) **Consistency proofs** surfaced to verifiers: prove
-  that checkpoint A is a prefix of a later checkpoint B — the log never forked, shrank, or
-  rewrote history — via `druid-verify consistency`, with the bundle/site carrying what a
-  client needs to gossip two checkpoints. (b) **M2b-3 — OpenTimestamps**: an OTS proof +
-  the Bitcoin block header needed to bound time **offline** (a distinct `anchors` type),
-  the maximally adversary-resistant "existed no later than" anchor.
-  **Test:** a consistency proof between two real checkpoints validates; a forged history (a
-  changed leaf, or a shorter tree claiming to extend a longer one) is rejected; an OTS
-  anchor validates offline against its carried header; a forged OTS is rejected. `cargo
-  test` + `pytest` green.
+- **M13 — Consistency gossip + OpenTimestamps (completes the trust core).** Close the
+  last "trust the operator" gaps. (Split like M2b: the consistency half is done; OTS is the
+  deferred M2b-3 piece it was folded into.)
+  - [x] **M13a — Consistency-proof gossip.** _Confirmed 2026-07-12._ Consistency proofs
+    surfaced to verifiers: prove that checkpoint A is a prefix of a later checkpoint B — the
+    log never forked, shrank, or rewrote history — via `druid-verify consistency`, with the
+    export/site carrying a rolling consistency chain a client can gossip. The client-side
+    verifier binds to a **pinned** public key (a bundle verified under its own key proves
+    only internal consistency, not that it is Druid's log).
+    **Test:** a consistency proof between two real checkpoints validates; a forged history (a
+    changed leaf, a shorter tree claiming to extend a longer one, or an equivocation — two
+    roots at one size) is rejected. `cargo test` + `pytest` green.
+  - [ ] **M13b — OpenTimestamps (M2b-3).** An OTS proof + the Bitcoin block header needed to
+    bound time **offline** (a distinct `anchors` type), the maximally adversary-resistant
+    "existed no later than" anchor. **Deferred, honestly:** unlike the RFC 3161 TSAs (M2b),
+    which respond instantly so real tokens can be committed live, a faithful OTS anchor needs
+    a *Bitcoin-confirmed* `.ots` proof — hours of confirmation latency — so it can't be
+    live-proven in a session without a synthetic fixture (which this arc's "no mocks on a
+    production path" rule forbids). Real time bounds already exist via M2b's independent TSAs;
+    OTS is the incremental, maximally-adversary-resistant addition, to be done as a focused
+    slice with a real confirmed fixture. **Test:** an OTS anchor validates offline against its
+    carried header; a forged one is rejected.
 
 - [ ] **M14 — Production deployment & scale.** Make it deployable, multi-party for real,
   and proven at scale. (a) An **R2/S3 store adapter** behind the existing
@@ -300,7 +311,8 @@ specific meaningful change, classified and alertable — over a curated set that
 **Status:** the **core roadmap M0–M8 is complete and confirmed** (2026-07-10) — every
 capability is proven. **Phase 5–6 (M9–M14) is the "real tool" arc**: it turns those
 capabilities into a self-running, polite, interoperable, precise, deeply-verifiable, and
-deployed watchdog, filling the gaps M0–M8 deliberately left. **M9–M12 are built and confirmed
-(polite collection, the scheduler, faithful WARC capture, detection precision); next up: M13**
-(consistency-proof gossip + OpenTimestamps). Guiding rule for this arc — *nothing mocked on a
-production path; prove every milestone against the real thing.*
+deployed watchdog, filling the gaps M0–M8 deliberately left. **M9–M12 and M13a
+(consistency-proof gossip) are built and confirmed; next up: M14** (production deploy + scale),
+with **M13b (OpenTimestamps) deferred** pending a real Bitcoin-confirmed fixture. Guiding rule
+for this arc — *nothing mocked on a production path; prove every milestone against the real
+thing* (which is exactly why M13b waits rather than ships a synthetic OTS).

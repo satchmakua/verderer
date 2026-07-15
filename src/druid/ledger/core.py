@@ -107,6 +107,34 @@ class Ledger:
             raise RuntimeError(f"druid-ledger inclusion failed: {result.stderr.strip()}")
         return json.loads(result.stdout)
 
+    def consistency_proof(self, old_size: int, new_size: int) -> list[str]:
+        """A C2SP consistency proof (hex hashes) that size-`new_size` extends size-`old_size` (M13)."""
+        result = subprocess.run(
+            [str(find_binary("druid-ledger")), "consistency", "--dir", str(self.dir),
+             "--from", str(old_size), "--to", str(new_size)],
+            capture_output=True,
+            encoding="utf-8",
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"druid-ledger consistency failed: {result.stderr.strip()}")
+        return list(json.loads(result.stdout)["proof"])
+
+    def verify_consistency(self, old_checkpoint: str, new_checkpoint: str, proof: list[str]) -> tuple[bool, str]:
+        """Verify offline that `new_checkpoint`'s tree extends `old_checkpoint`'s — the gossip
+        primitive (M13). Returns (ok, message); INCONSISTENT on a fork/shrink/rewrite."""
+        bundle = {
+            "old_checkpoint": old_checkpoint,
+            "new_checkpoint": new_checkpoint,
+            "proof": proof,
+            "pubkey_hex": self.public_key_hex,
+        }
+        result = subprocess.run(
+            [str(find_binary("druid-verify")), "consistency"],
+            input=json.dumps(bundle).encode("utf-8"),
+            capture_output=True,
+        )
+        return result.returncode == 0, result.stdout.decode(errors="replace").strip()
+
     def emit_tiles(self) -> dict[str, Any]:
         """(Re)publish all C2SP tile files for the current tree (M2c).
 
