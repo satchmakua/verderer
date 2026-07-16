@@ -1,12 +1,12 @@
-//! `annals-ledger` — the writer the Python pipeline shells out to over stdio.
+//! `verderer-ledger` — the writer the Python pipeline shells out to over stdio.
 //!
-//!   annals-ledger append      --dir D            (record bytes on stdin) -> JSON
-//!   annals-ledger inclusion   --dir D --index N  -> JSON {index, leaf_hash, tree_size, proof, checkpoint}
-//!   annals-ledger consistency --dir D --from M --to N -> JSON {from, to, proof}
-//!   annals-ledger checkpoint  --dir D            -> the signed checkpoint text
-//!   annals-ledger pubkey      --dir D            -> the log public key (hex)
-//!   annals-ledger tiles       --dir D            -> (re)publish all C2SP tile files (M2c)
-//!   annals-ledger cosign      --dir D --name W --key-hex S -> a witness cosignature line (M8)
+//!   verderer-ledger append      --dir D            (record bytes on stdin) -> JSON
+//!   verderer-ledger inclusion   --dir D --index N  -> JSON {index, leaf_hash, tree_size, proof, checkpoint}
+//!   verderer-ledger consistency --dir D --from M --to N -> JSON {from, to, proof}
+//!   verderer-ledger checkpoint  --dir D            -> the signed checkpoint text
+//!   verderer-ledger pubkey      --dir D            -> the log public key (hex)
+//!   verderer-ledger tiles       --dir D            -> (re)publish all C2SP tile files (M2c)
+//!   verderer-ledger cosign      --dir D --name W --key-hex S -> a witness cosignature line (M8)
 
 use std::io::Read;
 

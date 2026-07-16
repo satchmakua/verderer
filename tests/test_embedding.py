@@ -7,12 +7,12 @@ import hashlib
 import re
 from pathlib import Path
 
-from annals.collectors.base import FetchResult
-from annals.collectors.static import StaticCollector
-from annals.config import Target
-from annals.differ.embedding import embedding_triage
-from annals.models import DiffType
-from annals.pipeline import Annals
+from verderer.collectors.base import FetchResult
+from verderer.collectors.static import StaticCollector
+from verderer.config import Target
+from verderer.differ.embedding import embedding_triage
+from verderer.models import DiffType
+from verderer.pipeline import Verderer
 
 
 class BagEmbedder:
@@ -79,16 +79,16 @@ def test_pipeline_uses_l3_when_embedder_present(tmp_path: Path, ledger_built: No
     def fake(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={}, body=pages["bodies"][pages["i"]])
 
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://e.gov/t")},
         terms=["climate change"],  # not present -> L1 finds nothing
         collector=StaticCollector(fetcher=fake),
         embedder=BagEmbedder(),
     )
-    assert annals.observe("t").is_first
+    assert verderer.observe("t").is_first
     pages["i"] = 1
-    diffs = annals.observe("t").diffs
+    diffs = verderer.observe("t").diffs
     l3 = [d for d in diffs if d.layer == "L3-embedding" and d.diff_type is DiffType.ContentEdit]
     assert l3, [d.evidence for d in diffs]
 
@@ -109,16 +109,16 @@ def test_embedder_still_flags_a_pure_deletion(tmp_path: Path, ledger_built: None
     def fake(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={}, body=pages["bodies"][pages["i"]])
 
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://e.gov/t")},
         terms=["climate change"],
         collector=StaticCollector(fetcher=fake),
         embedder=BagEmbedder(),
     )
-    annals.observe("t")
+    verderer.observe("t")
     pages["i"] = 1
-    diffs = annals.observe("t").diffs
+    diffs = verderer.observe("t").diffs
     assert [d for d in diffs if d.diff_type is DiffType.ContentEdit], "a deletion must still be flagged"
 
 
@@ -128,13 +128,13 @@ def test_pipeline_without_embedder_keeps_coarse_fallback(tmp_path: Path, ledger_
     def fake(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={}, body=pages["bodies"][pages["i"]])
 
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://e.gov/t")},
         terms=["climate change"],
         collector=StaticCollector(fetcher=fake),
     )
-    annals.observe("t")
+    verderer.observe("t")
     pages["i"] = 1
-    diffs = annals.observe("t").diffs
+    diffs = verderer.observe("t").diffs
     assert [d for d in diffs if d.layer == "L0-normalize"]  # coarse fallback, no embedder

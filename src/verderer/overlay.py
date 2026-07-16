@@ -1,16 +1,16 @@
 """M7 — federated overlay index + verification badging (DESIGN §8, §10 risk-coverage).
 
-Annals observes a *curated* set; the volunteer rescue ecosystem (Wayback, OSF, Dataverse,
+Verderer observes a *curated* set; the volunteer rescue ecosystem (Wayback, OSF, Dataverse,
 Perma.cc, PEDP) has already archived far more. This overlay cross-references those
-third-party archives against Annals' own attested record and produces one queryable index
+third-party archives against Verderer' own attested record and produces one queryable index
 where each resource is badged by its strongest guarantee:
 
-  * **annals-attested** — Annals observed this URL, so there is a self-verifying proof
+  * **verderer-attested** — Verderer observed this URL, so there is a self-verifying proof
     bundle: exactly-these-bytes, faithfully preserved, offline-verifiable, trusting no one.
-  * **unverified** — a third-party copy exists (a real, valuable archive) but Annals never
+  * **unverified** — a third-party copy exists (a real, valuable archive) but Verderer never
     observed it, so there is nothing to *prove* about its bytes. No badge.
 
-That badge distinction is the whole point (DESIGN §1): verifiability is Annals'
+That badge distinction is the whole point (DESIGN §1): verifiability is Verderer'
 differentiator over an ordinary archive index. Each `ArchiveSource` is injected behind a
 narrow port so the harvest is testable offline; the default `WaybackSource` queries the
 Internet Archive CDX API politely (identifiable UA, bounded timeout, read-only). OSF /
@@ -25,10 +25,10 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 from urllib.parse import urlsplit
 
-from .pipeline import Annals
+from .pipeline import Verderer
 
-OVERLAY_SCHEMA = "annals.overlay/v1"
-USER_AGENT = "AnnalsWatchdog/0.0 (+https://github.com/satchmakua/annals) polite-overlay-harvester"
+OVERLAY_SCHEMA = "verderer.overlay/v1"
+USER_AGENT = "VerdererWatchdog/0.0 (+https://github.com/satchmakua/verderer) polite-overlay-harvester"
 
 
 @dataclass(frozen=True, slots=True)
@@ -126,15 +126,15 @@ def _norm(url: str) -> str:
     return key
 
 
-def _attested_resources(annals: Annals) -> dict[str, dict[str, Any]]:
+def _attested_resources(verderer: Verderer) -> dict[str, dict[str, Any]]:
     """Per normalised-URL resource, the *latest* attested observation leaf. Identity,
     ledger index, and content hash all move together to the newest leaf for that URL, so
     the advertised hash and the leaf a bundle will prove are the same observation — the
     overlay must never advertise a hash its downloadable bundle doesn't attest."""
     attested: dict[str, dict[str, Any]] = {}
-    for entry in annals.log.entries():  # ledger order is append/chronological
+    for entry in verderer.log.entries():  # ledger order is append/chronological
         record = entry.record
-        if record.get("schema") != "annals.observation/v1":
+        if record.get("schema") != "verderer.observation/v1":
             continue
         url = record.get("url", "")
         info = attested.setdefault(_norm(url), {"observations": 0})
@@ -148,18 +148,18 @@ def _attested_resources(annals: Annals) -> dict[str, dict[str, Any]]:
 
 
 def build_overlay(
-    annals: Annals, sources: list[ArchiveSource], *, query_urls: list[str] | None = None
+    verderer: Verderer, sources: list[ArchiveSource], *, query_urls: list[str] | None = None
 ) -> dict[str, Any]:
-    """Cross-reference third-party archive captures with Annals' attested observations into
-    a single `annals.overlay/v1` index. Each resource is badged annals-attested (with a proof
+    """Cross-reference third-party archive captures with Verderer' attested observations into
+    a single `verderer.overlay/v1` index. Each resource is badged verderer-attested (with a proof
     bundle reference) or left unverified.
 
     `query_urls` defaults to the curated target URLs; a source may return captures for
     sibling resources (e.g. Wayback prefix matching), which appear as unverified rows.
     """
-    attested = _attested_resources(annals)
+    attested = _attested_resources(verderer)
     if query_urls is None:
-        query_urls = [t.url for t in annals.targets.values()]
+        query_urls = [t.url for t in verderer.targets.values()]
 
     resources: dict[str, dict[str, Any]] = {}
     for query in query_urls:
@@ -176,12 +176,12 @@ def build_overlay(
     for key, res in resources.items():
         matched = attested.get(key)
         record: dict[str, Any] = {
-            # For an attested resource, show the URL Annals actually observed (what the
+            # For an attested resource, show the URL Verderer actually observed (what the
             # bundle proves), not a third party's equivalent-but-different capture URL.
             "url": matched["url"] if matched is not None else res["url"],
             "attested": matched is not None,
-            "badge": "annals-attested" if matched is not None else None,
-            "annals": None,
+            "badge": "verderer-attested" if matched is not None else None,
+            "verderer": None,
             "external": [
                 {"source": name, "captures": [c.to_json() for c in caps]}
                 for name, caps in sorted(res["external"].items())
@@ -190,7 +190,7 @@ def build_overlay(
         if matched is not None:
             # The bundle is keyed on the *specific* attested leaf (its ledger index), so it
             # proves exactly the observation whose hash this row advertises.
-            record["annals"] = {
+            record["verderer"] = {
                 "target_id": matched["target_id"],
                 "index": matched["index"],
                 "observations": matched["observations"],
@@ -211,7 +211,7 @@ def build_overlay(
 
 
 def write_overlay(
-    annals: Annals, out_dir: Any, sources: list[ArchiveSource], *, query_urls: list[str] | None = None
+    verderer: Verderer, out_dir: Any, sources: list[ArchiveSource], *, query_urls: list[str] | None = None
 ) -> dict[str, Any]:
     """Build the overlay and write `overlay.json` plus a downloadable proof bundle
     (`bundles/<target>.json`) for every attested resource. Returns a summary."""
@@ -219,23 +219,23 @@ def write_overlay(
 
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    overlay = build_overlay(annals, sources, query_urls=query_urls)
+    overlay = build_overlay(verderer, sources, query_urls=query_urls)
     (out / "overlay.json").write_text(json.dumps(overlay, indent=2), encoding="utf-8")
 
     bundles = out / "bundles"
     written = 0
     seen: set[int] = set()
     for resource in overlay["resources"]:
-        annals_info = resource.get("annals")
-        if not annals_info or annals_info.get("index") is None:
+        verderer_info = resource.get("verderer")
+        if not verderer_info or verderer_info.get("index") is None:
             continue
-        index = annals_info["index"]
+        index = verderer_info["index"]
         if index in seen:
             continue
         seen.add(index)
         try:
             # Prove the *specific* leaf this resource advertises, not the target's latest.
-            bundle = annals.bundle(annals_info["target_id"], index)
+            bundle = verderer.bundle(verderer_info["target_id"], index)
         except Exception:  # a leaf that can't be bundled — skip, don't emit a broken link
             continue
         bundles.mkdir(parents=True, exist_ok=True)

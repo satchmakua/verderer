@@ -1,4 +1,4 @@
-# ROADMAP — Annals
+# ROADMAP — Verderer
 
 The milestone checklist.
 
@@ -20,8 +20,8 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
   collector → content-addressed store → a signed hash-chain ledger (the honest M0
   stand-in for M1's Merkle log) → L0 normalisation + L1 term-watch → a CLI
   (`observe` / `log` / `verify` / `targets`). One passing test, lint + typecheck wired.
-  **Test:** `pip install -e ".[dev]"`; `python -m annals observe epa-ghgrp` prints a
-  `[200]` observation with a content hash; `python -m annals verify` prints `VALID`;
+  **Test:** `pip install -e ".[dev]"`; `python -m verderer observe epa-ghgrp` prints a
+  `[200]` observation with a content hash; `python -m verderer verify` prints `VALID`;
   `pytest` → green. _(Verified at scaffold: 7/7 tests, live observe + verify OK.)_
 
 ## Phase 1 — The trust spine
@@ -30,29 +30,29 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
   `SignedLog` with a Merkle log on the `tlog_tiles` crate (C2SP tlog algorithms): a
   Rust kernel does append-leaf, signed checkpoint (C2SP signed note, Ed25519),
   inclusion proof, and consistency proof, backed by the canonical stored-hash file; a
-  standalone `annals-verify` validates a leaf against a signed checkpoint **offline**.
+  standalone `verderer-verify` validates a leaf against a signed checkpoint **offline**.
   Python shells out over stdio (no FFI). _(Confirmed; committed 9570122. HTTP
   tile-file serialization moved to M2c.)_
 
 - **M2 — The citable proof (split into runnable slices).**
   - [x] **M2a — Self-verifying proof bundle.** _Confirmed 2026-07-10._
-    `annals bundle <target> [-o file]` exports a single self-contained
-    `annals.proofbundle/v1` (observation + raw artifact bytes + Merkle inclusion proof
-    + signed checkpoint + pinned key); `annals-verify bundle <file>` validates it fully
+    `verderer bundle <target> [-o file]` exports a single self-contained
+    `verderer.proofbundle/v1` (observation + raw artifact bytes + Merkle inclusion proof
+    + signed checkpoint + pinned key); `verderer-verify bundle <file>` validates it fully
     **offline** — artifact bytes hash to the observation, the leaf is included under
-    the signed root — trusting neither the source nor Annals. Built on M1's
+    the signed root — trusting neither the source nor Verderer. Built on M1's
     `offline_verify`.
-    **Test:** `annals observe epa-ghgrp`; `annals bundle epa-ghgrp -o proof.json`;
-    `annals verify-bundle proof.json` → `VALID`; edit any byte of `proof.json` →
+    **Test:** `verderer observe epa-ghgrp`; `verderer bundle epa-ghgrp -o proof.json`;
+    `verderer verify-bundle proof.json` → `VALID`; edit any byte of `proof.json` →
     `INVALID`. `pytest` + `cargo test` green.
   - **M2b — External anchoring (split; RFC 3161 offline verification is the spine).**
     - [x] **M2b-1 — RFC 3161 anchor + offline verifier.** _Confirmed 2026-07-10._
       A Rust `rfc3161` verifier (on cms/x509-cert/x509-tsp/rsa/ecdsa) validates a
       timestamp token offline: it binds the token's messageImprint to the checkpoint,
       verifies the TSA signature over the signed attributes, checks the timestamping EKU,
-      and chains the signer to a **pinned** root. `annals anchor` timestamps the current
+      and chains the signer to a **pinned** root. `verderer anchor` timestamps the current
       checkpoint (a **self-hosted dev TSA** for now — proves the mechanism, not
-      independence); `bundle` embeds the token in `anchors`; `annals verify-bundle
+      independence); `bundle` embeds the token in `anchors`; `verderer verify-bundle
       --root <pem>` reports "anchored no later than T" offline.
       **Test:** `observe` → `anchor` → `bundle` → `verify-bundle --root` → `VALID …
       anchored no later than <T>`; tamper the token → `INVALID`; an anchor whose TSA
@@ -60,12 +60,12 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
       stands on its inclusion proof (the C2SP witness model, ADR-0005).
       `cargo test` (incl. openssl-minted token fixtures) + `pytest` green.
     - [x] **M2b-2 — Independent third-party TSAs.** _Confirmed 2026-07-10._
-      `annals anchor --tsa digicert,freetsa` submits over HTTP to real, independent TSAs;
+      `verderer anchor --tsa digicert,freetsa` submits over HTTP to real, independent TSAs;
       the verifier **ships their roots pinned**, so those anchors verify with no `--root`.
       The verifier now handles real production tokens (DigiCert RSA-4096; FreeTSA ECDSA
       **P-384 + SHA-512** — curve taken from the key, not the digest). This is the step
       that gives a *real* time bound (self-hosted does not).
-      **Test:** `annals anchor --tsa digicert,freetsa` → `bundle` → `verify-bundle` (no
+      **Test:** `verderer anchor --tsa digicert,freetsa` → `bundle` → `verify-bundle` (no
       `--root`) → `VALID … N anchor(s) verified - existed no later than <T>`; `cargo test`
       verifies committed real DigiCert + FreeTSA tokens and rejects each under the other's
       root. (Live submission is network-gated + skips offline.)
@@ -73,9 +73,9 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
       to bound time offline (a distinct `anchors` entry type). **Test:** an OTS anchor
       validates offline against the carried header; a forged one is rejected.
   - [x] **M2c — Tile serving.** _Confirmed 2026-07-10._ Every append publishes the C2SP
-    tile files (`tile/<h>/<l>/<n>[.p/<w>]`, height 8) beside the ledger; `annals tiles`
-    regenerates them for pre-tile ledgers; `annals export` ships `checkpoint` + `tile/`
-    so the static site doubles as a tile server. `annals-verify tiles` reconstructs an
+    tile files (`tile/<h>/<l>/<n>[.p/<w>]`, height 8) beside the ledger; `verderer tiles`
+    regenerates them for pre-tile ledgers; `verderer export` ships `checkpoint` + `tile/`
+    so the static site doubles as a tile server. `verderer-verify tiles` reconstructs an
     inclusion proof from the tile files alone, authenticating every tile against the
     signed root. _(Hash tiles only — entry bundles wait for a consumer; the record
     bytes travel in the proof bundle.)_
@@ -133,24 +133,24 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 
 - **M5 — Public record + alerts (split). ★ public ship.**
   - [x] **M5a — Public record (Astro) + RSS feeds.** _Confirmed 2026-07-10._
-    `annals export` builds `record.json` + a global and per-target RSS feed from the
+    `verderer export` builds `record.json` + a global and per-target RSS feed from the
     ledger. An Astro static site (`web/`) renders a home page (recent classified changes
     + targets), per-target timelines (attested observations interleaved with diffs), and
     per-event permalinks — each with the integrity/interpretation boundary stated in copy.
-    **Test:** `annals export` writes valid `record.json` + `feed.xml`; `cd web && npm run
+    **Test:** `verderer export` writes valid `record.json` + `feed.xml`; `cd web && npm run
     build` renders the pages; the home + target pages show the classified changes (incl.
     10→15 ppb). `pytest` green.
   - [x] **M5b — In-browser WASM verifier.** _Confirmed 2026-07-10._ `ledger-core`
     compiles to WASM (`rust/ledger-wasm`, wasm-bindgen), shipping the pinned DigiCert/FreeTSA
-    roots; the `/verify` page verifies a downloaded `annals.proofbundle/v1` **entirely in the
+    roots; the `/verify` page verifies a downloaded `verderer.proofbundle/v1` **entirely in the
     browser** — a green check / red cross, nothing uploaded, trusting neither the source nor
-    Annals. _(Client-side search is a small remaining add.)_
+    Verderer. _(Client-side search is a small remaining add.)_
     **Test:** in the browser, a real anchored bundle → `VALID … anchored no later than <T>`;
-    a tampered artifact → `INVALID`; matches the native `annals-verify`. `cargo build
+    a tampered artifact → `INVALID`; matches the native `verderer-verify`. `cargo build
     --target wasm32` + native `cargo test` green.
-  - [x] **M5c — Push alerts + search.** _Confirmed 2026-07-10._ `annals notify`
+  - [x] **M5c — Push alerts + search.** _Confirmed 2026-07-10._ `verderer notify`
     delivers each new diff event to matching subscriptions (`data/subscriptions.toml`) over
-    **webhook** (POST `annals.alert/v1`) and **email** (SMTP), filtered by target, diff-type,
+    **webhook** (POST `verderer.alert/v1`) and **email** (SMTP), filtered by target, diff-type,
     and minimum severity; delivery is idempotent (a per-(sub, event) key persisted in
     `notify-state.json`, so re-runs never re-send and failures retry). Senders are
     injectable → fully offline-testable. The record site gains **client-side search** over
@@ -166,9 +166,9 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
   **L3** (`differ/embedding.py`, injectable `Embedder`) segments a text change L1/L2
   couldn't explain, embeds each changed passage, and ranks it against its closest prior
   passage: a semantically distant rewrite → `ContentEdit` for review, a near-duplicate
-  stays quiet. **L5** (`triage.py`, injectable `Summarizer`, `annals triage`) drafts a
+  stays quiet. **L5** (`triage.py`, injectable `Summarizer`, `verderer triage`) drafts a
   plain-language Claude summary of a reworded passage into a **review sidecar**
-  (`annals-data/review/`), clearly labelled best-effort and **never** in a ledger leaf.
+  (`verderer-data/review/`), clearly labelled best-effort and **never** in a ledger leaf.
   Both are an optional `triage` extra (sentence-transformers / anthropic).
   **Test:** a reworded-but-not-term-flagged edit is surfaced for review with a
   plain-language summary; the trust core is untouched. _(Passes: L3 flags the reworded
@@ -178,24 +178,24 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 - [x] **M7 — Federated overlay index + verification badging.** _Confirmed 2026-07-10._
   `overlay.py` harvests third-party archive metadata behind an injectable `ArchiveSource`
   port (default `WaybackSource` — Internet Archive CDX, polite/read-only; OSF/Dataverse/
-  Perma.cc/PEDP are the same port) and `build_overlay` cross-references it with Annals'
-  attested observations into a `annals.overlay/v1` index: a resource in both is badged
-  **annals-attested** with a downloadable proof bundle, a third-party-only copy shows no
-  badge. `annals overlay` writes `overlay.json` + `bundles/`; a `/overlay` Astro page
+  Perma.cc/PEDP are the same port) and `build_overlay` cross-references it with Verderer'
+  attested observations into a `verderer.overlay/v1` index: a resource in both is badged
+  **verderer-attested** with a downloadable proof bundle, a third-party-only copy shows no
+  badge. `verderer overlay` writes `overlay.json` + `bundles/`; a `/overlay` Astro page
   renders the badged, searchable list.
-  **Test:** search a resource that exists in both Wayback and Annals → it shows the
+  **Test:** search a resource that exists in both Wayback and Verderer → it shows the
   attested badge with a downloadable bundle; an unverified-only resource shows no badge.
   _(Passes offline + live: a real Wayback CDX harvest on the ledger badged
   `www.epa.gov/ghgreporting` attested with 7 real captures + a bundle, while
   `ejscreen.epa.gov/mapper` (Wayback-only) got no badge; the `/overlay` page renders both
-  with the bundle link resolving to a valid `annals.proofbundle/v1`.)_
+  with the bundle link resolving to a valid `verderer.proofbundle/v1`.)_
 
 - [x] **M8 — Multi-party witnesses.** _Confirmed 2026-07-10._ C2SP `tlog-cosignature`
   (`rust/…/cosignature.rs`, algorithm 0x04, `keyID || timestamp || sig` over
   `cosignature/v1\ntime T\n<note body>`) implemented on the same audited Ed25519 primitive
   as the log's signed note — no bespoke crypto. Independent witnesses (`witness.py`, own
-  keys) co-sign the checkpoint via `annals cosign`; bundles carry a `cosignatures` array
-  (ADR-0006 — separate from the checkpoint so anchoring stays intact); `annals-verify
+  keys) co-sign the checkpoint via `verderer cosign`; bundles carry a `cosignatures` array
+  (ADR-0006 — separate from the checkpoint so anchoring stays intact); `verderer-verify
   bundle --witness name:hex --quorum K` requires K distinct pinned witnesses.
   **Test:** with a 2-of-3 witness set, a bundle missing a quorum of cosignatures is
   rejected; a complete one validates. _(Passes offline + live: `--quorum 2` on a
@@ -204,7 +204,7 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 
 ## Phase 5 — From capability to a running, faithful watchdog
 
-M0–M8 proved every *capability* in isolation. Phase 5 makes Annals **actually operate** —
+M0–M8 proved every *capability* in isolation. Phase 5 makes Verderer **actually operate** —
 politely, on its own, and interoperably — so it protects real data instead of demoing.
 **No mocks on any production path.** Injected fakes are a *test* device only; every
 milestone here is proven against the real thing (real robots.txt, real WARC, real
@@ -224,7 +224,7 @@ schedule, real network) as well as offline.
   clock/robots/fetch, plus one live polite fetch of a real target. `pytest` green.
 
 - [x] **M10 — The scheduler (continuous operation).** _Confirmed 2026-07-12._ The piece
-  that turns a manual demo into a watchdog: `annals run` re-observes the curated set on a **per-target cadence**
+  that turns a manual demo into a watchdog: `verderer run` re-observes the curated set on a **per-target cadence**
   (interval + jitter), persists per-target schedule state (last run, next due, stored
   `ETag`), observes only what is *due* through the M9 polite layer, appends any diffs, and
   **fires the M5c notify pipeline** on each new diff — idempotently, surviving restarts. A
@@ -236,10 +236,10 @@ schedule, real network) as well as offline.
   not lost. `pytest` green.
 
 - [x] **M11 — Faithful WARC capture + archive interop.** _Confirmed 2026-07-12._ Make
-  Annals genuinely interoperable with the rescue ecosystem (Wayback / End-of-Term / EDGI), not
+  Verderer genuinely interoperable with the rescue ecosystem (Wayback / End-of-Term / EDGI), not
   self-referential. Each observation writes a standards **WARC** record (request +
   response) via `warcio`; `warc_record_hash` is populated and attested in the observation
-  leaf; the raw artifact is recoverable from the WARC. `annals export` ships the WARCs; the
+  leaf; the raw artifact is recoverable from the WARC. `verderer export` ships the WARCs; the
   record/overlay link them. Populates the reserved field DESIGN §2/§7 promised.
   **Test:** an observation produces a valid WARC whose response payload hashes to
   `raw_bytes_hash`; a warcio-independent reader replays the captured bytes; `warc_record_hash`
@@ -265,10 +265,10 @@ schedule, real network) as well as offline.
   deferred M2b-3 piece it was folded into.)
   - [x] **M13a — Consistency-proof gossip.** _Confirmed 2026-07-12._ Consistency proofs
     surfaced to verifiers: prove that checkpoint A is a prefix of a later checkpoint B — the
-    log never forked, shrank, or rewrote history — via `annals-verify consistency`, with the
+    log never forked, shrank, or rewrote history — via `verderer-verify consistency`, with the
     export/site carrying a rolling consistency chain a client can gossip. The client-side
     verifier binds to a **pinned** public key (a bundle verified under its own key proves
-    only internal consistency, not that it is Annals' log).
+    only internal consistency, not that it is Verderer' log).
     **Test:** a consistency proof between two real checkpoints validates; a forged history (a
     changed leaf, a shorter tree claiming to extend a longer one, or an equivocation — two
     roots at one size) is rejected. `cargo test` + `pytest` green.
@@ -304,7 +304,7 @@ schedule, real network) as well as offline.
     **Cloudflare Pages/Workers deploy** that publishes the site, record, feeds, tiles,
     bundles, WARCs, and **submits each checkpoint to ≥2 independent mirrors + the Wayback
     Machine** (DESIGN §6.3). **Test:** the deploy publishes a live site + a mirrored checkpoint.
-  - [ ] **M14c — Independently-run `annals-witness`** a third party actually runs (polls the
+  - [ ] **M14c — Independently-run `verderer-witness`** a third party actually runs (polls the
     checkpoint, verifies consistency, cosigns) — turning M8 from an in-process demo into real
     multi-party gossip. **Test:** a separately-run witness cosigns and a bundle meets quorum.
   - [ ] **M14d-2 — Richer curated set** — ≥12 justified targets + an expanded term dictionary
@@ -313,8 +313,8 @@ schedule, real network) as well as offline.
 ---
 
 **North star:** A skeptical third party can verify, offline and trusting neither the
-government nor Annals, exactly what a source said and when — and Annals flags the
-specific meaningful change, classified and alertable — over a curated set that Annals
+government nor Verderer, exactly what a source said and when — and Verderer flags the
+specific meaningful change, classified and alertable — over a curated set that Verderer
 **observes continuously, politely, and interoperably**, deployed for real.
 
 **Status:** the **core roadmap M0–M8 is complete and confirmed** (2026-07-10) — every

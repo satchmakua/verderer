@@ -1,5 +1,5 @@
 {
-  "schema": "annals.record/v1",
+  "schema": "verderer.record/v1",
   "public_key": "7fa83c761a2daee2ced48916bbad6344d8b54fff49c04e4923c04837872d8ea2",
   "size": 11,
   "targets": [
@@ -15,14 +15,14 @@
           "content_hash": "12202e588377e05cbc625b4dbe20e99fd84c4e9d8cd34de5d20818659c9bc5109db7",
           "fetched_at": "2026-07-10T16:40:04Z",
           "http_status": 200,
-          "url": "https://annals.invalid/fixtures/climate-indicators?v=1"
+          "url": "https://verderer.invalid/fixtures/climate-indicators?v=1"
         },
         {
           "id": "b773e477b2d0952d5d99df7771b70ef82f5c834c48f08d639c589254a629fa9c",
           "content_hash": "12200a13b161c31804c6d74d8b9444cc9cee70127d5e144d0a581a8f20930f2a1735",
           "fetched_at": "2026-07-10T16:40:04Z",
           "http_status": 200,
-          "url": "https://annals.invalid/fixtures/climate-indicators?v=2"
+          "url": "https://verderer.invalid/fixtures/climate-indicators?v=2"
         }
       ],
       "events": [
@@ -88,14 +88,14 @@
           "content_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
           "fetched_at": "2026-07-10T16:40:04Z",
           "http_status": 200,
-          "url": "https://annals.invalid/fixtures/2023_data_summary_spreadsheets.zip?v=1"
+          "url": "https://verderer.invalid/fixtures/2023_data_summary_spreadsheets.zip?v=1"
         },
         {
           "id": "5802330cfd934ad4853a2da371f73abc2b0bdf5fb1a495b47f042cf7694a4d28",
           "content_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a",
           "fetched_at": "2026-07-10T16:40:04Z",
           "http_status": 200,
-          "url": "https://annals.invalid/fixtures/2023_data_summary_spreadsheets.zip?v=2"
+          "url": "https://verderer.invalid/fixtures/2023_data_summary_spreadsheets.zip?v=2"
         }
       ],
       "events": [

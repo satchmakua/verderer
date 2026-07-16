@@ -92,7 +92,7 @@ mod tests {
         SigningKey::from_bytes(&[seed; 32])
     }
 
-    const BODY: &str = "annals.watchdog/m1-log\n4\nTszzRgjTG6xce+z2AG31kAXYKBgQVtCSCE40HmuwBb0=\n";
+    const BODY: &str = "verderer.watchdog/m1-log\n4\nTszzRgjTG6xce+z2AG31kAXYKBgQVtCSCE40HmuwBb0=\n";
 
     #[test]
     fn cosign_then_verify_roundtrips() {
@@ -113,7 +113,7 @@ mod tests {
     fn tampered_body_is_rejected() {
         let k = wkey(11);
         let line = cosign_line(BODY, "witness.a", &k, 1_700_000_000);
-        let other_body = "annals.watchdog/m1-log\n5\nTszzRgjTG6xce+z2AG31kAXYKBgQVtCSCE40HmuwBb0=\n";
+        let other_body = "verderer.watchdog/m1-log\n5\nTszzRgjTG6xce+z2AG31kAXYKBgQVtCSCE40HmuwBb0=\n";
         assert!(verify_cosign_line(other_body, &line, "witness.a", &k.verifying_key()).is_err());
     }
 

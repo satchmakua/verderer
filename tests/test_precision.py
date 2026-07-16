@@ -8,15 +8,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from annals.collectors.base import FetchResult
-from annals.collectors.static import StaticCollector
-from annals.config import Target
-from annals.differ.dataset import _is_index_like, dataset_diff
-from annals.differ.normalize import normalize_for_diff, suppress_noise
-from annals.differ.numeric import numeric_watch
-from annals.differ.structure import structure_watch
-from annals.models import DiffType
-from annals.pipeline import Annals
+from verderer.collectors.base import FetchResult
+from verderer.collectors.static import StaticCollector
+from verderer.config import Target
+from verderer.differ.dataset import _is_index_like, dataset_diff
+from verderer.differ.normalize import normalize_for_diff, suppress_noise
+from verderer.differ.numeric import numeric_watch
+from verderer.differ.structure import structure_watch
+from verderer.models import DiffType
+from verderer.pipeline import Verderer
 
 _KW = {"target_id": "t", "detected_at": "2026-01-01T00:00:00Z", "from_hash": "a", "to_hash": "b"}
 
@@ -106,15 +106,15 @@ def test_pipeline_table_cell_change_is_localized(tmp_path: Path, ledger_built: N
     def fetch(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={}, body=[TABLE_V1, TABLE_V2][cursor["i"]])
 
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://example.gov/t")},
         terms=[],  # no watched term; the cell value isn't a term
         collector=StaticCollector(fetcher=fetch),
     )
-    annals.observe("t")
+    verderer.observe("t")
     cursor["i"] = 1
-    diffs = annals.observe("t").diffs
+    diffs = verderer.observe("t").diffs
     localized = [d for d in diffs if d.layer == "L0-structure"]
     assert localized and localized[0].evidence["block"] == "table[0].row[1].col[1]"
 
@@ -147,15 +147,15 @@ def test_pipeline_rotating_nonce_yields_no_diff(tmp_path: Path, ledger_built: No
     def fetch(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={}, body=doms[cursor["i"]])
 
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://example.gov/t")},
         terms=["ejscreen"],
         collector=StaticCollector(fetcher=fetch),
     )
-    annals.observe("t")
+    verderer.observe("t")
     cursor["i"] = 1
-    result = annals.observe("t")
+    result = verderer.observe("t")
     assert result.status == "observed"  # bytes changed -> a faithful leaf is logged
     assert result.diffs == []  # ...but the nonce-only change fires no diff
 

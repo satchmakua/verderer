@@ -1,5 +1,5 @@
-from annals.differ.numeric import extract, numeric_watch
-from annals.models import DiffType
+from verderer.differ.numeric import extract, numeric_watch
+from verderer.models import DiffType
 
 
 def test_extracts_regulatory_quantity_only_near_a_keyword() -> None:

@@ -7,22 +7,22 @@ kernel isn't built (see conftest `ledger_built`).
 
 from pathlib import Path
 
-from annals.collectors.base import FetchResult
-from annals.collectors.static import StaticCollector
-from annals.config import Target
-from annals.pipeline import Annals
-from annals.web.export import export_site
+from verderer.collectors.base import FetchResult
+from verderer.collectors.static import StaticCollector
+from verderer.config import Target
+from verderer.pipeline import Verderer
+from verderer.web.export import export_site
 
 PAGE_BEFORE = b"<html><body><p>EPA works on climate change adaptation.</p></body></html>"
 PAGE_AFTER = b"<html><body><p>EPA works on resilience adaptation.</p></body></html>"
 
 
-def _make_annals(tmp_path: Path, pages: list[bytes], cursor: dict[str, int]) -> Annals:
+def _make_verderer(tmp_path: Path, pages: list[bytes], cursor: dict[str, int]) -> Verderer:
     def fake_fetch(url: str, *, timeout: float = 30.0) -> FetchResult:
         body = pages[min(cursor["i"], len(pages) - 1)]
         return FetchResult(url=url, status=200, headers={"content-type": "text/html"}, body=body)
 
-    return Annals(
+    return Verderer(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://example.gov/t")},
         terms=["climate change"],
@@ -30,20 +30,20 @@ def _make_annals(tmp_path: Path, pages: list[bytes], cursor: dict[str, int]) -> 
     )
 
 
-def _observed_twice(tmp_path: Path) -> Annals:
+def _observed_twice(tmp_path: Path) -> Verderer:
     cursor = {"i": 0}
-    annals = _make_annals(tmp_path, [PAGE_BEFORE, PAGE_AFTER], cursor)
-    annals.observe("t")
+    verderer = _make_verderer(tmp_path, [PAGE_BEFORE, PAGE_AFTER], cursor)
+    verderer.observe("t")
     cursor["i"] = 1
-    annals.observe("t")
-    return annals
+    verderer.observe("t")
+    return verderer
 
 
 def test_appends_publish_tiles_and_proofs_reconstruct_from_tiles_alone(
     tmp_path: Path, ledger_built: None
 ) -> None:
-    annals = _observed_twice(tmp_path)
-    size = len(annals.log.entries())
+    verderer = _observed_twice(tmp_path)
+    size = len(verderer.log.entries())
     assert size >= 3  # two observations + at least one diff record
 
     tile = tmp_path / "data" / "ledger" / "tile" / "8" / "0" / "000.p" / str(size)
@@ -52,20 +52,20 @@ def test_appends_publish_tiles_and_proofs_reconstruct_from_tiles_alone(
     # The canonical hash file is removed: the published tiles + checkpoint must suffice.
     (tmp_path / "data" / "ledger" / "hashes").unlink()
     for index in range(size):
-        ok, message = annals.log.offline_verify_from_tiles(index)
+        ok, message = verderer.log.offline_verify_from_tiles(index)
         assert ok, message
         assert "via tiles alone" in message
 
 
 def test_tampered_tile_is_rejected(tmp_path: Path, ledger_built: None) -> None:
-    annals = _observed_twice(tmp_path)
-    size = len(annals.log.entries())
+    verderer = _observed_twice(tmp_path)
+    size = len(verderer.log.entries())
     tile = tmp_path / "data" / "ledger" / "tile" / "8" / "0" / "000.p" / str(size)
     data = bytearray(tile.read_bytes())
     data[7] ^= 0x01
     tile.write_bytes(bytes(data))
 
-    ok, message = annals.log.offline_verify_from_tiles(0)
+    ok, message = verderer.log.offline_verify_from_tiles(0)
     assert not ok
     assert "INVALID" in message
 
@@ -73,22 +73,22 @@ def test_tampered_tile_is_rejected(tmp_path: Path, ledger_built: None) -> None:
 def test_emit_tiles_regenerates_a_pre_tile_ledger(tmp_path: Path, ledger_built: None) -> None:
     import shutil
 
-    annals = _observed_twice(tmp_path)
+    verderer = _observed_twice(tmp_path)
     shutil.rmtree(tmp_path / "data" / "ledger" / "tile")
-    assert not annals.log.offline_verify_from_tiles(0)[0]
+    assert not verderer.log.offline_verify_from_tiles(0)[0]
 
-    info = annals.log.emit_tiles()
+    info = verderer.log.emit_tiles()
     assert info["height"] == 8
     assert info["tiles"] >= 1
-    ok, message = annals.log.offline_verify_from_tiles(0)
+    ok, message = verderer.log.offline_verify_from_tiles(0)
     assert ok, message
 
 
 def test_export_ships_checkpoint_and_tiles(tmp_path: Path, ledger_built: None) -> None:
-    annals = _observed_twice(tmp_path)
+    verderer = _observed_twice(tmp_path)
     out = tmp_path / "site"
-    info = export_site(annals, out)
+    info = export_site(verderer, out)
     assert info["tiles"] >= 1
-    assert (out / "checkpoint").read_text(encoding="utf-8").startswith("annals.watchdog/m1-log")
-    size = len(annals.log.entries())
+    assert (out / "checkpoint").read_text(encoding="utf-8").startswith("verderer.watchdog/m1-log")
+    size = len(verderer.log.entries())
     assert (out / "tile" / "8" / "0" / "000.p" / str(size)).exists()

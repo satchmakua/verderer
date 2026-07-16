@@ -1,12 +1,12 @@
-# Alert subscriptions (DESIGN §7). `annals notify` delivers each new classified diff event
+# Alert subscriptions (DESIGN §7). `verderer notify` delivers each new classified diff event
 # to every subscription it matches. Filter by target, diff-type, and minimum severity.
-# `channel` is "webhook" (POST annals.alert/v1 JSON) or "email" (SMTP). Delivery is
+# `channel` is "webhook" (POST verderer.alert/v1 JSON) or "email" (SMTP). Delivery is
 # idempotent — an event is sent to a subscription at most once.
 
 [[subscription]]
 name = "high-severity-webhook"
 channel = "webhook"
-dest = "https://example.com/hooks/annals"
+dest = "https://example.com/hooks/verderer"
 min_severity = "High"
 
 [[subscription]]

@@ -1,9 +1,9 @@
-"""The ledger — Annals' trust core.
+"""The ledger — Verderer' trust core.
 
 The cryptographic core lives in `rust/ledger-core`: a C2SP tlog-tiles Merkle log with
 signed checkpoints (Ed25519 signed notes) and an independent offline verifier. This
 package's `core.Ledger` is a thin Python front end that owns canonicalisation and
-shells out to the `annals-ledger` / `annals-verify` binaries over stdio (no FFI). See
+shells out to the `verderer-ledger` / `verderer-verify` binaries over stdio (no FFI). See
 DESIGN §4 and ADR-0003. Build the kernel with:
 
     cargo build --release --manifest-path rust/Cargo.toml

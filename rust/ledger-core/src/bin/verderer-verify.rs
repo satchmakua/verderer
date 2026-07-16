@@ -1,12 +1,12 @@
-//! `annals-verify` — the independent verifier.
+//! `verderer-verify` — the independent verifier.
 //!
-//!   annals-verify log         --dir D    recompute the whole log vs. its signed checkpoint
-//!   annals-verify inclusion              (JSON bundle on stdin) verify a record offline
-//!   annals-verify tiles       --tiles D  (JSON on stdin) reconstruct the proof from tile files
-//!   annals-verify consistency            (JSON on stdin) prove one checkpoint extends another (M13)
+//!   verderer-verify log         --dir D    recompute the whole log vs. its signed checkpoint
+//!   verderer-verify inclusion              (JSON bundle on stdin) verify a record offline
+//!   verderer-verify tiles       --tiles D  (JSON on stdin) reconstruct the proof from tile files
+//!   verderer-verify consistency            (JSON on stdin) prove one checkpoint extends another (M13)
 //!
 //! The `inclusion` mode takes no directory and contacts no service: it is the offline,
-//! transferable check at the heart of Annals' value (DESIGN §6.4). stdin JSON:
+//! transferable check at the heart of Verderer' value (DESIGN §6.4). stdin JSON:
 //!   {"record_b64": "...", "index": N, "proof": ["<hex>", ...],
 //!    "checkpoint": "<signed note>", "pubkey_hex": "<hex>"}
 //!
@@ -194,11 +194,11 @@ fn run() -> i32 {
             }
         }
         Some("bundle") => {
-            // annals-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]
+            // verderer-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]
             // Verify a downloaded proof bundle offline; pinned TSA roots verify any anchors,
             // pinned witness keys + a quorum require C2SP cosignatures (M8).
             let Some(path) = args.get(1).filter(|a| !a.starts_with("--")) else {
-                eprintln!("usage: annals-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]");
+                eprintln!("usage: verderer-verify bundle <file.json> [--root <pem>]... [--witness name:hex]... [--quorum K]");
                 return 2;
             };
             // Ship the independent third-party TSA roots we trust by default (M2b-2);
@@ -267,12 +267,12 @@ fn run() -> i32 {
             }
         }
         Some("--version") | Some("version") => {
-            println!("annals-verify {}", env!("CARGO_PKG_VERSION"));
+            println!("verderer-verify {}", env!("CARGO_PKG_VERSION"));
             0
         }
         _ => {
             eprintln!(
-                "usage: annals-verify log --dir D | annals-verify inclusion (JSON on stdin) | annals-verify tiles --tiles D (JSON on stdin) | annals-verify consistency (JSON on stdin) | annals-verify bundle <file.json>"
+                "usage: verderer-verify log --dir D | verderer-verify inclusion (JSON on stdin) | verderer-verify tiles --tiles D (JSON on stdin) | verderer-verify consistency (JSON on stdin) | verderer-verify bundle <file.json>"
             );
             2
         }

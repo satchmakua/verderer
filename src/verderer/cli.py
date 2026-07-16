@@ -1,9 +1,9 @@
-"""The ``annals`` command line — the M0 surface over the pipeline.
+"""The ``verderer`` command line — the M0 surface over the pipeline.
 
-    annals targets                 list the curated targets
-    annals observe <target_id>     observe one target now (fetch, store, diff, log)
-    annals log                     print the observation / diff timeline
-    annals verify                  recompute the ledger chain and check the signed head
+    verderer targets                 list the curated targets
+    verderer observe <target_id>     observe one target now (fetch, store, diff, log)
+    verderer log                     print the observation / diff timeline
+    verderer verify                  recompute the ledger chain and check the signed head
 
 Global options (before the subcommand): --data-dir, --targets, --terms.
 """
@@ -18,12 +18,12 @@ from typing import TYPE_CHECKING
 
 from .config import load_targets, load_terms
 from .ledger.core import LedgerBinaryNotFound, find_binary
-from .pipeline import Annals, _checkpoint_size
+from .pipeline import Verderer, _checkpoint_size
 
 if TYPE_CHECKING:
     from .scheduler import TickResult
 
-DEFAULT_DATA_DIR = Path("annals-data")
+DEFAULT_DATA_DIR = Path("verderer-data")
 
 
 def _repo_data_dir() -> Path:
@@ -31,16 +31,16 @@ def _repo_data_dir() -> Path:
     return Path(__file__).resolve().parents[2] / "data"
 
 
-def _build(args: argparse.Namespace, *, embedder: object = None) -> Annals:
+def _build(args: argparse.Namespace, *, embedder: object = None) -> Verderer:
     data = _repo_data_dir()
     targets = load_targets(args.targets or data / "targets.toml")
     terms = load_terms(args.terms or data / "terms.toml")
-    return Annals(args.data_dir, targets=targets, terms=terms, embedder=embedder)  # type: ignore[arg-type]
+    return Verderer(args.data_dir, targets=targets, terms=terms, embedder=embedder)  # type: ignore[arg-type]
 
 
 def cmd_targets(args: argparse.Namespace) -> int:
-    annals = _build(args)
-    for target in annals.targets.values():
+    verderer = _build(args)
+    for target in verderer.targets.values():
         print(f"{target.id:24} {target.url}")
     return 0
 
@@ -51,12 +51,12 @@ def cmd_observe(args: argparse.Namespace) -> int:
         from .differ.embedding import sentence_transformer_embedder
 
         embedder = sentence_transformer_embedder()  # heavy: loads the model (triage extra)
-    annals = _build(args, embedder=embedder)
-    if args.target_id not in annals.targets:
-        print(f"unknown target: {args.target_id} (try `annals targets`)")
+    verderer = _build(args, embedder=embedder)
+    if args.target_id not in verderer.targets:
+        print(f"unknown target: {args.target_id} (try `verderer targets`)")
         return 2
     try:
-        result = annals.observe(args.target_id)
+        result = verderer.observe(args.target_id)
     except Exception as error:  # network/parse failures should not crash the CLI
         print(f"observe failed for {args.target_id}: {error}")
         return 1
@@ -78,13 +78,13 @@ def cmd_observe(args: argparse.Namespace) -> int:
 
 
 def cmd_log(args: argparse.Namespace) -> int:
-    annals = _build(args)
-    rows = annals.timeline()
+    verderer = _build(args)
+    rows = verderer.timeline()
     if not rows:
-        print("(empty record — run `annals observe <target>`)")
+        print("(empty record — run `verderer observe <target>`)")
         return 0
     for row in rows:
-        if row.get("schema") == "annals.observation/v1":
+        if row.get("schema") == "verderer.observation/v1":
             when, tid = row["fetched_at"], row["target_id"]
             print(f"OBS  {when}  {tid:22} [{row['http_status']}] {row['raw_bytes_hash'][:14]}...")
         else:
@@ -94,24 +94,24 @@ def cmd_log(args: argparse.Namespace) -> int:
 
 
 def cmd_verify(args: argparse.Namespace) -> int:
-    annals = _build(args)
-    ok, message = annals.log.verify()
+    verderer = _build(args)
+    ok, message = verderer.log.verify()
     print(("VALID   " if ok else "INVALID ") + message)
-    print(f"log public key: {annals.log.public_key_hex}")
+    print(f"log public key: {verderer.log.public_key_hex}")
     return 0 if ok else 1
 
 
 def cmd_bundle(args: argparse.Namespace) -> int:
-    annals = _build(args)
+    verderer = _build(args)
     try:
-        bundle = annals.bundle(args.target_id, args.index)
+        bundle = verderer.bundle(args.target_id, args.index)
     except Exception as error:
         print(f"bundle failed: {error}")
         return 1
     text = json.dumps(bundle, indent=2)
     if args.output:
         Path(args.output).write_text(text, encoding="utf-8")
-        print(f"wrote proof bundle -> {args.output} ({len(text)} bytes); verify with `annals verify-bundle {args.output}`")
+        print(f"wrote proof bundle -> {args.output} ({len(text)} bytes); verify with `verderer verify-bundle {args.output}`")
     else:
         print(text)
     return 0
@@ -120,9 +120,9 @@ def cmd_bundle(args: argparse.Namespace) -> int:
 def cmd_anchor(args: argparse.Namespace) -> int:
     from .anchors import HttpTsaAnchorer, OpensslTsaAnchorer
 
-    annals = _build(args)
-    if not annals.log.entries():
-        print("nothing to anchor — run `annals observe <target>` first")
+    verderer = _build(args)
+    if not verderer.log.entries():
+        print("nothing to anchor — run `verderer observe <target>` first")
         return 1
     names = [n.strip() for n in args.tsa.split(",") if n.strip()]
     succeeded = 0
@@ -132,7 +132,7 @@ def cmd_anchor(args: argparse.Namespace) -> int:
                 anchorer: object = OpensslTsaAnchorer(args.data_dir / "anchors" / "dev-tsa")
             else:
                 anchorer = HttpTsaAnchorer(name)
-            info = annals.anchor(anchorer)  # type: ignore[arg-type]
+            info = verderer.anchor(anchorer)  # type: ignore[arg-type]
             print(f"anchored via {name}: token {info['token_bytes']} bytes")
             succeeded += 1
         except Exception as error:  # network / openssl / unknown TSA — report, keep going
@@ -141,16 +141,16 @@ def cmd_anchor(args: argparse.Namespace) -> int:
         print("no anchors succeeded (real TSAs need network; try `--tsa dev` for the offline self-hosted TSA)")
         return 1
     print(f"bundles now embed {succeeded} anchor(s). DigiCert/FreeTSA verify by default;")
-    print("  a self-hosted `dev` anchor needs `--root annals-data/ledger/dev-tsa-root.pem`.")
+    print("  a self-hosted `dev` anchor needs `--root verderer-data/ledger/dev-tsa-root.pem`.")
     return 0
 
 
 def cmd_tiles(args: argparse.Namespace) -> int:
-    annals = _build(args)
-    if not annals.log.entries():
-        print("nothing to tile — run `annals observe <target>` first")
+    verderer = _build(args)
+    if not verderer.log.entries():
+        print("nothing to tile — run `verderer observe <target>` first")
         return 1
-    info = annals.log.emit_tiles()
+    info = verderer.log.emit_tiles()
     print(f"published {info['tiles']} tile file(s) at height {info['height']} under {args.data_dir / 'ledger' / 'tile'}")
     print("  verifiers can now recompute inclusion proofs from the tile files alone")
     return 0
@@ -159,12 +159,12 @@ def cmd_tiles(args: argparse.Namespace) -> int:
 def cmd_triage(args: argparse.Namespace) -> int:
     from .triage import claude_summarizer, summarize_event
 
-    annals = _build(args)
-    if args.target_id not in annals.targets:
-        print(f"unknown target: {args.target_id} (try `annals targets`)")
+    verderer = _build(args)
+    if args.target_id not in verderer.targets:
+        print(f"unknown target: {args.target_id} (try `verderer targets`)")
         return 2
     try:
-        review = summarize_event(annals, args.target_id, claude_summarizer(args.model))
+        review = summarize_event(verderer, args.target_id, claude_summarizer(args.model))
     except Exception as error:  # missing anthropic / no credentials / network
         print(f"triage failed: {error}")
         print("  (needs the `triage` extra + Claude credentials; this makes a billable API call)")
@@ -182,7 +182,7 @@ def cmd_triage(args: argparse.Namespace) -> int:
 def cmd_overlay(args: argparse.Namespace) -> int:
     from .overlay import ArchiveSource, WaybackSource, write_overlay
 
-    annals = _build(args)
+    verderer = _build(args)
     sources: list[ArchiveSource] = []
     for name in (n.strip() for n in args.sources.split(",") if n.strip()):
         if name == "wayback":
@@ -191,13 +191,13 @@ def cmd_overlay(args: argparse.Namespace) -> int:
             print(f"unknown source: {name} (known: wayback)")
             return 2
     try:
-        info = write_overlay(annals, args.out, sources)
+        info = write_overlay(verderer, args.out, sources)
     except Exception as error:  # network / archive API failure — report, don't crash
         print(f"overlay build failed: {error}")
         return 1
     print(
         f"built overlay -> {info['out']}: {info['resources']} resource(s) across {info['sources']}, "
-        f"{info['attested']} annals-attested ({info['bundles']} bundle(s) written)"
+        f"{info['attested']} verderer-attested ({info['bundles']} bundle(s) written)"
     )
     print("  attested resources carry a downloadable proof bundle; third-party-only copies do not")
     return 0
@@ -206,8 +206,8 @@ def cmd_overlay(args: argparse.Namespace) -> int:
 def cmd_export(args: argparse.Namespace) -> int:
     from .web.export import export_site
 
-    annals = _build(args)
-    info = export_site(annals, args.out, base_url=args.base_url)
+    verderer = _build(args)
+    info = export_site(verderer, args.out, base_url=args.base_url)
     print(
         f"exported public record -> {info['out']}: {info['targets']} target(s), "
         f"{info['events']} event(s), {info['tiles']} tile file(s), {info['warcs']} WARC(s)"
@@ -230,10 +230,10 @@ def cmd_notify(args: argparse.Namespace) -> int:
         save_state,
     )
 
-    annals = _build(args)
+    verderer = _build(args)
     subs_path = args.subscriptions or _repo_data_dir() / "subscriptions.toml"
     subscriptions = load_subscriptions(subs_path)
-    evs = events(annals)
+    evs = events(verderer)
     state = load_state(args.data_dir)
 
     if args.dry_run:
@@ -265,7 +265,7 @@ def cmd_notify(args: argparse.Namespace) -> int:
 
 
 def _build_notify_fn(args: argparse.Namespace):  # type: ignore[no-untyped-def]
-    """Wire the real M5c notify pipeline as a scheduler seam: (annals) -> deliveries."""
+    """Wire the real M5c notify pipeline as a scheduler seam: (verderer) -> deliveries."""
     from .notify import (
         HttpWebhookNotifier,
         Notifier,
@@ -284,9 +284,9 @@ def _build_notify_fn(args: argparse.Namespace):  # type: ignore[no-untyped-def]
         "email": SmtpEmailNotifier(args.smtp_host, args.smtp_port, args.email_from),
     }
 
-    def notify_fn(annals: Annals) -> list[dict[str, object]]:
+    def notify_fn(verderer: Verderer) -> list[dict[str, object]]:
         state = load_state(args.data_dir)
-        deliveries = dispatch(events(annals), subscriptions, notifiers, state)
+        deliveries = dispatch(events(verderer), subscriptions, notifiers, state)
         save_state(args.data_dir, state)
         return deliveries
 
@@ -314,13 +314,13 @@ def _print_tick(r: TickResult) -> None:
 def cmd_run(args: argparse.Namespace) -> int:
     from .scheduler import Scheduler
 
-    annals = _build(args)
+    verderer = _build(args)
     notify_fn = None if args.no_notify else _build_notify_fn(args)
-    scheduler = Scheduler(annals, notify=notify_fn)
+    scheduler = Scheduler(verderer, notify=notify_fn)
     if args.once:
         _print_tick(scheduler.run_due())
         return 0
-    print(f"annals run: watching {len(annals.targets)} target(s) on their cadence; Ctrl-C to stop")
+    print(f"verderer run: watching {len(verderer.targets)} target(s) on their cadence; Ctrl-C to stop")
     try:
         scheduler.run_forever(poll_cap=args.poll)
     except KeyboardInterrupt:
@@ -331,13 +331,13 @@ def cmd_run(args: argparse.Namespace) -> int:
 def cmd_cosign(args: argparse.Namespace) -> int:
     from .witness import load_or_create_witness
 
-    annals = _build(args)
-    if not annals.log.entries():
-        print("nothing to cosign — run `annals observe <target>` first")
+    verderer = _build(args)
+    if not verderer.log.entries():
+        print("nothing to cosign — run `verderer observe <target>` first")
         return 1
     witness = load_or_create_witness(args.key_file, args.name)
     try:
-        info = annals.cosign(witness)
+        info = verderer.cosign(witness)
     except Exception as error:
         print(f"cosign failed: {error}")
         return 1
@@ -352,13 +352,13 @@ def cmd_consistency(args: argparse.Namespace) -> int:
     Records a baseline the first time; on later runs it proves — offline — that the log has
     only *grown* from that baseline (never forked/shrank/rewrote) and advances the baseline.
     """
-    annals = _build(args)
-    if not annals.log.entries():
-        print("nothing to gossip - run `annals observe <target>` first")
+    verderer = _build(args)
+    if not verderer.log.entries():
+        print("nothing to gossip - run `verderer observe <target>` first")
         return 1
     # A distinct marker from the export chain (each tool keeps its own gossip baseline).
     marker = args.data_dir / "ledger" / "gossip-baseline-checkpoint"
-    current = annals.log.signed_checkpoint()
+    current = verderer.log.signed_checkpoint()
     previous_size = None
     if marker.exists():
         try:
@@ -374,8 +374,8 @@ def cmd_consistency(args: argparse.Namespace) -> int:
     if previous_size >= _checkpoint_size(current):
         print(f"no new entries since the baseline (size {previous_size}) - nothing to prove")
         return 0
-    bundle = annals.gossip_bundle(previous)
-    ok, message = annals.log.verify_consistency(bundle["old_checkpoint"], bundle["new_checkpoint"], bundle["proof"])
+    bundle = verderer.gossip_bundle(previous)
+    ok, message = verderer.log.verify_consistency(bundle["old_checkpoint"], bundle["new_checkpoint"], bundle["proof"])
     if args.output:
         args.output.write_text(json.dumps(bundle, indent=2), encoding="utf-8")
         print(f"wrote gossip bundle -> {args.output}")
@@ -386,14 +386,14 @@ def cmd_consistency(args: argparse.Namespace) -> int:
 
 
 def cmd_verify_consistency(args: argparse.Namespace) -> int:
-    """Verify a downloaded `annals.consistency/v1` bundle offline — the log never forked.
+    """Verify a downloaded `verderer.consistency/v1` bundle offline — the log never forked.
 
-    Soundness note: pin Annals' public key with `--pubkey` (obtained from a trusted channel).
+    Soundness note: pin Verderer' public key with `--pubkey` (obtained from a trusted channel).
     A gossip proof is only meaningful against a *pinned* key — verifying a bundle under the key
-    it carries proves it is internally consistent, not that it is Annals' real log (an attacker
+    it carries proves it is internally consistent, not that it is Verderer' real log (an attacker
     can fabricate a self-consistent history under their own key)."""
     try:
-        verifier = find_binary("annals-verify")
+        verifier = find_binary("verderer-verify")
     except LedgerBinaryNotFound as error:
         print(str(error))
         return 1
@@ -408,7 +408,7 @@ def cmd_verify_consistency(args: argparse.Namespace) -> int:
         key = bundle_key
         print(
             "warning: no --pubkey pinned - this proves the bundle is internally consistent, NOT "
-            "that it is Annals' real log. Pin Annals' key with --pubkey for a trust decision."
+            "that it is Verderer' real log. Pin Verderer' key with --pubkey for a trust decision."
         )
     payload = {
         "old_checkpoint": bundle["old_checkpoint"],
@@ -425,7 +425,7 @@ def cmd_verify_consistency(args: argparse.Namespace) -> int:
 
 def cmd_verify_bundle(args: argparse.Namespace) -> int:
     try:
-        verifier = find_binary("annals-verify")
+        verifier = find_binary("verderer-verify")
     except LedgerBinaryNotFound as error:
         print(str(error))
         return 1
@@ -442,7 +442,7 @@ def cmd_verify_bundle(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="annals", description="A verifiable watchdog for public environmental data.")
+    parser = argparse.ArgumentParser(prog="verderer", description="A verifiable watchdog for public environmental data.")
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR, help="where blobs + ledger live")
     parser.add_argument("--targets", type=Path, default=None, help="override targets.toml")
     parser.add_argument("--terms", type=Path, default=None, help="override terms.toml")
@@ -468,11 +468,11 @@ def main(argv: list[str] | None = None) -> int:
     consistency = sub.add_parser("consistency", help="gossip: prove the current checkpoint extends a recorded one (M13)")
     consistency.add_argument("-o", "--output", type=Path, default=None, help="write the gossip bundle to a file")
     verify_consistency = sub.add_parser(
-        "verify-consistency", help="verify a downloaded annals.consistency/v1 gossip bundle offline"
+        "verify-consistency", help="verify a downloaded verderer.consistency/v1 gossip bundle offline"
     )
     verify_consistency.add_argument("path", type=Path)
     verify_consistency.add_argument(
-        "--pubkey", default=None, help="pin Annals' public key (hex) - required for a real trust decision"
+        "--pubkey", default=None, help="pin Verderer' public key (hex) - required for a real trust decision"
     )
     verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
     verify_bundle.add_argument("path", type=Path)
@@ -489,13 +489,13 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("tiles", help="(re)publish the C2SP tile files for the current ledger")
     export = sub.add_parser("export", help="export the public record (record.json + RSS feeds) for the site")
     export.add_argument("--out", type=Path, default=Path("site-data"), help="output directory")
-    export.add_argument("--base-url", default="https://annals.example", help="public base URL for feed links")
+    export.add_argument("--base-url", default="https://verderer.example", help="public base URL for feed links")
     notify = sub.add_parser("notify", help="deliver new diff events to webhook/email subscriptions")
     notify.add_argument("--subscriptions", type=Path, default=None, help="override subscriptions.toml")
     notify.add_argument("--dry-run", action="store_true", help="show pending deliveries without sending")
     notify.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
     notify.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
-    notify.add_argument("--email-from", default="annals@localhost", help="From: address for email alerts")
+    notify.add_argument("--email-from", default="verderer@localhost", help="From: address for email alerts")
     run = sub.add_parser("run", help="continuously re-observe due targets on their cadence + fire alerts (M10)")
     run.add_argument("--once", action="store_true", help="process exactly the due set once and exit (cron/systemd)")
     run.add_argument("--poll", type=float, default=300.0, help="max seconds to sleep between wakeups in the loop")
@@ -503,7 +503,7 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--subscriptions", type=Path, default=None, help="override subscriptions.toml")
     run.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
     run.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
-    run.add_argument("--email-from", default="annals@localhost", help="From: address for email alerts")
+    run.add_argument("--email-from", default="verderer@localhost", help="From: address for email alerts")
 
     args = parser.parse_args(argv)
     dispatch = {

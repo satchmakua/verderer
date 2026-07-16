@@ -4,39 +4,39 @@ import json
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from annals.collectors.base import FetchResult
-from annals.collectors.static import StaticCollector
-from annals.config import Target
-from annals.pipeline import Annals
-from annals.web.export import export_site
-from annals.web.feed import render_rss
-from annals.web.record import build_record
+from verderer.collectors.base import FetchResult
+from verderer.collectors.static import StaticCollector
+from verderer.config import Target
+from verderer.pipeline import Verderer
+from verderer.web.export import export_site
+from verderer.web.feed import render_rss
+from verderer.web.record import build_record
 
 BEFORE = b"<html><body><p>EPA works on climate change; threshold is 10 ppb.</p></body></html>"
 AFTER = b"<html><body><p>EPA works on resilience; threshold is 15 ppb.</p></body></html>"
 
 
-def _annals_with_changes(tmp_path: Path) -> Annals:
+def _verderer_with_changes(tmp_path: Path) -> Verderer:
     cursor = {"i": 0}
 
     def fake(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url=url, status=200, headers={"content-type": "text/html"}, body=[BEFORE, AFTER][min(cursor["i"], 1)])
 
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"epa": Target(id="epa", title="EPA GHGRP", url="https://epa.gov/x")},
         terms=["climate change", "resilience"],
         collector=StaticCollector(fetcher=fake),
     )
-    annals.observe("epa")
+    verderer.observe("epa")
     cursor["i"] = 1
-    annals.observe("epa")
-    return annals
+    verderer.observe("epa")
+    return verderer
 
 
 def test_build_record_has_targets_observations_and_events(tmp_path: Path, ledger_built: None) -> None:
-    record = build_record(_annals_with_changes(tmp_path))
-    assert record["schema"] == "annals.record/v1"
+    record = build_record(_verderer_with_changes(tmp_path))
+    assert record["schema"] == "verderer.record/v1"
     assert len(record["public_key"]) == 64
     epa = next(t for t in record["targets"] if t["id"] == "epa")
     assert len(epa["observations"]) == 2
@@ -49,7 +49,7 @@ def test_build_record_has_targets_observations_and_events(tmp_path: Path, ledger
 
 
 def test_rss_is_wellformed_with_one_item_per_event(tmp_path: Path, ledger_built: None) -> None:
-    record = build_record(_annals_with_changes(tmp_path))
+    record = build_record(_verderer_with_changes(tmp_path))
     xml = render_rss(record["events"], title="T", link="https://x", description="d")
     root = ET.fromstring(xml)  # parses => well-formed
     items = root.findall("./channel/item")
@@ -59,9 +59,9 @@ def test_rss_is_wellformed_with_one_item_per_event(tmp_path: Path, ledger_built:
 
 
 def test_export_writes_record_and_feeds(tmp_path: Path, ledger_built: None) -> None:
-    annals = _annals_with_changes(tmp_path)
+    verderer = _verderer_with_changes(tmp_path)
     out = tmp_path / "site-data"
-    info = export_site(annals, out)
+    info = export_site(verderer, out)
     assert (out / "record.json").exists()
     assert (out / "feed.xml").exists()
     assert (out / "feeds" / "epa.xml").exists()

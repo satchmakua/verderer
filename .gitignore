@@ -36,7 +36,8 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
-# Annals runtime state — blobs, ledger, and the local signing key. Never commit.
+# Verderer runtime state — blobs, ledger, and the local signing key. Never commit.
+verderer-data/
 annals-data/
 # Legacy pre-rename runtime state (kept locally; not auto-migrated)
 druid-data/

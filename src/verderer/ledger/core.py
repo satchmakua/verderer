@@ -1,4 +1,4 @@
-"""Python front end to the Rust trust core (`annals-ledger` / `annals-verify`).
+"""Python front end to the Rust trust core (`verderer-ledger` / `verderer-verify`).
 
 The cryptographic work lives in `rust/ledger-core` (a C2SP tlog-tiles Merkle log with
 signed checkpoints and an offline verifier). Python owns canonicalisation and shells
@@ -27,15 +27,15 @@ class LedgerBinaryNotFound(RuntimeError):
 
 
 def _repo_root() -> Path:
-    # src/annals/ledger/core.py -> repo root
+    # src/verderer/ledger/core.py -> repo root
     return Path(__file__).resolve().parents[3]
 
 
 def find_binary(name: str) -> Path:
-    """Locate a built Rust binary: `$ANNALS_RUST_BIN_DIR`, then rust/target/{release,debug}."""
+    """Locate a built Rust binary: `$VERDERER_RUST_BIN_DIR`, then rust/target/{release,debug}."""
     exe = name + (".exe" if os.name == "nt" else "")
     candidates: list[Path] = []
-    env = os.environ.get("ANNALS_RUST_BIN_DIR")
+    env = os.environ.get("VERDERER_RUST_BIN_DIR")
     if env:
         candidates.append(Path(env) / exe)
     root = _repo_root()
@@ -79,17 +79,17 @@ class Ledger:
         self.dir = Path(directory)
         self.dir.mkdir(parents=True, exist_ok=True)
 
-    # --- writes (via annals-ledger) ---
+    # --- writes (via verderer-ledger) ---
 
     def append(self, record: dict[str, Any]) -> LeafEntry:
         data = canonical(record)
         result = subprocess.run(
-            [str(find_binary("annals-ledger")), "append", "--dir", str(self.dir)],
+            [str(find_binary("verderer-ledger")), "append", "--dir", str(self.dir)],
             input=data,
             capture_output=True,
         )
         if result.returncode != 0:
-            raise RuntimeError(f"annals-ledger append failed: {result.stderr.decode(errors='replace').strip()}")
+            raise RuntimeError(f"verderer-ledger append failed: {result.stderr.decode(errors='replace').strip()}")
         out = json.loads(result.stdout.decode())
         return LeafEntry(index=out["index"], leaf_hash=out["leaf_hash"], record=record)
 
@@ -99,24 +99,24 @@ class Ledger:
         # signature line contains a U+2014 em dash); `text=True` would use the platform
         # locale (cp1252 on Windows) and corrupt it.
         result = subprocess.run(
-            [str(find_binary("annals-ledger")), "inclusion", "--dir", str(self.dir), "--index", str(index)],
+            [str(find_binary("verderer-ledger")), "inclusion", "--dir", str(self.dir), "--index", str(index)],
             capture_output=True,
             encoding="utf-8",
         )
         if result.returncode != 0:
-            raise RuntimeError(f"annals-ledger inclusion failed: {result.stderr.strip()}")
+            raise RuntimeError(f"verderer-ledger inclusion failed: {result.stderr.strip()}")
         return json.loads(result.stdout)
 
     def consistency_proof(self, old_size: int, new_size: int) -> list[str]:
         """A C2SP consistency proof (hex hashes) that size-`new_size` extends size-`old_size` (M13)."""
         result = subprocess.run(
-            [str(find_binary("annals-ledger")), "consistency", "--dir", str(self.dir),
+            [str(find_binary("verderer-ledger")), "consistency", "--dir", str(self.dir),
              "--from", str(old_size), "--to", str(new_size)],
             capture_output=True,
             encoding="utf-8",
         )
         if result.returncode != 0:
-            raise RuntimeError(f"annals-ledger consistency failed: {result.stderr.strip()}")
+            raise RuntimeError(f"verderer-ledger consistency failed: {result.stderr.strip()}")
         return list(json.loads(result.stdout)["proof"])
 
     def verify_consistency(self, old_checkpoint: str, new_checkpoint: str, proof: list[str]) -> tuple[bool, str]:
@@ -129,7 +129,7 @@ class Ledger:
             "pubkey_hex": self.public_key_hex,
         }
         result = subprocess.run(
-            [str(find_binary("annals-verify")), "consistency"],
+            [str(find_binary("verderer-verify")), "consistency"],
             input=json.dumps(bundle).encode("utf-8"),
             capture_output=True,
         )
@@ -142,12 +142,12 @@ class Ledger:
         publish tiles incrementally from then on). Returns ``{"tiles": N, "height": 8}``.
         """
         result = subprocess.run(
-            [str(find_binary("annals-ledger")), "tiles", "--dir", str(self.dir)],
+            [str(find_binary("verderer-ledger")), "tiles", "--dir", str(self.dir)],
             capture_output=True,
             encoding="utf-8",
         )
         if result.returncode != 0:
-            raise RuntimeError(f"annals-ledger tiles failed: {result.stderr.strip()}")
+            raise RuntimeError(f"verderer-ledger tiles failed: {result.stderr.strip()}")
         return dict(json.loads(result.stdout))
 
     def offline_verify_from_tiles(self, index: int) -> tuple[bool, str]:
@@ -164,14 +164,14 @@ class Ledger:
             "pubkey_hex": self.public_key_hex,
         }
         result = subprocess.run(
-            [str(find_binary("annals-verify")), "tiles", "--tiles", str(self.dir)],
+            [str(find_binary("verderer-verify")), "tiles", "--tiles", str(self.dir)],
             input=json.dumps(bundle).encode("utf-8"),
             capture_output=True,
         )
         return result.returncode == 0, result.stdout.decode(errors="replace").strip()
 
     def offline_verify(self, index: int) -> tuple[bool, str]:
-        """Build an inclusion bundle for a record and verify it offline via `annals-verify`.
+        """Build an inclusion bundle for a record and verify it offline via `verderer-verify`.
 
         This is the transferable, no-live-service check (DESIGN §6.4) and the seed of
         the M2 proof bundle. The bundle is passed to the verifier as UTF-8 bytes.
@@ -186,7 +186,7 @@ class Ledger:
             "pubkey_hex": self.public_key_hex,
         }
         result = subprocess.run(
-            [str(find_binary("annals-verify")), "inclusion"],
+            [str(find_binary("verderer-verify")), "inclusion"],
             input=json.dumps(bundle).encode("utf-8"),
             capture_output=True,
         )
@@ -210,11 +210,11 @@ class Ledger:
             out.append(LeafEntry(index=index, leaf_hash=_leaf_hash(raw), record=json.loads(raw)))
         return out
 
-    # --- verification (via annals-verify, the independent verifier) ---
+    # --- verification (via verderer-verify, the independent verifier) ---
 
     def verify(self) -> tuple[bool, str]:
         try:
-            verifier = find_binary("annals-verify")
+            verifier = find_binary("verderer-verify")
         except LedgerBinaryNotFound as error:
             return False, str(error)
         result = subprocess.run([str(verifier), "log", "--dir", str(self.dir)], capture_output=True, encoding="utf-8")
@@ -231,12 +231,12 @@ class Ledger:
         audited place. Returns the `— name base64(...)` cosignature line.
         """
         result = subprocess.run(
-            [str(find_binary("annals-ledger")), "cosign", "--dir", str(self.dir), "--name", name, "--key-hex", seed_hex],
+            [str(find_binary("verderer-ledger")), "cosign", "--dir", str(self.dir), "--name", name, "--key-hex", seed_hex],
             capture_output=True,
             encoding="utf-8",
         )
         if result.returncode != 0:
-            raise RuntimeError(f"annals-ledger cosign failed: {result.stderr.strip()}")
+            raise RuntimeError(f"verderer-ledger cosign failed: {result.stderr.strip()}")
         return result.stdout.strip()
 
     @property

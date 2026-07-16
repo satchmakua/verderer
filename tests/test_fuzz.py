@@ -12,13 +12,13 @@ from __future__ import annotations
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from annals.differ.dataset import dataset_diff, detect_format
-from annals.differ.normalize import normalize_for_diff, suppress_noise
-from annals.differ.numeric import numeric_watch
-from annals.differ.structure import structure_watch
-from annals.differ.termwatch import term_watch
-from annals.models import DiffRecord
-from annals.warc import archived_payload, build_warc, iter_records
+from verderer.differ.dataset import dataset_diff, detect_format
+from verderer.differ.normalize import normalize_for_diff, suppress_noise
+from verderer.differ.numeric import numeric_watch
+from verderer.differ.structure import structure_watch
+from verderer.differ.termwatch import term_watch
+from verderer.models import DiffRecord
+from verderer.warc import archived_payload, build_warc, iter_records
 
 _KW = {"target_id": "t", "detected_at": "2026-01-01T00:00:00Z", "from_hash": "a", "to_hash": "b"}
 _SETTINGS = settings(max_examples=250, deadline=None)

@@ -9,11 +9,11 @@ from pathlib import Path
 
 import pytest
 
-from annals.collectors.base import Collected, RenderedCall, RenderResult
-from annals.collectors.render import RenderCollector
-from annals.config import Target
-from annals.models import DiffType
-from annals.pipeline import Annals
+from verderer.collectors.base import Collected, RenderedCall, RenderResult
+from verderer.collectors.render import RenderCollector
+from verderer.config import Target
+from verderer.models import DiffType
+from verderer.pipeline import Verderer
 
 RENDER_TARGET = Target(id="tool", title="JS Tool", url="https://example.gov/tool", collector="render")
 
@@ -41,8 +41,8 @@ def _engine(dom: bytes, calls: tuple[RenderedCall, ...] = (DATA_CALL,)):
     return engine
 
 
-def _annals(tmp_path: Path, engine) -> Annals:
-    return Annals(
+def _verderer(tmp_path: Path, engine) -> Verderer:
+    return Verderer(
         tmp_path / "data",
         targets={"tool": RENDER_TARGET},
         terms=["climate change"],
@@ -65,12 +65,12 @@ def test_collect_captures_dom_and_data_calls() -> None:
     manifest_bytes, *bodies = collected.side_artifacts
     assert DATA_CALL.body in bodies
     manifest = json.loads(manifest_bytes)
-    assert manifest["schema"] == "annals.captured_requests/v1"
+    assert manifest["schema"] == "verderer.captured_requests/v1"
     assert len(manifest["calls"]) == 1
     call = manifest["calls"][0]
     assert call["url"] == DATA_CALL.url
     assert call["resource_type"] == "xhr"
-    from annals.hashing import multihash_sha256
+    from verderer.hashing import multihash_sha256
 
     assert call["response_hash"] == multihash_sha256(DATA_CALL.body)
 
@@ -87,24 +87,24 @@ def test_manifest_hash_is_call_order_independent() -> None:
 
 
 def test_pipeline_routes_render_target_and_stores_side_artifacts(tmp_path: Path, ledger_built: None) -> None:
-    annals = _annals(tmp_path, _engine(DOM_V1))
-    result = annals.observe("tool")
+    verderer = _verderer(tmp_path, _engine(DOM_V1))
+    result = verderer.observe("tool")
     assert result.is_first
     obs = result.observation
     assert obs.collector_type == "render"
 
     # The attested DOM and the captured API/data calls are all resolvable from the store.
-    assert annals.store.get(obs.raw_bytes_hash) == DOM_V1
-    manifest = json.loads(annals.store.get(obs.captured_requests_hash))
+    assert verderer.store.get(obs.raw_bytes_hash) == DOM_V1
+    manifest = json.loads(verderer.store.get(obs.captured_requests_hash))
     response_hash = manifest["calls"][0]["response_hash"]
-    assert annals.store.get(response_hash) == DATA_CALL.body
+    assert verderer.store.get(response_hash) == DATA_CALL.body
 
 
 def test_detection_runs_on_rendered_dom(tmp_path: Path, ledger_built: None) -> None:
     # The whole point of rendering: a change in the *rendered* content (not the static
     # shell) is detected. "climate change" disappears from the post-JS DOM.
     engine = {"dom": DOM_V1}
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"tool": RENDER_TARGET},
         terms=["climate change"],
@@ -112,30 +112,30 @@ def test_detection_runs_on_rendered_dom(tmp_path: Path, ledger_built: None) -> N
             final_url=u, status=200, headers={}, rendered_dom=engine["dom"], calls=(DATA_CALL,)
         ))},
     )
-    assert annals.observe("tool").is_first
+    assert verderer.observe("tool").is_first
     engine["dom"] = DOM_V2
-    diffs = annals.observe("tool").diffs
+    diffs = verderer.observe("tool").diffs
     assert DiffType.TermSubstitution in {d.diff_type for d in diffs}
 
 
 def test_render_observation_is_citable(tmp_path: Path, ledger_built: None) -> None:
     # A render observation flows through the proof bundle like any other: the attested
     # artifact (the rendered DOM) hashes correctly and the leaf verifies offline.
-    annals = _annals(tmp_path, _engine(DOM_V1))
-    annals.observe("tool")
-    ok, message = annals.log.offline_verify(0)
+    verderer = _verderer(tmp_path, _engine(DOM_V1))
+    verderer.observe("tool")
+    ok, message = verderer.log.offline_verify(0)
     assert ok, message
 
 
 def test_unregistered_collector_is_rejected(tmp_path: Path, ledger_built: None) -> None:
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"x": Target(id="x", title="X", url="https://e.gov/x", collector="bogus")},
         terms=[],
         collectors={"static": RenderCollector(engine=_engine(DOM_V1))},  # no "bogus"
     )
     with pytest.raises(ValueError, match="bogus"):
-        annals.observe("x")
+        verderer.observe("x")
 
 
 # --- gated live test: real Playwright against a localhost JS page ---
@@ -159,7 +159,7 @@ def test_live_playwright_renders_and_captures(chromium_available: None) -> None:
     import socketserver
     import threading
 
-    from annals.collectors.render import playwright_engine
+    from verderer.collectors.render import playwright_engine
 
     page_html = (
         b"<html><body><div id='out'>loading</div>"

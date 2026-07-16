@@ -10,13 +10,13 @@ import io
 import json
 from pathlib import Path
 
-from annals.collectors.base import FetchResult
-from annals.collectors.static import StaticCollector
-from annals.config import Target
-from annals.hashing import multihash_sha256
-from annals.pipeline import Annals
-from annals.warc import archived_payload, build_warc, iter_records
-from annals.web.export import export_site
+from verderer.collectors.base import FetchResult
+from verderer.collectors.static import StaticCollector
+from verderer.config import Target
+from verderer.hashing import multihash_sha256
+from verderer.pipeline import Verderer
+from verderer.warc import archived_payload, build_warc, iter_records
+from verderer.web.export import export_site
 
 BODY = b"<html><body><p>reporting threshold is 10 ppb. climate change.</p></body></html>"
 
@@ -129,8 +129,8 @@ def test_unknown_status_code_keeps_the_required_space() -> None:
 TARGET = Target(id="t", title="T", url="https://example.gov/t")
 
 
-def _annals(tmp_path: Path, fetcher: object) -> Annals:
-    return Annals(
+def _verderer(tmp_path: Path, fetcher: object) -> Verderer:
+    return Verderer(
         tmp_path / "data",
         targets={"t": TARGET},
         terms=["climate change"],
@@ -146,13 +146,13 @@ def _fetch(body: bytes = BODY, status: int = 200):
 
 
 def test_observation_is_archived_and_attested(tmp_path: Path, ledger_built: None) -> None:
-    annals = _annals(tmp_path, _fetch())
-    obs = annals.observe("t").observation
+    verderer = _verderer(tmp_path, _fetch())
+    obs = verderer.observe("t").observation
     assert obs is not None
     # The leaf attests a WARC hash...
     assert obs.warc_record_hash is not None
     # ...which resolves to the stored WARC...
-    warc = annals.store.get(obs.warc_record_hash)
+    warc = verderer.store.get(obs.warc_record_hash)
     # ...whose hash matches what the leaf claims (no unprovable advertised hash)...
     assert multihash_sha256(warc) == obs.warc_record_hash
     # ...and whose archived payload hashes to the observation's raw_bytes_hash.
@@ -162,22 +162,22 @@ def test_observation_is_archived_and_attested(tmp_path: Path, ledger_built: None
 
 
 def test_dedup_does_not_archive_a_second_identical_warc(tmp_path: Path, ledger_built: None) -> None:
-    annals = _annals(tmp_path, _fetch())
-    first = annals.observe("t")
+    verderer = _verderer(tmp_path, _fetch())
+    first = verderer.observe("t")
     assert first.observation is not None and first.observation.warc_record_hash is not None
     warc_hash = first.observation.warc_record_hash
 
-    second = annals.observe("t")  # byte-identical -> deduped before a WARC is built
+    second = verderer.observe("t")  # byte-identical -> deduped before a WARC is built
     assert second.status == "unchanged" and second.observation is None
-    assert annals.store.has(warc_hash)  # the one WARC from the baseline is still there
+    assert verderer.store.has(warc_hash)  # the one WARC from the baseline is still there
 
 
 def test_export_ships_the_warcs(tmp_path: Path, ledger_built: None) -> None:
-    annals = _annals(tmp_path, _fetch())
-    obs = annals.observe("t").observation
+    verderer = _verderer(tmp_path, _fetch())
+    obs = verderer.observe("t").observation
     assert obs is not None
 
-    info = export_site(annals, tmp_path / "site")
+    info = export_site(verderer, tmp_path / "site")
     assert info["warcs"] == 1
     warc_file = tmp_path / "site" / "warc" / f"{obs.warc_record_hash[4:]}.warc"
     assert warc_file.exists()
@@ -197,47 +197,47 @@ def test_warc_failure_does_not_drop_the_observation(tmp_path: Path, ledger_built
     def fetch(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url="https://example.gov/café", status=200, headers={}, body=BODY)
 
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data", targets={"t": Target(id="t", title="T", url="https://example.gov/x")},
         terms=[], collector=StaticCollector(fetcher=fetch),
     )
-    result = annals.observe("t")
+    result = verderer.observe("t")
     assert result.status == "observed" and result.observation is not None
     assert result.observation.warc_record_hash is None  # WARC skipped, observation kept
     assert result.observation.raw_bytes_hash is not None  # still fully attested
 
 
 def test_record_omits_warc_link_when_blob_is_missing(tmp_path: Path, ledger_built: None) -> None:
-    from annals.web.record import build_record
+    from verderer.web.record import build_record
 
-    annals = _annals(tmp_path, _fetch())
-    obs = annals.observe("t").observation
+    verderer = _verderer(tmp_path, _fetch())
+    obs = verderer.observe("t").observation
     assert obs is not None and obs.warc_record_hash is not None
     # Simulate a store that no longer holds the WARC (a pruned/partial blob dir).
-    annals.store._path(obs.warc_record_hash).unlink()
+    verderer.store._path(obs.warc_record_hash).unlink()
 
-    view = build_record(annals)["targets"][0]["observations"][0]
+    view = build_record(verderer)["targets"][0]["observations"][0]
     assert view["warc_record_hash"] == obs.warc_record_hash  # the attested fact is still shown
     assert view["warc"] is None  # but no dangling download link is advertised
 
 
 def test_render_observation_is_archived_as_resource(tmp_path: Path, ledger_built: None) -> None:
-    from annals.collectors.base import RenderResult
-    from annals.collectors.render import RenderCollector
+    from verderer.collectors.base import RenderResult
+    from verderer.collectors.render import RenderCollector
 
     dom = b"<html><body>rendered climate change dashboard</body></html>"
 
     def engine(url: str, *, timeout: float = 30.0) -> RenderResult:
         return RenderResult(final_url=url, status=200, headers={"content-type": "text/html"}, rendered_dom=dom)
 
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"tool": Target(id="tool", title="Tool", url="https://example.gov/tool", collector="render")},
         terms=[],
         collectors={"render": RenderCollector(engine=engine)},
     )
-    obs = annals.observe("tool").observation
+    obs = verderer.observe("tool").observation
     assert obs is not None and obs.warc_record_hash is not None
-    warc = annals.store.get(obs.warc_record_hash)
+    warc = verderer.store.get(obs.warc_record_hash)
     assert [h.get("warc-type") for h, _ in iter_records(warc)] == ["resource"]
     assert archived_payload(warc) == dom  # the attested rendered DOM replays from the WARC

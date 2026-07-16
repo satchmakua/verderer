@@ -7,18 +7,18 @@ const sources = (overlay.sources ?? []) as string[];
 const attested = overlay.attested_count ?? 0;
 ---
 
-<Base title="Annals — federated overlay">
+<Base title="Verderer — federated overlay">
   <section class="hero">
     <h1>Federated overlay index</h1>
     <p>
-      The volunteer rescue ecosystem has archived far more than Annals observes. This index
+      The volunteer rescue ecosystem has archived far more than Verderer observes. This index
       cross-references those third-party archives ({sources.join(', ') || 'none'}) against
-      Annals' own attested record. A <strong>annals-attested</strong> resource carries a
+      Verderer' own attested record. A <strong>verderer-attested</strong> resource carries a
       self-verifying proof bundle — exactly-these-bytes, offline-verifiable, trusting no one.
       A third-party-only copy is a real archive, but there is nothing to <em>prove</em> about
       its bytes, so it shows no badge.
     </p>
-    <p class="muted">{attested} of {resources.length} resources are Annals-attested.</p>
+    <p class="muted">{attested} of {resources.length} resources are Verderer-attested.</p>
   </section>
 
   <section>
@@ -27,16 +27,16 @@ const attested = overlay.attested_count ?? 0;
     )}
     <ul class="resources">
       {resources.map((r: any) => (
-        <li data-search={`${r.url} ${r.attested ? 'attested annals-attested' : 'unverified'} ${(r.external ?? []).map((e: any) => e.source).join(' ')}`.toLowerCase()}>
+        <li data-search={`${r.url} ${r.attested ? 'attested verderer-attested' : 'unverified'} ${(r.external ?? []).map((e: any) => e.source).join(' ')}`.toLowerCase()}>
           <div class="row">
             {r.attested
-              ? <span class="badge att">annals-attested</span>
+              ? <span class="badge att">verderer-attested</span>
               : <span class="badge un">unverified</span>}
             <a class="url" href={r.url}>{r.url}</a>
           </div>
           <div class="meta">
-            {r.attested && r.annals?.bundle && (
-              <span><a href={`/${r.annals.bundle}`} download>download proof bundle ↓</a> · <a href="/verify">verify it →</a> · </span>
+            {r.attested && r.verderer?.bundle && (
+              <span><a href={`/${r.verderer.bundle}`} download>download proof bundle ↓</a> · <a href="/verify">verify it →</a> · </span>
             )}
             {(r.external ?? []).map((e: any) => (
               <span class="src">{e.source} ({e.captures.length}) {e.captures[0] && <a href={e.captures[0].archive_url}>latest capture</a>}</span>

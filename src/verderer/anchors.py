@@ -1,10 +1,10 @@
 """External anchoring (DESIGN §6.3, M2b): bind a signed checkpoint to a time via an
-RFC 3161 timestamp token, verifiable offline by the Rust `annals-verify`.
+RFC 3161 timestamp token, verifiable offline by the Rust `verderer-verify`.
 
 **Honesty (M2b-1).** This ships a *self-hosted* dev TSA — an RFC 3161 responder backed
-by openssl, whose key Annals generates and holds in the gitignored data dir. It proves
+by openssl, whose key Verderer generates and holds in the gitignored data dir. It proves
 the mechanism (and verifies offline end to end), but a self-hosted TSA is **not** an
-independent anchor: Annals could forge its own timestamps, so it is no defence against
+independent anchor: Verderer could forge its own timestamps, so it is no defence against
 Adversary B. Independent third-party TSAs (DigiCert / FreeTSA, over HTTP) are M2b-2. An
 anchor's time bound is only as trustworthy as the pinned TSA — do not overclaim.
 
@@ -65,7 +65,7 @@ def anchored_hash(checkpoint: str) -> bytes:
 
 class OpensslTsaAnchorer:
     """A self-hosted RFC 3161 TSA backed by openssl. Keys live under `tsa_dir` (keep it
-    out of version control — `annals-data/` is gitignored). NOT an independent anchor."""
+    out of version control — `verderer-data/` is gitignored). NOT an independent anchor."""
 
     name = "dev-tsa"
 
@@ -86,12 +86,12 @@ class OpensslTsaAnchorer:
             return
         self._run(
             "req", "-x509", "-newkey", "rsa:2048", "-keyout", self._p("ca.key"), "-out", self._p("root.pem"),
-            "-days", "3650", "-nodes", "-subj", "/CN=Annals self-hosted dev TSA root",
+            "-days", "3650", "-nodes", "-subj", "/CN=Verderer self-hosted dev TSA root",
             "-addext", "basicConstraints=critical,CA:TRUE", "-addext", "keyUsage=critical,keyCertSign,cRLSign",
         )
         self._run(
             "req", "-newkey", "rsa:2048", "-keyout", self._p("tsa.key"), "-out", self._p("tsa.csr"),
-            "-nodes", "-subj", "/CN=Annals self-hosted dev TSA",
+            "-nodes", "-subj", "/CN=Verderer self-hosted dev TSA",
         )
         (self.dir / "eku.ext").write_text("extendedKeyUsage=critical,timeStamping\nkeyUsage=critical,digitalSignature\n")
         self._run(
@@ -152,7 +152,7 @@ class HttpTsaAnchorer:
                 timeout=self.timeout,
                 headers={
                     "Content-Type": "application/timestamp-query",
-                    "User-Agent": "AnnalsWatchdog/0.0 (+https://github.com/satchmakua/annals) polite-anchor",
+                    "User-Agent": "VerdererWatchdog/0.0 (+https://github.com/satchmakua/verderer) polite-anchor",
                 },
             )
             reply.raise_for_status()

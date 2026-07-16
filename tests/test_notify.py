@@ -3,7 +3,7 @@ all offline via injectable senders."""
 
 from pathlib import Path
 
-from annals.notify import (
+from verderer.notify import (
     DispatchState,
     HttpWebhookNotifier,
     SmtpEmailNotifier,
@@ -89,7 +89,7 @@ def test_failed_delivery_is_not_marked_and_retries() -> None:
 
 
 def test_corrupt_notify_state_fails_open(tmp_path: Path) -> None:
-    # Regression (M10 review): the `annals run` loop loads notify state every tick. A corrupt
+    # Regression (M10 review): the `verderer run` loop loads notify state every tick. A corrupt
     # file (a crash mid-write) must not raise — it would kill the watchdog and re-crash on
     # every restart. Fail open to an empty (nothing-delivered) state instead.
     (tmp_path / "notify-state.json").write_text("{ truncated", encoding="utf-8")
@@ -111,14 +111,14 @@ def test_webhook_notifier_posts_alert_payload() -> None:
     notifier.send(Subscription("s", "webhook", "https://hook", min_severity="Info"), HIGH_NUMERIC)
     url, payload = posted[0]
     assert url == "https://hook"
-    assert payload["schema"] == "annals.alert/v1"
+    assert payload["schema"] == "verderer.alert/v1"
     assert payload["subscription"] == "s"
     assert payload["diff_type"] == "NumericThresholdChange"
 
 
 def test_email_message_is_built_and_sent_via_injected_sender() -> None:
     captured: list = []
-    notifier = SmtpEmailNotifier(sender=captured.append, from_addr="annals@watch")
+    notifier = SmtpEmailNotifier(sender=captured.append, from_addr="verderer@watch")
     notifier.send(Subscription("desk", "email", "editor@example.org", min_severity="Info"), HIGH_NUMERIC)
     msg = captured[0]
     assert msg["To"] == "editor@example.org"
@@ -133,10 +133,10 @@ def test_build_email_shape() -> None:
 
 
 def test_load_subscriptions_from_repo_config() -> None:
-    from annals.config import load_targets  # noqa: F401  (repo layout sanity)
+    from verderer.config import load_targets  # noqa: F401  (repo layout sanity)
 
     path = Path(__file__).resolve().parents[1] / "data" / "subscriptions.toml"
-    from annals.notify import load_subscriptions
+    from verderer.notify import load_subscriptions
 
     subs = load_subscriptions(path)
     assert any(s.channel == "webhook" and s.min_severity == "High" for s in subs)

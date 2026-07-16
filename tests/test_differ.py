@@ -1,5 +1,5 @@
-from annals.differ.normalize import normalize_html
-from annals.differ.termwatch import term_watch
+from verderer.differ.normalize import normalize_html
+from verderer.differ.termwatch import term_watch
 
 
 def test_normalize_strips_page_chrome() -> None:

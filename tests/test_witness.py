@@ -7,21 +7,21 @@ import json
 import subprocess
 from pathlib import Path
 
-from annals.collectors.base import FetchResult
-from annals.collectors.static import StaticCollector
-from annals.config import Target
-from annals.ledger.core import find_binary
-from annals.pipeline import Annals
-from annals.witness import generate_witness
+from verderer.collectors.base import FetchResult
+from verderer.collectors.static import StaticCollector
+from verderer.config import Target
+from verderer.ledger.core import find_binary
+from verderer.pipeline import Verderer
+from verderer.witness import generate_witness
 
 PAGE = b"<html><body><p>EPA reporting threshold is 10 ppb.</p></body></html>"
 
 
-def _make_annals(tmp_path: Path) -> Annals:
+def _make_verderer(tmp_path: Path) -> Verderer:
     def fake(url: str, *, timeout: float = 30.0) -> FetchResult:
         return FetchResult(url="https://example.gov/t", status=200, headers={}, body=PAGE)
 
-    return Annals(
+    return Verderer(
         tmp_path / "data",
         targets={"t": Target(id="t", title="T", url="https://example.gov/t")},
         terms=[],
@@ -33,15 +33,15 @@ def _verify(bundle: dict, tmp_path: Path, name: str, extra: list[str]) -> subpro
     path = tmp_path / f"{name}.json"
     path.write_text(json.dumps(bundle), encoding="utf-8")
     return subprocess.run(
-        [str(find_binary("annals-verify")), "bundle", str(path), *extra],
+        [str(find_binary("verderer-verify")), "bundle", str(path), *extra],
         capture_output=True,
         encoding="utf-8",
     )
 
 
 def test_two_of_three_quorum(tmp_path: Path, ledger_built: None) -> None:
-    annals = _make_annals(tmp_path)
-    annals.observe("t")
+    verderer = _make_verderer(tmp_path)
+    verderer.observe("t")
 
     w1 = generate_witness("witness.one")
     w2 = generate_witness("witness.two")
@@ -49,21 +49,21 @@ def test_two_of_three_quorum(tmp_path: Path, ledger_built: None) -> None:
     pins = ["--witness", w1.pin(), "--witness", w2.pin(), "--witness", w3.pin()]
 
     # No cosignatures yet -> a 2-of-3 quorum is not met.
-    bundle = annals.bundle("t")
+    bundle = verderer.bundle("t")
     assert bundle["cosignatures"] == []
     r0 = _verify(bundle, tmp_path, "none", [*pins, "--quorum", "2"])
     assert r0.returncode != 0 and "quorum not met" in r0.stdout
 
     # One witness cosigns -> still short of a 2-of-3 quorum.
-    annals.cosign(w1)
-    bundle = annals.bundle("t")
+    verderer.cosign(w1)
+    bundle = verderer.bundle("t")
     assert len(bundle["cosignatures"]) == 1
     r1 = _verify(bundle, tmp_path, "one", [*pins, "--quorum", "2"])
     assert r1.returncode != 0 and "quorum not met" in r1.stdout
 
     # A second witness cosigns -> quorum met, bundle validates.
-    annals.cosign(w2)
-    bundle = annals.bundle("t")
+    verderer.cosign(w2)
+    bundle = verderer.bundle("t")
     assert len(bundle["cosignatures"]) == 2
     r2 = _verify(bundle, tmp_path, "two", [*pins, "--quorum", "2"])
     assert r2.returncode == 0, r2.stdout + r2.stderr
@@ -71,14 +71,14 @@ def test_two_of_three_quorum(tmp_path: Path, ledger_built: None) -> None:
 
 
 def test_unpinned_witness_does_not_count(tmp_path: Path, ledger_built: None) -> None:
-    annals = _make_annals(tmp_path)
-    annals.observe("t")
+    verderer = _make_verderer(tmp_path)
+    verderer.observe("t")
 
     pinned = generate_witness("witness.pinned")
     stranger = generate_witness("witness.stranger")  # cosigns, but the verifier doesn't pin it
-    annals.cosign(pinned)
-    annals.cosign(stranger)
-    bundle = annals.bundle("t")
+    verderer.cosign(pinned)
+    verderer.cosign(stranger)
+    bundle = verderer.bundle("t")
     assert len(bundle["cosignatures"]) == 2
 
     # Only the pinned witness counts; requiring 2 fails, requiring 1 passes.
@@ -89,11 +89,11 @@ def test_unpinned_witness_does_not_count(tmp_path: Path, ledger_built: None) -> 
 
 
 def test_tampered_checkpoint_breaks_cosignature(tmp_path: Path, ledger_built: None) -> None:
-    annals = _make_annals(tmp_path)
-    annals.observe("t")
+    verderer = _make_verderer(tmp_path)
+    verderer.observe("t")
     w1 = generate_witness("witness.one")
-    annals.cosign(w1)
-    bundle = annals.bundle("t")
+    verderer.cosign(w1)
+    bundle = verderer.bundle("t")
 
     # Flip a byte of the checkpoint the cosignature covers: inclusion fails first, and even
     # a cosignature would no longer match. The bundle must be rejected either way.
@@ -105,15 +105,15 @@ def test_tampered_checkpoint_breaks_cosignature(tmp_path: Path, ledger_built: No
 
 def test_no_quorum_required_ignores_cosignatures(tmp_path: Path, ledger_built: None) -> None:
     # With no witnesses pinned and quorum 0, a bundle verifies as before (backward compat).
-    annals = _make_annals(tmp_path)
-    annals.observe("t")
-    bundle = annals.bundle("t")
+    verderer = _make_verderer(tmp_path)
+    verderer.observe("t")
+    bundle = verderer.bundle("t")
     ok = _verify(bundle, tmp_path, "plain", [])
     assert ok.returncode == 0 and "included offline" in ok.stdout
 
 
 def test_witness_keys_are_distinct_and_stable(tmp_path: Path) -> None:
-    from annals.witness import load_or_create_witness
+    from verderer.witness import load_or_create_witness
 
     a = generate_witness("w")
     b = generate_witness("w")

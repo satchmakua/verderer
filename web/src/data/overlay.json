@@ -1,5 +1,5 @@
 {
-  "schema": "annals.overlay/v1",
+  "schema": "verderer.overlay/v1",
   "sources": [
     "wayback"
   ],
@@ -9,8 +9,8 @@
     {
       "url": "https://www.epa.gov/climate-indicators",
       "attested": true,
-      "badge": "annals-attested",
-      "annals": {
+      "badge": "verderer-attested",
+      "verderer": {
         "target_id": "epa-climate-indicators",
         "index": 1,
         "observations": 1,
@@ -35,8 +35,8 @@
     {
       "url": "https://www.epa.gov/ghgreporting",
       "attested": true,
-      "badge": "annals-attested",
-      "annals": {
+      "badge": "verderer-attested",
+      "verderer": {
         "target_id": "epa-ghgrp",
         "index": 0,
         "observations": 1,
@@ -68,7 +68,7 @@
       "url": "https://www.epa.gov/climate-indicators/weather-climate",
       "attested": false,
       "badge": null,
-      "annals": null,
+      "verderer": null,
       "external": [
         {
           "source": "wayback",

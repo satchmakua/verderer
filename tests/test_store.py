@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from annals.store import ContentAddressedStore
+from verderer.store import ContentAddressedStore
 
 
 def test_put_is_content_addressed_and_dedups(tmp_path: Path) -> None:

@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "annals"
+name = "verderer"
 version = "0.0.1"
 description = "A verifiable, tamper-evident watchdog for public environmental data."
 readme = "README.md"
@@ -49,10 +49,10 @@ triage = [
 ]
 
 [project.scripts]
-annals = "annals.cli:main"
+verderer = "verderer.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/annals"]
+packages = ["src/verderer"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

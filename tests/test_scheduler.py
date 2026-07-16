@@ -14,12 +14,12 @@ from pathlib import Path
 
 import pytest
 
-from annals.collectors.base import FetchResult
-from annals.collectors.static import StaticCollector
-from annals.config import Target, parse_duration
-from annals.pipeline import Annals
-from annals.politeness import PolitenessPolicy
-from annals.scheduler import ScheduleEntry, Scheduler
+from verderer.collectors.base import FetchResult
+from verderer.collectors.static import StaticCollector
+from verderer.config import Target, parse_duration
+from verderer.pipeline import Verderer
+from verderer.politeness import PolitenessPolicy
+from verderer.scheduler import ScheduleEntry, Scheduler
 
 # --- test doubles ----------------------------------------------------------------------
 
@@ -79,12 +79,12 @@ class RecordingNotify:
         self.seen: set[str] = set()
         self.calls = 0
 
-    def __call__(self, annals: Annals) -> list[dict[str, object]]:
-        from annals.notify import events
+    def __call__(self, verderer: Verderer) -> list[dict[str, object]]:
+        from verderer.notify import events
 
         self.calls += 1
         deliveries: list[dict[str, object]] = []
-        for event in events(annals):
+        for event in events(verderer):
             if event["id"] not in self.seen:
                 self.seen.add(str(event["id"]))
                 deliveries.append({"subscription": "s", "channel": "webhook", "event": event["id"], "dest": "x"})
@@ -98,8 +98,8 @@ def _target(tid: str, interval: float = 100.0, collector: str = "static") -> Tar
     return Target(id=tid, title=tid, url=f"https://example.gov/{tid}", collector=collector, interval_seconds=interval)
 
 
-def _annals(tmp_path: Path, targets: dict[str, Target], fetcher: object, terms: list[str] | None = None) -> Annals:
-    return Annals(
+def _verderer(tmp_path: Path, targets: dict[str, Target], fetcher: object, terms: list[str] | None = None) -> Verderer:
+    return Verderer(
         tmp_path / "data",
         targets=targets,
         terms=terms or [],
@@ -107,9 +107,9 @@ def _annals(tmp_path: Path, targets: dict[str, Target], fetcher: object, terms: 
     )
 
 
-def _scheduler(annals: Annals, clock: FakeWallClock, notify: object = None, **kw: object) -> Scheduler:
+def _scheduler(verderer: Verderer, clock: FakeWallClock, notify: object = None, **kw: object) -> Scheduler:
     kw.setdefault("jitter", NO_JITTER)
-    return Scheduler(annals, clock=clock, notify=notify, **kw)  # type: ignore[arg-type]
+    return Scheduler(verderer, clock=clock, notify=notify, **kw)  # type: ignore[arg-type]
 
 
 # --- duration parsing ------------------------------------------------------------------
@@ -138,8 +138,8 @@ def test_parse_duration_rejects_non_positive() -> None:
 def test_due_target_observed_not_yet_due_skipped(tmp_path: Path, ledger_built: None) -> None:
     clock = FakeWallClock()
     targets = {"fast": _target("fast", interval=100.0), "slow": _target("slow", interval=10_000.0)}
-    annals = _annals(tmp_path, targets, MutableFetcher([b"<html>a</html>"]))
-    sched = _scheduler(annals, clock)
+    verderer = _verderer(tmp_path, targets, MutableFetcher([b"<html>a</html>"]))
+    sched = _scheduler(verderer, clock)
 
     first = sched.run_due()  # both fresh -> both due
     assert set(first.observed) == {"fast", "slow"}
@@ -159,11 +159,11 @@ def test_changed_page_produces_diff_and_notify(tmp_path: Path, ledger_built: Non
     clock = FakeWallClock()
     body_v1 = b"<html>climate change is real; reporting threshold 10 ppb</html>"
     body_v2 = b"<html>weather variability is real; reporting threshold 10 ppb</html>"
-    annals = _annals(
+    verderer = _verderer(
         tmp_path, {"t": _target("t", interval=100.0)}, MutableFetcher([body_v1, body_v2]), terms=["climate change"]
     )
     notify = RecordingNotify()
-    sched = _scheduler(annals, clock, notify=notify)
+    sched = _scheduler(verderer, clock, notify=notify)
 
     first = sched.run_due()  # baseline, no diff
     assert first.observed == ["t"] and first.diffs == 0 and first.deliveries == 0
@@ -181,14 +181,14 @@ def test_changed_page_produces_diff_and_notify(tmp_path: Path, ledger_built: Non
 def test_schedule_state_persists_across_restart(tmp_path: Path, ledger_built: None) -> None:
     clock = FakeWallClock()
     targets = {"a": _target("a", interval=1_000.0), "b": _target("b", interval=1_000.0)}
-    annals = _annals(tmp_path, targets, MutableFetcher([b"<html>x</html>"]))
-    sched = _scheduler(annals, clock)
+    verderer = _verderer(tmp_path, targets, MutableFetcher([b"<html>x</html>"]))
+    sched = _scheduler(verderer, clock)
     sched.run_due()  # both observed, next_due = now + 1000, state saved to disk
     due_a = sched.entries["a"].next_due
     assert (tmp_path / "data" / "schedule-state.json").exists()
 
     # A fresh scheduler (process restart) at the same time must resume, not re-observe.
-    restarted = _scheduler(_annals(tmp_path, targets, MutableFetcher([b"<html>x</html>"])), clock)
+    restarted = _scheduler(_verderer(tmp_path, targets, MutableFetcher([b"<html>x</html>"])), clock)
     assert restarted.entries["a"].next_due == due_a
     assert restarted.run_due().due_count == 0  # nothing due yet -> no re-hit after restart
 
@@ -211,8 +211,8 @@ def test_once_processes_exactly_the_due_set(tmp_path: Path, ledger_built: None) 
     (tmp_path / "data").mkdir(parents=True, exist_ok=True)
     (tmp_path / "data" / "schedule-state.json").write_text(json.dumps(state), encoding="utf-8")
 
-    annals = _annals(tmp_path, targets, MutableFetcher([b"<html>x</html>"]))
-    sched = _scheduler(annals, clock)
+    verderer = _verderer(tmp_path, targets, MutableFetcher([b"<html>x</html>"]))
+    sched = _scheduler(verderer, clock)
     result = sched.run_due()
     assert set(result.observed) == {"a", "b"}  # exactly the due set; c untouched
     assert "c" not in result.observed
@@ -224,8 +224,8 @@ def test_once_processes_exactly_the_due_set(tmp_path: Path, ledger_built: None) 
 def test_failed_target_is_retried_not_lost(tmp_path: Path, ledger_built: None) -> None:
     clock = FakeWallClock()
     # Large cadence so the retry (capped at 300s) is demonstrably SOONER than a full cycle.
-    annals = _annals(tmp_path, {"t": _target("t", interval=100_000.0)}, FlakyFetcher(fail_times=1))
-    sched = _scheduler(annals, clock)
+    verderer = _verderer(tmp_path, {"t": _target("t", interval=100_000.0)}, FlakyFetcher(fail_times=1))
+    sched = _scheduler(verderer, clock)
     now0 = clock.now()
 
     first = sched.run_due()
@@ -257,7 +257,7 @@ def test_unchanged_304_is_no_diff_no_alert(tmp_path: Path, ledger_built: None) -
     clock = FakeWallClock()
     policy = PolitenessPolicy(robots_fetcher=lambda _u: None, min_interval=0.0, state_path=tmp_path / "pol.json")
     target = _target("t", interval=100.0)
-    annals = Annals(
+    verderer = Verderer(
         tmp_path / "data",
         targets={"t": target},
         terms=[],
@@ -265,7 +265,7 @@ def test_unchanged_304_is_no_diff_no_alert(tmp_path: Path, ledger_built: None) -
         politeness=policy,
     )
     notify = RecordingNotify()
-    sched = _scheduler(annals, clock, notify=notify)
+    sched = _scheduler(verderer, clock, notify=notify)
 
     first = sched.run_due()
     assert first.observed == ["t"]
@@ -281,9 +281,9 @@ def test_unchanged_304_is_no_diff_no_alert(tmp_path: Path, ledger_built: None) -
 
 def test_jitter_offsets_next_due(tmp_path: Path, ledger_built: None) -> None:
     clock = FakeWallClock()
-    annals = _annals(tmp_path, {"t": _target("t", interval=100.0)}, MutableFetcher([b"<html>x</html>"]))
+    verderer = _verderer(tmp_path, {"t": _target("t", interval=100.0)}, MutableFetcher([b"<html>x</html>"]))
     # jitter returns +half the interval, deterministically.
-    sched = _scheduler(annals, clock, jitter=lambda interval, fraction: 0.5 * interval)
+    sched = _scheduler(verderer, clock, jitter=lambda interval, fraction: 0.5 * interval)
     now0 = clock.now()
     sched.run_due()
     assert sched.entries["t"].next_due == now0 + 100.0 + 50.0
@@ -291,8 +291,8 @@ def test_jitter_offsets_next_due(tmp_path: Path, ledger_built: None) -> None:
 
 def test_run_forever_is_bounded_for_service_loop(tmp_path: Path, ledger_built: None) -> None:
     clock = FakeWallClock()
-    annals = _annals(tmp_path, {"t": _target("t", interval=100.0)}, MutableFetcher([b"<html>x</html>"]))
-    sched = _scheduler(annals, clock)
+    verderer = _verderer(tmp_path, {"t": _target("t", interval=100.0)}, MutableFetcher([b"<html>x</html>"]))
+    sched = _scheduler(verderer, clock)
     sched.run_forever(poll_cap=50.0, max_iterations=3)
     # 3 ticks: tick0 observes (next_due=+100), then each loop sleeps <= poll_cap.
     assert len(clock.sleeps) == 3
@@ -305,11 +305,11 @@ def test_notify_failure_does_not_kill_the_loop(tmp_path: Path, ledger_built: Non
     # the target must still happen and the target must still be rescheduled.
     clock = FakeWallClock()
 
-    def boom(_annals: Annals) -> list[dict[str, object]]:
+    def boom(_verderer: Verderer) -> list[dict[str, object]]:
         raise RuntimeError("notify blew up")
 
-    annals = _annals(tmp_path, {"t": _target("t", interval=100.0)}, MutableFetcher([b"<html>x</html>"]))
-    sched = _scheduler(annals, clock, notify=boom)
+    verderer = _verderer(tmp_path, {"t": _target("t", interval=100.0)}, MutableFetcher([b"<html>x</html>"]))
+    sched = _scheduler(verderer, clock, notify=boom)
     result = sched.run_due()  # must not raise
     assert result.observed == ["t"]  # observation happened despite the notify failure
     assert result.notify_error and "blew up" in result.notify_error
@@ -320,8 +320,8 @@ def test_retry_backoff_never_overflows_on_a_long_dead_target(tmp_path: Path, led
     # Regression (M10 review): a permanently-dead target that fails every cycle would grow
     # the backoff exponent until 2**n overflowed float (~1025 failures) and crashed the loop.
     clock = FakeWallClock()
-    annals = _annals(tmp_path, {"t": _target("t", interval=100_000.0)}, FlakyFetcher(fail_times=10_000))
-    sched = _scheduler(annals, clock)
+    verderer = _verderer(tmp_path, {"t": _target("t", interval=100_000.0)}, FlakyFetcher(fail_times=10_000))
+    sched = _scheduler(verderer, clock)
     sched.entries["t"] = ScheduleEntry(target_id="t", next_due=clock.now(), consecutive_failures=2_000)
     result = sched.run_due()  # would raise OverflowError before the fix
     assert result.errored  # the failure is recorded, not fatal
@@ -334,15 +334,15 @@ def test_retry_backoff_never_overflows_on_a_long_dead_target(tmp_path: Path, led
 def test_corrupt_schedule_state_starts_fresh(tmp_path: Path) -> None:
     (tmp_path / "data").mkdir(parents=True, exist_ok=True)
     (tmp_path / "data" / "schedule-state.json").write_text("{ broken json", encoding="utf-8")
-    annals = _annals(tmp_path, {"t": _target("t")}, MutableFetcher([b"<html>x</html>"]))
-    sched = Scheduler(annals, clock=FakeWallClock(), jitter=NO_JITTER)  # must not raise
+    verderer = _verderer(tmp_path, {"t": _target("t")}, MutableFetcher([b"<html>x</html>"]))
+    sched = Scheduler(verderer, clock=FakeWallClock(), jitter=NO_JITTER)  # must not raise
     assert sched.entries == {}
 
 
 def test_scheduler_state_save_is_atomic(tmp_path: Path, ledger_built: None) -> None:
     clock = FakeWallClock()
-    annals = _annals(tmp_path, {"t": _target("t")}, MutableFetcher([b"<html>x</html>"]))
-    sched = _scheduler(annals, clock)
+    verderer = _verderer(tmp_path, {"t": _target("t")}, MutableFetcher([b"<html>x</html>"]))
+    sched = _scheduler(verderer, clock)
     sched.run_due()
     state = tmp_path / "data" / "schedule-state.json"
     assert state.exists() and not state.with_name(state.name + ".tmp").exists()
