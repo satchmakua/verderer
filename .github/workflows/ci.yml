@@ -9,6 +9,30 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+
+    # A real S3-compatible server, so the S3 store adapter's contract actually RUNS in CI.
+    # Without it the S3 cases importorskip/skip and the suite goes green having exercised only
+    # the filesystem backend — which would make "one contract suite runs against every backend"
+    # false exactly where it gates other people's PRs.
+    services:
+      minio:
+        image: bitnami/minio:latest
+        ports: ['9000:9000']
+        env:
+          MINIO_ROOT_USER: verdereradmin
+          MINIO_ROOT_PASSWORD: verdererpassword
+        options: >-
+          --health-cmd "mc ready local || curl -fsS http://127.0.0.1:9000/minio/health/live"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+
+    env:
+      # Point the store contract at the live service. VERDERER_REQUIRE_S3 makes a missing
+      # server a FAILURE rather than a skip: in CI a skip is indistinguishable from a pass.
+      VERDERER_S3_ENDPOINT: http://127.0.0.1:9000
+      VERDERER_S3_ACCESS_KEY: verdereradmin
+      VERDERER_S3_SECRET_KEY: verdererpassword
+      VERDERER_REQUIRE_S3: '1'
+
     steps:
       - uses: actions/checkout@v4
 

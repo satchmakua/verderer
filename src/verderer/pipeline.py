@@ -27,7 +27,7 @@ from .differ.termwatch import term_watch
 from .ledger.core import Ledger, checkpoint_size
 from .models import DiffRecord, DiffType, Observation
 from .politeness import CollectionSkipped, NotModified, PolitenessPolicy
-from .store import ContentAddressedStore
+from .store import BlobStore
 from .witness import Witness
 
 
@@ -79,9 +79,18 @@ class Verderer:
         collectors: dict[str, Collector] | None = None,
         embedder: Embedder | None = None,
         politeness: PolitenessPolicy | None = None,
+        store: BlobStore | None = None,
     ) -> None:
         self.data_dir = Path(data_dir)
-        self.store = ContentAddressedStore(self.data_dir / "blobs")
+        # The blob store is a port (M14a): dev = filesystem, prod = any S3-compatible bucket.
+        # Injected wins; otherwise the environment selects (see store_s3.store_from_env), so
+        # switching Verderer to R2/B2/S3 is config, never a code change.
+        if store is not None:
+            self.store: BlobStore = store
+        else:
+            from .store_s3 import store_from_env
+
+            self.store = store_from_env(self.data_dir)
         self.log = Ledger(self.data_dir / "ledger")
         self.targets = targets
         self.terms = terms

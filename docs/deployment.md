@@ -133,6 +133,51 @@ docker logs -f verderer
 
 ---
 
+## Where the blobs live (M14a — the store port)
+
+Verderer stores every observed artifact (page bytes, datasets, WARCs) **content-addressed** —
+the key *is* the hash of the bytes. The backend is a port, chosen by environment, so moving
+from a laptop to the cloud is config, never a code change:
+
+| `VERDERER_STORE` | Backend | Use |
+|---|---|---|
+| *(unset)* | local filesystem, under `--data-dir/blobs` | dev, tests, a single-box deployment |
+| `s3` | any **S3-compatible** bucket | production |
+
+"S3-compatible" is deliberate: **Cloudflare R2**, **Backblaze B2**, **AWS S3**, and a
+self-hosted **MinIO** all speak the same API, so Verderer is never welded to one vendor.
+
+```bash
+pip install -e ".[s3]"            # brings in boto3
+
+export VERDERER_STORE=s3
+export VERDERER_S3_BUCKET=verderer
+export VERDERER_S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com   # omit for AWS S3
+export VERDERER_S3_ACCESS_KEY=...        # never put these in a file — env only
+export VERDERER_S3_SECRET_KEY=...
+export VERDERER_S3_REGION=auto           # "auto" for R2; a real region for AWS/B2
+python -m verderer observe epa-ghgrp     # everything else is unchanged
+```
+
+Endpoints per provider: **R2** `https://<account-id>.r2.cloudflarestorage.com` (region `auto`);
+**Backblaze B2** `https://s3.<region>.backblazeb2.com`; **AWS S3** omit the endpoint and set a
+real region; **MinIO** `http://127.0.0.1:9000`.
+
+**Why a third-party bucket is an acceptable production dependency here** — and the ledger is
+not. A blob is only ever *referenced by hash* from an attested leaf, and a proof bundle
+re-hashes the bytes it carries. So a store that serves the wrong bytes, loses an object, or is
+seized **cannot forge history**: the hash won't match and verification fails closed. The
+store's honesty is checkable, so it doesn't have to be trusted. The Merkle log is a different
+matter, which is why it stays in the Rust kernel with signed checkpoints, witnesses, and
+anchors.
+
+Under systemd, put the credentials in a root-owned `EnvironmentFile` rather than the unit:
+
+```ini
+[Service]
+EnvironmentFile=/etc/verderer/s3.env      # chmod 600, root:root
+```
+
 ## Operating notes
 
 - **Cadence lives in the data.** Set each target's `interval` (`"6h"`, `"12h"`, `"1d"`, `"90s"`)

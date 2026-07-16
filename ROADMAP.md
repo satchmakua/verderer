@@ -297,9 +297,17 @@ schedule, real network) as well as offline.
     or loaded box can't flake it.)
     **Test:** the differ/verifier survive a fuzz corpus (no crash on arbitrary bytes); the
     100k-leaf log's proofs verify and stay logarithmic. `cargo test` + `pytest` green.
-  - [ ] **M14a — R2/S3 store adapter** behind the existing `ContentAddressedStore` port
-    (dev = filesystem, prod = R2), selected by config. **Test:** the pipeline runs unchanged
-    against the R2 adapter (integration, creds-gated).
+  - [x] **M14a — R2/S3 store adapter.** _Confirmed 2026-07-16._ `store_s3.S3Store` implements
+    the `BlobStore` port (dev = filesystem, prod = any **S3-compatible** bucket — R2, Backblaze
+    B2, AWS S3, MinIO), selected by environment (`VERDERER_STORE=s3`), so the vendor is a config
+    line rather than a code change. One contract suite runs against **every** backend — and CI
+    runs a real MinIO service with `VERDERER_REQUIRE_S3=1`, so a missing server **fails** rather
+    than skipping (a silent skip in CI is indistinguishable from a pass, which is precisely how
+    an S3 regression would otherwise merge green while the docs claimed full coverage).
+    **Test:** the pipeline runs unchanged against the S3 adapter — proven **live against a real
+    S3 server** (a local MinIO, not a mock): observe → diff → bundle → WARC all round-trip, the
+    ledger verifies, and the bundle's artifact fetched from S3 hashes to the attested leaf.
+    (Any hosted bucket is the same code path plus `VERDERER_S3_*` credentials.)
   - [ ] **M14b — Read API + Cloudflare deploy** (FastAPI over the record/overlay) + a
     **Cloudflare Pages/Workers deploy** that publishes the site, record, feeds, tiles,
     bundles, WARCs, and **submits each checkpoint to ≥2 independent mirrors + the Wayback

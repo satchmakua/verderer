@@ -1,15 +1,38 @@
 """Content-addressed blob store (DESIGN §4.3): snapshot bytes keyed by multihash.
 
-M0 backs it with the local filesystem; the production store is Cloudflare R2. The
-interface is deliberately tiny so the backend can be swapped behind it (the store is
-a *port* in the hexagonal layout).
+The interface is deliberately tiny so the backend can be swapped behind it (the store is a
+*port* in the hexagonal layout): dev = the local filesystem, prod = any S3-compatible object
+store (Cloudflare R2 / Backblaze B2 / AWS S3 / MinIO) via `store_s3.S3Store` (M14a).
+
+The port's contract is what makes the swap safe, and it is *content-addressed*, so it is
+unusually strong: `put` returns the multihash of exactly the bytes stored, `get(put(b)) == b`,
+`has` is true iff a `get` would succeed, and `put` is idempotent (the same bytes are the same
+key). `tests/test_store.py` runs that contract against *every* backend, so an adapter can't
+quietly differ from the filesystem one the whole pipeline was built on.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Protocol
 
 from .hashing import multihash_sha256
+
+
+class BlobStore(Protocol):
+    """The port the pipeline depends on. Any backend satisfying this contract can back it."""
+
+    def put(self, data: bytes) -> str:
+        """Store `data`; return its multihash (the content address)."""
+        ...
+
+    def get(self, mh: str) -> bytes:
+        """The exact bytes stored under `mh`."""
+        ...
+
+    def has(self, mh: str) -> bool:
+        """Whether `mh` is present (i.e. a `get` would succeed)."""
+        ...
 
 
 class ContentAddressedStore:

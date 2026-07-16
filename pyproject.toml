@@ -21,10 +21,18 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# The production blob store (M14a): any S3-compatible bucket — Cloudflare R2, Backblaze B2,
+# AWS S3, MinIO. Optional: the filesystem store backs dev and every offline test.
+s3 = [
+  "boto3>=1.34",
+]
 dev = [
   "pytest>=8",
   "ruff>=0.6",
   "mypy>=1.11",
+  # The S3 store's contract must actually RUN in CI, not importorskip into a green nothing —
+  # so the client ships with the dev deps even though the adapter itself is an optional extra.
+  "boto3>=1.34",
   "hypothesis>=6",     # property-based / fuzz tests for the differ + verifier (M14)
 ]
 # The render collector (M3b) drives headless Chromium. Optional — the core install and
