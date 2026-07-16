@@ -1,0 +1,3 @@
+# Served bytes must be EXACTLY the built bytes: warc/ and tile/ files are content-addressed
+# and the checkpoint is signature-covered, so ANY line-ending normalization is corruption.
+* -text

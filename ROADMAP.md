@@ -308,10 +308,19 @@ schedule, real network) as well as offline.
     S3 server** (a local MinIO, not a mock): observe → diff → bundle → WARC all round-trip, the
     ledger verifies, and the bundle's artifact fetched from S3 hashes to the attested leaf.
     (Any hosted bucket is the same code path plus `VERDERER_S3_*` credentials.)
-  - [ ] **M14b — Read API + Cloudflare deploy** (FastAPI over the record/overlay) + a
-    **Cloudflare Pages/Workers deploy** that publishes the site, record, feeds, tiles,
-    bundles, WARCs, and **submits each checkpoint to ≥2 independent mirrors + the Wayback
-    Machine** (DESIGN §6.3). **Test:** the deploy publishes a live site + a mirrored checkpoint.
+  - **M14b — Public deploy + read API + mirrors** (split; the live deploy is done).
+    - [x] **M14b-1 — Live public deploy.** _Confirmed 2026-07-16._ The record is **live at
+      `https://verderer.satchelhamilton.com`** — GitHub Pages + a Porkbun custom domain (a
+      deliberate deviation from "Cloudflare Pages": no new account, no vendor lock; the site is
+      static files, so any host serves it). The `gh-pages` branch publishes the site, record,
+      feeds, tiles, checkpoint, proof bundles, and WARCs; a `.gitattributes` (`* -text`) shipped
+      from `web/public/` disables EOL normalization — without it git silently corrupted the
+      content-addressed WARCs (caught by re-hashing every committed blob; now byte-exact).
+      HTTPS enforced. **Test (passed live):** a proof bundle **downloaded from the live site**
+      verifies offline (`VALID bundle OK`); a live WARC hashes byte-exact to its name.
+    - [ ] **M14b-2 — Read API + checkpoint mirroring.** FastAPI over the record/overlay, and
+      **submit each checkpoint to ≥2 independent mirrors + the Wayback Machine** (DESIGN §6.3).
+      **Test:** the API serves the record; a checkpoint is retrievable from an independent mirror.
   - [x] **M14c — Independently-run `verderer-witness`.** _Confirmed 2026-07-16._ A third party
     actually runs it (fetches the published checkpoint, verifies consistency against its own
     memory of the log, cosigns) — turning M8 from an in-process demo into real multi-party

@@ -4,6 +4,9 @@
 
 > An immutable, provable record of what the government's environmental data said — and how it is being changed.
 
+**Live: [verderer.satchelhamilton.com](https://verderer.satchelhamilton.com)** — the public
+record, with downloadable proof bundles, WARCs, and in-browser offline verification.
+
 Verderer continuously observes a curated set of high-value U.S. government environmental
 pages and datasets, cryptographically attests every observation in a tamper-evident
 ledger, detects *meaningful* change (definition swaps, threshold edits, silent dataset

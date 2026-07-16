@@ -1,7 +1,7 @@
 {
-  "schema": "druid.record/v1",
-  "public_key": "7fa83c761a2daee2ced48916bbad6344d8b54fff49c04e4923c04837872d8ea2",
-  "size": 11,
+  "schema": "verderer.record/v1",
+  "public_key": "6720dd209058d5c6dbac87704879364d2b6f7eb3bca740e51b5db7c36ef23c75",
+  "size": 3,
   "targets": [
     {
       "id": "epa-climate-indicators",
@@ -11,53 +11,25 @@
       "criteria": "Core climate-change reference content; prior removal/alteration history.",
       "observations": [
         {
-          "id": "ca552e5868cbf5c52d7e7b9f193069993c58b9041dfc4f14b932c3c81c0bd15a",
-          "content_hash": "12202e588377e05cbc625b4dbe20e99fd84c4e9d8cd34de5d20818659c9bc5109db7",
-          "fetched_at": "2026-07-10T16:40:04Z",
-          "http_status": 200,
-          "url": "https://druid.invalid/fixtures/climate-indicators?v=1"
-        },
-        {
-          "id": "b773e477b2d0952d5d99df7771b70ef82f5c834c48f08d639c589254a629fa9c",
-          "content_hash": "12200a13b161c31804c6d74d8b9444cc9cee70127d5e144d0a581a8f20930f2a1735",
-          "fetched_at": "2026-07-10T16:40:04Z",
-          "http_status": 200,
-          "url": "https://druid.invalid/fixtures/climate-indicators?v=2"
+          "id": "dc75d041424179ff7598c36f762c055b2e55fb48d2074639de8d0ddc2a8da53b",
+          "content_hash": "1220199b876d0191032a3361571d3ee1dcf9ff966d7e67f0d3dee13de3bc01fd6e75",
+          "fetched_at": "2026-07-16T21:11:20Z",
+          "http_status": 404,
+          "url": "https://www.epa.gov/climate-indicators",
+          "warc_record_hash": "1220bf4fd6f375658788fc56ebcaf93c6df9ca8a602190afe90868c199703130726e",
+          "warc": "warc/bf4fd6f375658788fc56ebcaf93c6df9ca8a602190afe90868c199703130726e.warc"
         }
       ],
-      "events": [
-        {
-          "id": "128df2ae6e85007c200c255ff04c483db533d1518ff31f5c4fa71e5bfedeadf7",
-          "target_id": "epa-climate-indicators",
-          "diff_type": "TermSubstitution",
-          "severity": "High",
-          "layer": "L1-termwatch",
-          "detected_at": "2026-07-10T16:40:04Z",
-          "evidence": {
-            "from": 2,
-            "term": "climate change",
-            "to": 0
-          },
-          "from_hash": "12202e588377e05cbc625b4dbe20e99fd84c4e9d8cd34de5d20818659c9bc5109db7",
-          "to_hash": "12200a13b161c31804c6d74d8b9444cc9cee70127d5e144d0a581a8f20930f2a1735"
-        },
-        {
-          "id": "347396778ac4dd939199a8453ce3dc18cc5696a8c1c21cec3007cc4a0b9d07a3",
-          "target_id": "epa-climate-indicators",
-          "diff_type": "NumericThresholdChange",
-          "severity": "High",
-          "layer": "L2-numeric",
-          "detected_at": "2026-07-10T16:40:04Z",
-          "evidence": {
-            "context": "threshold for benzene is",
-            "from": "10 ppb",
-            "to": "15 ppb",
-            "unit": "ppb"
-          },
-          "from_hash": "12202e588377e05cbc625b4dbe20e99fd84c4e9d8cd34de5d20818659c9bc5109db7",
-          "to_hash": "12200a13b161c31804c6d74d8b9444cc9cee70127d5e144d0a581a8f20930f2a1735"
-        }
-      ]
+      "events": []
+    },
+    {
+      "id": "epa-ejscreen",
+      "title": "EPA EJScreen environmental-justice screening tool",
+      "url": "https://ejscreen.epa.gov/mapper/",
+      "kind": "page",
+      "criteria": "JS-rendered EJ screening tool; prior removal history \u2014 the map + scores arrive via API/data calls.",
+      "observations": [],
+      "events": []
     },
     {
       "id": "epa-ghgrp",
@@ -67,11 +39,13 @@
       "criteria": "Congressionally mandated reporting program \u2014 high-signal if altered.",
       "observations": [
         {
-          "id": "3ea2945b0c4a5522eaf69d49710792897ac710796f13e7b7243180180d2434b0",
-          "content_hash": "122086f65fc882142708b92eed44fb2bc105f3796c0d9dc1168fef4ce3a842b095cf",
-          "fetched_at": "2026-07-10T16:37:43Z",
+          "id": "0a45e5362811c74f4acf83b3e699f02fb47bb72c4ae7a676eb458070674efc60",
+          "content_hash": "12208baff2469c39ad5836d9e0bdf5bceb45b0a503bd79f3a771ee5f88dc418ed8c2",
+          "fetched_at": "2026-07-16T21:11:19Z",
           "http_status": 200,
-          "url": "https://www.epa.gov/ghgreporting"
+          "url": "https://www.epa.gov/ghgreporting",
+          "warc_record_hash": "12202d9663c2272f45c2d67c084f6e5dbf365441373dcf384c9219a8920458bad29d",
+          "warc": "warc/2d9663c2272f45c2d67c084f6e5dbf365441373dcf384c9219a8920458bad29d.warc"
         }
       ],
       "events": []
@@ -84,101 +58,16 @@
       "criteria": "Congressionally-mandated dataset; a silent schema edit or re-baselining is high-signal.",
       "observations": [
         {
-          "id": "1231072b71b6e4d8672270eedbec153647bb28aedd02f5615ee45de3d4539f25",
-          "content_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-          "fetched_at": "2026-07-10T16:40:04Z",
+          "id": "b8591bc23b010a805d99b37d9c6db6a6bbe5c831c2fa7cea2ffcee35a70560ef",
+          "content_hash": "1220895349c8008b7962dba68659c8187cec6b340d68be84ccb3f0e7fb6037bf8345",
+          "fetched_at": "2026-07-16T21:12:40Z",
           "http_status": 200,
-          "url": "https://druid.invalid/fixtures/2023_data_summary_spreadsheets.zip?v=1"
-        },
-        {
-          "id": "5802330cfd934ad4853a2da371f73abc2b0bdf5fb1a495b47f042cf7694a4d28",
-          "content_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a",
-          "fetched_at": "2026-07-10T16:40:04Z",
-          "http_status": 200,
-          "url": "https://druid.invalid/fixtures/2023_data_summary_spreadsheets.zip?v=2"
+          "url": "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip",
+          "warc_record_hash": "12204685648f2b9b8844f9a9c1ab048e4d9a3ef7fffc3c82dea87446344d188dc3cc",
+          "warc": "warc/4685648f2b9b8844f9a9c1ab048e4d9a3ef7fffc3c82dea87446344d188dc3cc.warc"
         }
       ],
-      "events": [
-        {
-          "id": "cf73c52b00418b0a790302a568125f5c483a8e5ea102670ec220e87692d490c1",
-          "target_id": "epa-ghgrp-data",
-          "diff_type": "SchemaChange",
-          "severity": "High",
-          "layer": "L4-dataset",
-          "detected_at": "2026-07-10T16:40:04Z",
-          "evidence": {
-            "change": "column_removed",
-            "column": "methane_ppb"
-          },
-          "from_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-          "to_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a"
-        },
-        {
-          "id": "cd7e5341c1dd6ebbfe2c7c1f9d1075c61b86bb214ff5382fba47bf57062da948",
-          "target_id": "epa-ghgrp-data",
-          "diff_type": "DistributionalShift",
-          "severity": "High",
-          "layer": "L4-dataset",
-          "detected_at": "2026-07-10T16:40:04Z",
-          "evidence": {
-            "column": "year",
-            "from": {
-              "count": 3.0,
-              "max": 2023.0,
-              "mean": 2022.0,
-              "min": 2021.0
-            },
-            "to": {
-              "count": 2.0,
-              "max": 2022.0,
-              "mean": 2021.5,
-              "min": 2021.0
-            }
-          },
-          "from_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-          "to_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a"
-        },
-        {
-          "id": "326ec57b1ee0f497ae3241b26a836338cbbdf92c01419bd9996f80bb4ff3f7c7",
-          "target_id": "epa-ghgrp-data",
-          "diff_type": "DistributionalShift",
-          "severity": "High",
-          "layer": "L4-dataset",
-          "detected_at": "2026-07-10T16:40:04Z",
-          "evidence": {
-            "column": "co2_ppm",
-            "from": {
-              "count": 3.0,
-              "max": 419.3,
-              "mean": 416.8666666666666,
-              "min": 414.2
-            },
-            "to": {
-              "count": 2.0,
-              "max": 414.1,
-              "mean": 412.65,
-              "min": 411.2
-            }
-          },
-          "from_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-          "to_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a"
-        },
-        {
-          "id": "0becac60ec0d39f6252d2c72f024e8c692229ebfd18162d3b1a4c79066af24b8",
-          "target_id": "epa-ghgrp-data",
-          "diff_type": "DistributionalShift",
-          "severity": "High",
-          "layer": "L4-dataset",
-          "detected_at": "2026-07-10T16:40:04Z",
-          "evidence": {
-            "change": "row_count",
-            "from": 3,
-            "to": 2
-          },
-          "from_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-          "to_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a"
-        }
-      ]
+      "events": []
     },
     {
       "id": "usgcrp",
@@ -190,116 +79,5 @@
       "events": []
     }
   ],
-  "events": [
-    {
-      "id": "128df2ae6e85007c200c255ff04c483db533d1518ff31f5c4fa71e5bfedeadf7",
-      "target_id": "epa-climate-indicators",
-      "diff_type": "TermSubstitution",
-      "severity": "High",
-      "layer": "L1-termwatch",
-      "detected_at": "2026-07-10T16:40:04Z",
-      "evidence": {
-        "from": 2,
-        "term": "climate change",
-        "to": 0
-      },
-      "from_hash": "12202e588377e05cbc625b4dbe20e99fd84c4e9d8cd34de5d20818659c9bc5109db7",
-      "to_hash": "12200a13b161c31804c6d74d8b9444cc9cee70127d5e144d0a581a8f20930f2a1735"
-    },
-    {
-      "id": "347396778ac4dd939199a8453ce3dc18cc5696a8c1c21cec3007cc4a0b9d07a3",
-      "target_id": "epa-climate-indicators",
-      "diff_type": "NumericThresholdChange",
-      "severity": "High",
-      "layer": "L2-numeric",
-      "detected_at": "2026-07-10T16:40:04Z",
-      "evidence": {
-        "context": "threshold for benzene is",
-        "from": "10 ppb",
-        "to": "15 ppb",
-        "unit": "ppb"
-      },
-      "from_hash": "12202e588377e05cbc625b4dbe20e99fd84c4e9d8cd34de5d20818659c9bc5109db7",
-      "to_hash": "12200a13b161c31804c6d74d8b9444cc9cee70127d5e144d0a581a8f20930f2a1735"
-    },
-    {
-      "id": "cf73c52b00418b0a790302a568125f5c483a8e5ea102670ec220e87692d490c1",
-      "target_id": "epa-ghgrp-data",
-      "diff_type": "SchemaChange",
-      "severity": "High",
-      "layer": "L4-dataset",
-      "detected_at": "2026-07-10T16:40:04Z",
-      "evidence": {
-        "change": "column_removed",
-        "column": "methane_ppb"
-      },
-      "from_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-      "to_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a"
-    },
-    {
-      "id": "cd7e5341c1dd6ebbfe2c7c1f9d1075c61b86bb214ff5382fba47bf57062da948",
-      "target_id": "epa-ghgrp-data",
-      "diff_type": "DistributionalShift",
-      "severity": "High",
-      "layer": "L4-dataset",
-      "detected_at": "2026-07-10T16:40:04Z",
-      "evidence": {
-        "column": "year",
-        "from": {
-          "count": 3.0,
-          "max": 2023.0,
-          "mean": 2022.0,
-          "min": 2021.0
-        },
-        "to": {
-          "count": 2.0,
-          "max": 2022.0,
-          "mean": 2021.5,
-          "min": 2021.0
-        }
-      },
-      "from_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-      "to_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a"
-    },
-    {
-      "id": "326ec57b1ee0f497ae3241b26a836338cbbdf92c01419bd9996f80bb4ff3f7c7",
-      "target_id": "epa-ghgrp-data",
-      "diff_type": "DistributionalShift",
-      "severity": "High",
-      "layer": "L4-dataset",
-      "detected_at": "2026-07-10T16:40:04Z",
-      "evidence": {
-        "column": "co2_ppm",
-        "from": {
-          "count": 3.0,
-          "max": 419.3,
-          "mean": 416.8666666666666,
-          "min": 414.2
-        },
-        "to": {
-          "count": 2.0,
-          "max": 414.1,
-          "mean": 412.65,
-          "min": 411.2
-        }
-      },
-      "from_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-      "to_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a"
-    },
-    {
-      "id": "0becac60ec0d39f6252d2c72f024e8c692229ebfd18162d3b1a4c79066af24b8",
-      "target_id": "epa-ghgrp-data",
-      "diff_type": "DistributionalShift",
-      "severity": "High",
-      "layer": "L4-dataset",
-      "detected_at": "2026-07-10T16:40:04Z",
-      "evidence": {
-        "change": "row_count",
-        "from": 3,
-        "to": 2
-      },
-      "from_hash": "12205c244b317b8838feb830edb0a205d8c0d60058b93b1eb2c137803f7c57331278",
-      "to_hash": "12208d89cd603e7a81f16a25909e2abc5e1a2e8797ecd8ccc66ee671b07c027b162a"
-    }
-  ]
+  "events": []
 }
