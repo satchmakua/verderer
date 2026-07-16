@@ -50,6 +50,8 @@ triage = [
 
 [project.scripts]
 verderer = "verderer.cli:main"
+# The independently-deployable witness (M14c): a third party runs this, not the operator.
+verderer-witness = "verderer.witness_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/verderer"]

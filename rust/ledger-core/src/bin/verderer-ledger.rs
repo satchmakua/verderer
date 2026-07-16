@@ -23,9 +23,42 @@ fn main() {
     std::process::exit(run());
 }
 
+/// A *witness* cosigns a checkpoint it fetched itself — it has no operator ledger to read
+/// from, and must not need one (M14c). `cosign --name W --key-hex S` with **no `--dir`**
+/// reads the signed checkpoint from stdin. The cosignature format still comes from the one
+/// audited C2SP implementation in the core; only the checkpoint's source differs.
+fn cosign_from_stdin(args: &[String]) -> i32 {
+    let (Some(name), Some(key_hex)) = (opt(args, "--name"), opt(args, "--key-hex")) else {
+        eprintln!("--name W and --key-hex S are required");
+        return 2;
+    };
+    let mut checkpoint = String::new();
+    if std::io::stdin().read_to_string(&mut checkpoint).is_err() {
+        eprintln!("failed to read the checkpoint from stdin");
+        return 1;
+    }
+    let ts = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0);
+    match ledger_core::cosign_checkpoint(&checkpoint, &name, &key_hex, ts) {
+        Ok(line) => {
+            println!("{line}");
+            0
+        }
+        Err(e) => {
+            eprintln!("{e}");
+            1
+        }
+    }
+}
+
 fn run() -> i32 {
     let args: Vec<String> = std::env::args().skip(1).collect();
     let cmd = args.first().cloned().unwrap_or_default();
+    if cmd == "cosign" && opt(&args, "--dir").is_none() {
+        return cosign_from_stdin(&args);
+    }
     let Some(dir) = opt(&args, "--dir") else {
         eprintln!("--dir is required");
         return 2;

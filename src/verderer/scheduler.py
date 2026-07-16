@@ -40,7 +40,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
 
-from .pipeline import Verderer, ObserveResult
+from .pipeline import ObserveResult, Verderer
 
 # A failed target retries after this base delay, doubling per consecutive failure, capped at
 # both `RETRY_MAX` and the target's own cadence (never wait longer than a normal cycle).

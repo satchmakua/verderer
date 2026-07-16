@@ -304,9 +304,14 @@ schedule, real network) as well as offline.
     **Cloudflare Pages/Workers deploy** that publishes the site, record, feeds, tiles,
     bundles, WARCs, and **submits each checkpoint to ≥2 independent mirrors + the Wayback
     Machine** (DESIGN §6.3). **Test:** the deploy publishes a live site + a mirrored checkpoint.
-  - [ ] **M14c — Independently-run `verderer-witness`** a third party actually runs (polls the
-    checkpoint, verifies consistency, cosigns) — turning M8 from an in-process demo into real
-    multi-party gossip. **Test:** a separately-run witness cosigns and a bundle meets quorum.
+  - [x] **M14c — Independently-run `verderer-witness`.** _Confirmed 2026-07-16._ A third party
+    actually runs it (fetches the published checkpoint, verifies consistency against its own
+    memory of the log, cosigns) — turning M8 from an in-process demo into real multi-party
+    gossip. It holds its own key, pins the log key out-of-band, and needs **no operator
+    ledger**; it **refuses** to cosign a fork/equivocation/unpinned-key log, and the operator
+    files the returned C2SP line (`ingest_cosignature`) without ever holding the witness's key.
+    **Test:** a separately-run witness cosigns and a bundle meets quorum (and `--quorum 2`
+    fails); an equivocating log is refused. `pytest` green.
   - [ ] **M14d-2 — Richer curated set** — ≥12 justified targets + an expanded term dictionary
     with published criteria. **Test:** the expanded set observes live.
 
@@ -321,7 +326,7 @@ specific meaningful change, classified and alertable — over a curated set that
 capability is proven. **Phase 5–6 (M9–M14) is the "real tool" arc**: it turns those
 capabilities into a self-running, polite, interoperable, precise, deeply-verifiable, and
 deployed watchdog, filling the gaps M0–M8 deliberately left. **M9–M12, M13a
-(consistency-proof gossip), and M14d-1 (property/fuzz + scale hardening) are built and
+(consistency-proof gossip), M14c (independently-run witness), and M14d-1 (property/fuzz + scale) are built and
 confirmed**; the rest of **M14** (R2 adapter, Cloudflare deploy + mirrors, an independently-run
 witness, a richer curated set) is next, with **M13b (OpenTimestamps) deferred** pending a real
 Bitcoin-confirmed fixture. Guiding rule for this arc — *nothing mocked on a production path;

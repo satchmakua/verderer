@@ -24,7 +24,7 @@ from .differ.normalize import normalize_for_diff
 from .differ.numeric import numeric_watch
 from .differ.structure import structure_watch
 from .differ.termwatch import term_watch
-from .ledger.core import Ledger
+from .ledger.core import Ledger, checkpoint_size
 from .models import DiffRecord, DiffType, Observation
 from .politeness import CollectionSkipped, NotModified, PolitenessPolicy
 from .store import ContentAddressedStore
@@ -35,10 +35,9 @@ def _utc_now() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _checkpoint_size(checkpoint: str) -> int:
-    """The tree size a signed checkpoint commits to — line 2 of the C2SP note body
-    (origin / size / root). Parsed, not trusted; the Rust verifier checks the signature."""
-    return int(checkpoint.splitlines()[1])
+# Checkpoint parsing lives with the ledger (an independent witness needs it without a
+# pipeline); re-exported here so existing callers keep importing it from this module.
+_checkpoint_size = checkpoint_size
 
 
 def _same_content(previous: Observation, observation: Observation) -> bool:
@@ -357,17 +356,39 @@ class Verderer:
         checkpoint, so a bundle for a leaf carries it only while that checkpoint matches.
         Cosignatures are keyed by the checkpoint digest; one per witness name (latest wins).
         """
-        checkpoint = self.log.signed_checkpoint()
         line = self.log.cosign(witness.name, witness.seed_hex)
+        return self.ingest_cosignature(line, witness.name)
+
+    def ingest_cosignature(self, line: str, name: str, *, covers: str | None = None) -> dict:
+        """Record a cosignature line for the current checkpoint, so proof bundles carry it.
+
+        This is how an **independently-run** witness's vouch reaches a bundle (M14c): the
+        witness (a separate party, its own key, its own memory of the log) verifies the
+        published checkpoint and hands back a C2SP line; the operator only files it. The
+        operator never holds the witness's key — which is exactly why a quorum is worth
+        something. Keyed by checkpoint digest; one entry per witness name (latest wins).
+
+        `covers` is the checkpoint the line was actually made over (a witness reports it).
+        A cosignature only means anything *about that checkpoint*, so if the log has moved on
+        since the witness signed, filing the line here would silently produce a bundle whose
+        quorum can never hold — verified vouches that don't match its checkpoint. Reject that
+        loudly instead: re-witness the current checkpoint.
+        """
+        checkpoint = self.log.signed_checkpoint()
+        if covers is not None and covers.strip() != checkpoint.strip():
+            raise ValueError(
+                f"cosignature covers tree size {checkpoint_size(covers)} but the log is now at "
+                f"size {checkpoint_size(checkpoint)} — re-witness the current checkpoint"
+            )
         digest = anchored_hash(checkpoint).hex()
         cdir = self._cosignatures_dir()
         cdir.mkdir(parents=True, exist_ok=True)
         path = cdir / f"{digest}.txt"
         lines = path.read_text(encoding="utf-8").splitlines() if path.exists() else []
-        lines = [entry for entry in lines if not entry.startswith(f"— {witness.name} ")]
-        lines.append(line)
+        lines = [entry for entry in lines if not entry.startswith(f"— {name} ")]
+        lines.append(line.strip())
         path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        return {"witness": witness.name, "checkpoint_hash": digest, "cosignatures": len(lines)}
+        return {"witness": name, "checkpoint_hash": digest, "cosignatures": len(lines)}
 
     def _cosignatures_for(self, checkpoint: str) -> list[str]:
         path = self._cosignatures_dir() / f"{anchored_hash(checkpoint).hex()}.txt"

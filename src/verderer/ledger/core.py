@@ -74,6 +74,50 @@ class LeafEntry:
     record: dict[str, Any]
 
 
+def checkpoint_size(checkpoint: str) -> int:
+    """The tree size a signed checkpoint commits to — line 2 of the C2SP note body
+    (origin / size / root). Parsed, not trusted; the Rust verifier checks the signature."""
+    return int(checkpoint.splitlines()[1])
+
+
+def verify_consistency_offline(
+    old_checkpoint: str, new_checkpoint: str, proof: list[str], pubkey_hex: str
+) -> tuple[bool, str]:
+    """Verify — with **no ledger directory and no live service** — that `new_checkpoint`'s tree
+    extends `old_checkpoint`'s, under the *pinned* `pubkey_hex` (M13a's gossip primitive).
+
+    Standalone by design: an independent witness (M14c) holds no operator ledger, only the
+    checkpoints it fetched and the log key it pins. Returns (ok, message).
+    """
+    bundle = {
+        "old_checkpoint": old_checkpoint,
+        "new_checkpoint": new_checkpoint,
+        "proof": proof,
+        "pubkey_hex": pubkey_hex,
+    }
+    result = subprocess.run(
+        [str(find_binary("verderer-verify")), "consistency"],
+        input=json.dumps(bundle).encode("utf-8"),
+        capture_output=True,
+    )
+    return result.returncode == 0, result.stdout.decode(errors="replace").strip()
+
+
+def cosign_checkpoint_offline(checkpoint: str, name: str, seed_hex: str) -> str:
+    """Produce a C2SP tlog-cosignature line over a checkpoint the caller *fetched* — no ledger
+    directory (M14c). The format still comes from the one audited implementation in the Rust
+    core; only the checkpoint's source differs."""
+    result = subprocess.run(
+        [str(find_binary("verderer-ledger")), "cosign", "--name", name, "--key-hex", seed_hex],
+        input=checkpoint.encode("utf-8"),
+        capture_output=True,
+        encoding=None,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"cosign failed: {result.stderr.decode(errors='replace').strip()}")
+    return result.stdout.decode("utf-8").strip()
+
+
 class Ledger:
     def __init__(self, directory: Path) -> None:
         self.dir = Path(directory)
@@ -121,19 +165,8 @@ class Ledger:
 
     def verify_consistency(self, old_checkpoint: str, new_checkpoint: str, proof: list[str]) -> tuple[bool, str]:
         """Verify offline that `new_checkpoint`'s tree extends `old_checkpoint`'s — the gossip
-        primitive (M13). Returns (ok, message); INCONSISTENT on a fork/shrink/rewrite."""
-        bundle = {
-            "old_checkpoint": old_checkpoint,
-            "new_checkpoint": new_checkpoint,
-            "proof": proof,
-            "pubkey_hex": self.public_key_hex,
-        }
-        result = subprocess.run(
-            [str(find_binary("verderer-verify")), "consistency"],
-            input=json.dumps(bundle).encode("utf-8"),
-            capture_output=True,
-        )
-        return result.returncode == 0, result.stdout.decode(errors="replace").strip()
+        primitive (M13a), under *this* log's key. Returns (ok, message)."""
+        return verify_consistency_offline(old_checkpoint, new_checkpoint, proof, self.public_key_hex)
 
     def emit_tiles(self) -> dict[str, Any]:
         """(Re)publish all C2SP tile files for the current tree (M2c).
