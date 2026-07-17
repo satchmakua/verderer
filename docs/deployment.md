@@ -178,6 +178,19 @@ Under systemd, put the credentials in a root-owned `EnvironmentFile` rather than
 EnvironmentFile=/etc/verderer/s3.env      # chmod 600, root:root
 ```
 
+## Mirroring the checkpoint (M14b-2)
+
+After each export/deploy, push the signed checkpoint beyond the operator's control:
+
+```bash
+python -m verderer mirror --verify
+```
+
+This submits the live `checkpoint` URL to the **Wayback Machine** and the git repo (including
+`gh-pages`) to **Software Heritage**, then fetches the Wayback copy back and confirms it is
+byte-identical. No accounts or keys; each mirror is fail-soft. Run it after deploys (or from
+cron alongside `verderer run --once`) — archives rate-limit, so don't fire it every tick.
+
 ## Operating notes
 
 - **Cadence lives in the data.** Set each target's `interval` (`"6h"`, `"12h"`, `"1d"`, `"90s"`)

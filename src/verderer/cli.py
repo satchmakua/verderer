@@ -311,6 +311,29 @@ def _print_tick(r: TickResult) -> None:
         print(f"  notify failed (observation unaffected, will retry): {r.notify_error}")
 
 
+def cmd_mirror(args: argparse.Namespace) -> int:
+    """Submit the live checkpoint to independent archives; optionally verify the round trip."""
+    from .mirror import _httpx_request, mirror_checkpoint, verify_wayback_copy
+
+    checkpoint_url = args.site.rstrip("/") + "/checkpoint"
+    receipts = mirror_checkpoint(checkpoint_url, args.repo)
+    ok_count = 0
+    for r in receipts:
+        mark = "ok" if r.ok else "FAILED"
+        ok_count += int(r.ok)
+        print(f"  {r.mirror:18} {mark:6} {r.detail}")
+        if r.location:
+            print(f"  {'':18} -> {r.location}")
+    if args.verify:
+        status, _u, live = _httpx_request(checkpoint_url, "GET")
+        if status == 200 and verify_wayback_copy(checkpoint_url, live):
+            print("  wayback round-trip: archived checkpoint bytes MATCH the live checkpoint")
+        else:
+            print("  wayback round-trip: snapshot not yet byte-identical (SPN may still be processing;"
+                  " re-run `verderer mirror --verify` in a minute)")
+    return 0 if ok_count else 1
+
+
 def cmd_run(args: argparse.Namespace) -> int:
     from .scheduler import Scheduler
 
@@ -496,6 +519,10 @@ def main(argv: list[str] | None = None) -> int:
     notify.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
     notify.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
     notify.add_argument("--email-from", default="verderer@localhost", help="From: address for email alerts")
+    mirror = sub.add_parser("mirror", help="submit the published checkpoint to independent archives (M14b-2)")
+    mirror.add_argument("--site", default="https://verderer.satchelhamilton.com", help="public site base URL")
+    mirror.add_argument("--repo", default="https://github.com/satchmakua/verderer", help="public git repo URL")
+    mirror.add_argument("--verify", action="store_true", help="fetch the Wayback copy back and compare byte-for-byte")
     run = sub.add_parser("run", help="continuously re-observe due targets on their cadence + fire alerts (M10)")
     run.add_argument("--once", action="store_true", help="process exactly the due set once and exit (cron/systemd)")
     run.add_argument("--poll", type=float, default=300.0, help="max seconds to sleep between wakeups in the loop")
@@ -521,6 +548,7 @@ def main(argv: list[str] | None = None) -> int:
         "export": cmd_export,
         "notify": cmd_notify,
         "run": cmd_run,
+        "mirror": cmd_mirror,
         "consistency": cmd_consistency,
         "verify-consistency": cmd_verify_consistency,
     }

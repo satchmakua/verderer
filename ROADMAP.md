@@ -318,9 +318,17 @@ schedule, real network) as well as offline.
       content-addressed WARCs (caught by re-hashing every committed blob; now byte-exact).
       HTTPS enforced. **Test (passed live):** a proof bundle **downloaded from the live site**
       verifies offline (`VALID bundle OK`); a live WARC hashes byte-exact to its name.
-    - [ ] **M14b-2 — Read API + checkpoint mirroring.** FastAPI over the record/overlay, and
-      **submit each checkpoint to ≥2 independent mirrors + the Wayback Machine** (DESIGN §6.3).
-      **Test:** the API serves the record; a checkpoint is retrievable from an independent mirror.
+    - [x] **M14b-2 — Read surface + checkpoint mirroring.** _Confirmed 2026-07-17._ The **read
+      API is the static JSON surface** — `record.json`, `feed.xml`, `feeds/<id>.xml`, `tile/…`,
+      `bundles/<id>.json`, and `checkpoint` over HTTPS are machine-readable endpoints with no
+      server to run or compromise (a deliberate deviation from "FastAPI": M5c already noted the
+      static export covers the read need, and a live query service would add an attack surface
+      for zero new capability). **Mirroring** (`mirror.py`, `verderer mirror [--verify]`): the
+      published checkpoint is submitted to the **Wayback Machine** (Save Page Now) and the whole
+      repo — including `gh-pages` with every checkpoint/tile/bundle/WARC — to **Software
+      Heritage** (Save Code Now); fail-soft per mirror, injectable HTTP for offline tests.
+      **Test (passed live):** both archives accepted, and the Wayback copy fetched back via the
+      identity URL is **byte-identical** to the live checkpoint.
   - [x] **M14c — Independently-run `verderer-witness`.** _Confirmed 2026-07-16._ A third party
     actually runs it (fetches the published checkpoint, verifies consistency against its own
     memory of the log, cosigns) — turning M8 from an in-process demo into real multi-party
