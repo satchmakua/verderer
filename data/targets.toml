@@ -1,11 +1,20 @@
-# Curated, high-value targets — depth over breadth (DESIGN §7). Selection criteria are
-# published alongside each entry (mandate status, prior alteration history, etc.).
-# M0 seeds three; the set is expanded deliberately, never by crawling all of .gov.
+# The curated set — depth over breadth (DESIGN §7). ≥12 hand-picked, high-value targets,
+# expanded deliberately, never by crawling all of .gov.
 #
-# `interval` is the M10 scheduler's per-target re-observation cadence ("6h"/"12h"/"1d"/…);
-# defaults to 1d. Fast-moving or deletion-risk targets are watched more often; a large
-# dataset that changes rarely is watched less. The polite layer (M9) conditional-GETs, so a
-# frequent cadence on an unchanged page costs only a 304.
+# Published curation criteria (every target's `criteria` field states which apply):
+#   [mandate]    congressionally mandated or regulatory content — high-signal if altered
+#   [threshold]  carries numeric regulatory thresholds the L2 differ watches
+#   [history]    documented prior alteration/removal (2017-21 and 2025- takedown waves)
+#   [removed]    VERIFIED GONE at curation (2026-07-17: 404 / dead DNS / 403) — curated as a
+#                deletion/reappearance watch: the watchdog attests continued absence and
+#                catches any reappearance or replacement, which is itself a Reappearance event
+#   [traffic]    high public/scientific reliance
+#
+# `interval` is the M10 scheduler cadence; the polite layer conditional-GETs, so a frequent
+# cadence on an unchanged page costs a 304. Every URL below was live-verified at curation;
+# the HTTP status seen is recorded in its criteria.
+
+# --- EPA: mandated reporting + regulatory thresholds ---
 
 [[target]]
 id = "epa-ghgrp"
@@ -13,26 +22,8 @@ title = "EPA Greenhouse Gas Reporting Program"
 url = "https://www.epa.gov/ghgreporting"
 collector = "static"
 interval = "12h"
-criteria = "Congressionally mandated reporting program — high-signal if altered."
+criteria = "[mandate][traffic] Congressionally mandated reporting program (200 at curation)."
 
-[[target]]
-id = "epa-climate-indicators"
-title = "EPA Climate Change Indicators"
-url = "https://www.epa.gov/climate-indicators"
-collector = "static"
-interval = "12h"
-criteria = "Core climate-change reference content; prior removal/alteration history."
-
-[[target]]
-id = "usgcrp"
-title = "U.S. Global Change Research Program (globalchange.gov)"
-url = "https://www.globalchange.gov/"
-collector = "static"
-interval = "6h"
-criteria = "Host of the National Climate Assessments; site shut down in 2025 — deletion/redirect watch."
-
-# A tabular dataset target (kind = "dataset" routes it to the L4 schema/distributional
-# differ). If the download 404s that is itself a Deletion signal.
 [[target]]
 id = "epa-ghgrp-data"
 title = "EPA GHGRP facility-level emissions (data download)"
@@ -40,15 +31,92 @@ url = "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_sp
 kind = "dataset"
 collector = "static"
 interval = "1d"
-criteria = "Congressionally-mandated dataset; a silent schema edit or re-baselining is high-signal."
+criteria = "[mandate][threshold] Mandated dataset; a silent schema edit or re-baselining is high-signal. A 404 is itself a Deletion signal."
 
-# A JavaScript tool (collector = "render" drives headless Chromium — needs the `render`
-# extra + `playwright install chromium`). The static shell is nearly empty; the map and
-# its screening scores load via the page's own API/data calls, which the render collector
-# captures alongside the post-JS DOM.
+[[target]]
+id = "epa-drinking-water-mcl"
+title = "EPA National Primary Drinking Water Regulations (MCL table)"
+url = "https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations"
+collector = "static"
+interval = "12h"
+criteria = "[mandate][threshold][traffic] The legally enforceable Maximum Contaminant Levels - the canonical L2 numeric-threshold target (200 at curation)."
+
+[[target]]
+id = "epa-glyphosate"
+title = "EPA glyphosate registration review"
+url = "https://www.epa.gov/ingredients-used-pesticide-products/glyphosate"
+collector = "static"
+interval = "1d"
+criteria = "[threshold][history] Pesticide regulatory page under active litigation pressure; tolerance/threshold language is high-signal (200 at curation)."
+
+# --- EPA: verified-removed climate/EJ resources (deletion/reappearance watches) ---
+
+[[target]]
+id = "epa-climate-indicators"
+title = "EPA Climate Change Indicators"
+url = "https://www.epa.gov/climate-indicators"
+collector = "static"
+interval = "12h"
+criteria = "[history][removed] Core climate reference; 404 at curation (2026-07-17) after prior alteration history - attesting absence, watching for reappearance."
+
 [[target]]
 id = "epa-ejscreen"
 title = "EPA EJScreen environmental-justice screening tool"
 url = "https://ejscreen.epa.gov/mapper/"
 collector = "render"
-criteria = "JS-rendered EJ screening tool; prior removal history — the map + scores arrive via API/data calls."
+interval = "1d"
+criteria = "[history][removed] EJ screening tool; DNS dead at curation (2026-07-17) after the documented 2025 takedown - reappearance watch."
+
+# --- USGCRP / National Climate Assessment (verified removed) ---
+
+[[target]]
+id = "usgcrp"
+title = "U.S. Global Change Research Program (globalchange.gov)"
+url = "https://www.globalchange.gov/"
+collector = "static"
+interval = "6h"
+criteria = "[mandate][removed] Host of the congressionally mandated NCA; DNS dead at curation (2026-07-17) - the flagship deletion watch."
+
+[[target]]
+id = "nca5"
+title = "Fifth National Climate Assessment (nca2023.globalchange.gov)"
+url = "https://nca2023.globalchange.gov/"
+collector = "static"
+interval = "12h"
+criteria = "[mandate][removed][traffic] The NCA5 report itself; DNS dead at curation (2026-07-17) - attesting the assessment's continued absence."
+
+# --- NOAA: climate data + communication ---
+
+[[target]]
+id = "noaa-climate-gov"
+title = "NOAA Climate.gov"
+url = "https://www.climate.gov/"
+collector = "static"
+interval = "12h"
+criteria = "[history][removed][traffic] NOAA's public climate portal; 403 at curation (2026-07-17) after its 2025 content-team dismissal - access-block watch."
+
+[[target]]
+id = "noaa-co2-trends"
+title = "NOAA GML CO2 trends (Mauna Loa) - data page"
+url = "https://gml.noaa.gov/ccgg/trends/data.html"
+collector = "static"
+interval = "1d"
+criteria = "[traffic] The Keeling curve - the most-cited climate record on earth; this page carries the current monthly values inline (200 at curation). The raw CSV under /webdata/ is robots-disallowed, so the page IS the polite watch - the M9 layer refused the CSV, as it must."
+
+# --- USDA / FEMA: climate-risk tools farmers + communities rely on ---
+
+[[target]]
+id = "usda-climate-hubs"
+title = "USDA Climate Hubs"
+url = "https://www.climatehubs.usda.gov/"
+collector = "static"
+interval = "1d"
+criteria = "[history][traffic] Farmer-facing climate-risk resources - the category stripped in prior waves (200 at curation)."
+
+[[target]]
+id = "fema-nri"
+title = "FEMA National Risk Index"
+url = "https://hazards.fema.gov/nri/"
+collector = "static"
+interval = "1d"
+criteria = "[threshold][traffic] Community hazard/climate risk ratings used in planning + funding decisions (200 at curation)."

@@ -337,8 +337,18 @@ schedule, real network) as well as offline.
     files the returned C2SP line (`ingest_cosignature`) without ever holding the witness's key.
     **Test:** a separately-run witness cosigns and a bundle meets quorum (and `--quorum 2`
     fails); an equivocating log is refused. `pytest` green.
-  - [ ] **M14d-2 — Richer curated set** — ≥12 justified targets + an expanded term dictionary
-    with published criteria. **Test:** the expanded set observes live.
+  - [x] **M14d-2 — Richer curated set.** _Confirmed 2026-07-17._ **12 justified targets** with
+    published criteria tags (`[mandate][threshold][history][removed][traffic]`), every URL
+    live-verified at curation — a check that found **half the canonical climate/EJ record
+    already gone** (`climate-indicators` 404, `globalchange.gov` + NCA5 DNS-dead, `climate.gov`
+    403, EJScreen/CEJST dead): those stay curated as deletion/reappearance watches, since
+    attesting continued absence is the point. New live targets: the EPA drinking-water **MCL
+    table** (the canonical L2 threshold page), glyphosate registration review, the NOAA
+    **Keeling curve** page, USDA Climate Hubs, FEMA NRI. Terms: 10 → **23**, each earned by
+    documented erasure precedent or legally-loaded wording. Curation honesty: the Keeling raw
+    CSV was dropped because NOAA's robots.txt disallows `/webdata/` — the M9 layer refused it,
+    as designed. **Test (passed live):** the MCL page, Keeling page, and climate.gov (a
+    faithfully-attested `403`) all observed through the real pipeline; ledger VALID.
 
 ---
 
@@ -347,13 +357,11 @@ government nor Verderer, exactly what a source said and when — and Verderer fl
 specific meaningful change, classified and alertable — over a curated set that Verderer
 **observes continuously, politely, and interoperably**, deployed for real.
 
-**Status:** the **core roadmap M0–M8 is complete and confirmed** (2026-07-10) — every
-capability is proven. **Phase 5–6 (M9–M14) is the "real tool" arc**: it turns those
-capabilities into a self-running, polite, interoperable, precise, deeply-verifiable, and
-deployed watchdog, filling the gaps M0–M8 deliberately left. **M9–M12, M13a
-(consistency-proof gossip), M14c (independently-run witness), and M14d-1 (property/fuzz + scale) are built and
-confirmed**; the rest of **M14** (R2 adapter, Cloudflare deploy + mirrors, an independently-run
-witness, a richer curated set) is next, with **M13b (OpenTimestamps) deferred** pending a real
-Bitcoin-confirmed fixture. Guiding rule for this arc — *nothing mocked on a production path;
-prove every milestone against the real thing* (which is exactly why M13b waits rather than
-ships a synthetic OTS).
+**Status:** **the Phase 5–6 arc is COMPLETE** (2026-07-17). M0–M8 proved every capability
+(confirmed 2026-07-10); M9–M12, M13a, and all of M14 (S3 store, live public deploy at
+**verderer.satchelhamilton.com** + independent mirrors, independently-run witness, fuzz/scale
+hardening, and a 12-target curated set with published criteria) turned it into a self-running,
+polite, interoperable, precise, deeply-verifiable, **deployed** watchdog — every milestone
+proven live against the real thing, per this arc's guiding rule. The single open item is
+**M13b (OpenTimestamps)**, deferred pending a real Bitcoin-confirmed fixture (never a
+synthetic anchor on the trust path).

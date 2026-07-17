@@ -1,16 +1,39 @@
 # L1 sensitive-term dictionary (DESIGN §6.2). Appearance, disappearance, or a count
 # change of any of these in a target's normalised text is flagged as a candidate
 # TermSubstitution. High-precision by design; expand deliberately.
+#
+# Inclusion criteria (M14d-2): a term earns its place by DOCUMENTED erasure precedent —
+# phrases scrubbed or substituted in the 2017-21 wave (EDGI's change-tracking corpus) or the
+# 2025- wave (climate/EJ program takedowns) — or by naming a legally-loaded regulatory
+# concept whose wording change shifts obligations. Generic vocabulary stays out: L1 is a
+# tripwire, not a thesaurus.
 
 terms = [
+  # climate science (documented substitution targets: "climate change" -> "resilience", etc.)
   "climate change",
   "global warming",
   "climate crisis",
   "greenhouse gas",
   "greenhouse gas emissions",
-  "environmental justice",
+  "carbon dioxide",
+  "methane",
+  "sea level rise",
+  "ocean acidification",
+  "extreme weather",
+  # adaptation/communication framings that replaced or were stripped alongside the above
   "climate resilience",
   "climate adaptation",
-  "carbon dioxide",
-  "sea level rise",
+  "clean energy",
+  "renewable energy",
+  # environmental justice (the 2025 takedown wave's primary target vocabulary)
+  "environmental justice",
+  "environmental racism",
+  "disadvantaged communities",
+  "overburdened communities",
+  "cumulative impacts",
+  # legally-loaded regulatory concepts (a wording change shifts obligations)
+  "maximum contaminant level",
+  "reporting threshold",
+  "endangerment finding",
+  "best available science",
 ]

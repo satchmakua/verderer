@@ -17,10 +17,9 @@ ecosystem (EDGI, PEDP, End-of-Term, Data Rescue Project) — adding the two thin
 them treat as primary: **provable observation integrity** and **classified manipulation
 detection**.
 
-**Status:** **the core roadmap M0–M8 is complete and confirmed**, and the Phase 5–6 "real
-tool" arc is underway — **M9–M12, M13a, and M14d-1 are built and confirmed** (polite
-collection, the scheduler, faithful WARC capture, detection-precision refinements,
-consistency-proof gossip, and property/fuzz + scale hardening). A provable trust spine: a Rust
+**Status:** **the roadmap is complete — the Phase 5–6 "real tool" arc confirmed 2026-07-17**
+(the only open item is M13b/OpenTimestamps, deferred pending a real Bitcoin-confirmed
+fixture). A provable trust spine: a Rust
 Merkle log, C2SP signed checkpoints published as
 tile files (M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from
 independent TSAs (M2b), and multi-party **witness cosignatures** with quorum verification
@@ -37,17 +36,16 @@ diffs, and fires alerts on its own — restart-safe, with `--once` for cron/syst
 [docs/deployment.md](docs/deployment.md)). Every observation is archived as a standards
 **WARC** (M11) — attested by `warc_record_hash`, recoverable by any archive tool, shipped by
 `verderer export` — so Verderer interoperates with the rescue ecosystem (Wayback / End-of-Term /
-EDGI) instead of being self-referential. Detection got sharper (M12): pint cross-unit
+EDGI). **The Phase 5–6 arc is complete (2026-07-17)**: live at [verderer.satchelhamilton.com](https://verderer.satchelhamilton.com), S3-portable storage, independent mirrors, an independently-run witness, fuzz/scale hardening, and a 12-target curated set with published criteria. Detection got sharper (M12): pint cross-unit
 numerics (`10 ppb` == `0.010 ppm`), structure/table-aware localized diffs, rendered-DOM noise
 suppression, and an index-column truncation fix. And **gossip** closes the equivocation gap
 (M13a): `verderer verify-consistency` proves — offline, under a pinned key — that a later
 checkpoint *extends* an earlier one, so a forked, shrunk, or rewritten log is caught. And the
 core is now **stress-tested** (M14d-1): Hypothesis fuzzing proves the differ and the WARC
 reader never crash on untrusted bytes, and a 100k-leaf scale test proves inclusion/consistency
-proofs stay logarithmic. Next: the rest of M14 (R2 store adapter, Cloudflare deploy + mirrors,
-an independently-run witness, a richer curated set). OpenTimestamps (M2b-3 / M13b) stays
-deferred until a real Bitcoin-confirmed fixture can be verified (no synthetic anchors on the
-trust path). See [ROADMAP.md](ROADMAP.md).
+proofs stay logarithmic. OpenTimestamps (M2b-3 / M13b) stays deferred until a real
+Bitcoin-confirmed fixture can be verified (no synthetic anchors on the trust path). See
+[ROADMAP.md](ROADMAP.md).
 
 ---
 
