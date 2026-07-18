@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -311,6 +312,25 @@ def _print_tick(r: TickResult) -> None:
         print(f"  notify failed (observation unaffected, will retry): {r.notify_error}")
 
 
+def cmd_keygen(args: argparse.Namespace) -> int:
+    """Generate a fresh Ed25519 log signing key in the ledger's `key.json` format (M15).
+
+    Prints the key JSON to **stdout** (store it as a secret — it signs every checkpoint, so
+    whoever holds it *is* the log operator) and the public key to **stderr** (publish/pin it —
+    it is what a verifier checks against). Used to provision the always-on cloud instance's key
+    without the private key ever passing through the operator's tooling.
+    """
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
+    key = Ed25519PrivateKey.generate()
+    seed = key.private_bytes_raw()
+    public = key.public_key().public_bytes_raw()
+    key_json = {"name": args.name, "private_hex": seed.hex(), "public_hex": public.hex()}
+    print(json.dumps(key_json))  # stdout: the secret
+    print(f"public key (pin/publish this): {public.hex()}", file=sys.stderr)
+    return 0
+
+
 def cmd_mirror(args: argparse.Namespace) -> int:
     """Submit the live checkpoint to independent archives; optionally verify the round trip."""
     from .mirror import _httpx_request, mirror_checkpoint, verify_wayback_copy
@@ -519,6 +539,8 @@ def main(argv: list[str] | None = None) -> int:
     notify.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
     notify.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
     notify.add_argument("--email-from", default="verderer@localhost", help="From: address for email alerts")
+    keygen = sub.add_parser("keygen", help="generate a fresh log signing key (key.json) for a new instance (M15)")
+    keygen.add_argument("--name", default="verderer.watchdog/m1-log", help="the note key name (the log origin)")
     mirror = sub.add_parser("mirror", help="submit the published checkpoint to independent archives (M14b-2)")
     mirror.add_argument("--site", default="https://verderer.satchelhamilton.com", help="public site base URL")
     mirror.add_argument("--repo", default="https://github.com/satchmakua/verderer", help="public git repo URL")
@@ -548,6 +570,7 @@ def main(argv: list[str] | None = None) -> int:
         "export": cmd_export,
         "notify": cmd_notify,
         "run": cmd_run,
+        "keygen": cmd_keygen,
         "mirror": cmd_mirror,
         "consistency": cmd_consistency,
         "verify-consistency": cmd_verify_consistency,

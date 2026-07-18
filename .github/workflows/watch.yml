@@ -1,0 +1,121 @@
+# M15 — continuous cloud operation. Every 6h this workflow IS the watchdog: it restores the
+# append-only ledger, re-observes the curated set through the polite layer, appends any diffs,
+# rebuilds + deploys the public record, persists the new ledger state, and mirrors the
+# checkpoint. Public repo -> Actions minutes are free. The signing key lives ONLY in the
+# encrypted secret VERDERER_SIGNING_KEY (set in the repository settings); it never touches the repo.
+name: watch
+
+on:
+  schedule:
+    - cron: '17 */6 * * *' # every 6 hours, offset off the hour (GitHub delays on-the-hour crons)
+  workflow_dispatch: {} # manual "run now" button
+
+permissions:
+  contents: write # push the state + gh-pages branches
+
+concurrency:
+  group: verderer-watch
+  cancel-in-progress: false # never interleave two runs on one append-only ledger
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code + curated data
+        uses: actions/checkout@v4
+
+      - name: Restore the ledger's append-only state (prior runs)
+        env:
+          REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        run: |
+          if git clone --quiet --branch state --depth 1 "$REPO_URL" state-repo 2>/dev/null; then
+            cp -r state-repo/verderer-data ./verderer-data
+            echo "restored ledger at size $(wc -l < verderer-data/ledger/entries.b64 2>/dev/null || echo 0)"
+          else
+            echo "first run: starting a fresh ledger"
+          fi
+
+      - name: Provision the signing key (encrypted secret -> never the repo)
+        env:
+          VERDERER_SIGNING_KEY: ${{ secrets.VERDERER_SIGNING_KEY }}
+        run: |
+          test -n "$VERDERER_SIGNING_KEY" || { echo "::error::VERDERER_SIGNING_KEY secret is not set - see docs/deployment.md"; exit 1; }
+          mkdir -p verderer-data/ledger
+          printf '%s' "$VERDERER_SIGNING_KEY" > verderer-data/ledger/key.json
+
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - name: Build the trust kernel
+        run: cargo build --release --manifest-path rust/Cargo.toml
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install verderer
+        run: pip install -e .
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Observe the due set (through the polite M9 layer)
+        run: |
+          export PATH="$PWD/rust/target/release:$PATH"
+          # A render target (EJScreen) needs a browser we don't install here; it degrades to a
+          # recorded error and retry, which is correct — that target is DNS-dead anyway.
+          python -m verderer --data-dir verderer-data run --once --no-notify
+
+      - name: Export the record + build the site
+        run: |
+          export PATH="$PWD/rust/target/release:$PATH"
+          python -m verderer --data-dir verderer-data export --out web/public
+          # Fresh, verifiable proof bundles for every attested target (replace any stale ones).
+          rm -f web/public/bundles/*.json
+          mkdir -p web/public/bundles
+          for t in $(python -m verderer --data-dir verderer-data targets | awk '{print $1}'); do
+            python -m verderer --data-dir verderer-data bundle "$t" -o "web/public/bundles/$t.json" 2>/dev/null || true
+          done
+          cp web/public/record.json web/src/data/record.json
+          npm --prefix web ci
+          npm --prefix web run build
+
+      - name: Persist the updated ledger state (append-only, key excluded)
+        env:
+          REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        run: |
+          rm -f verderer-data/ledger/key.json # the key lives in the secret, never a branch
+          if [ ! -d state-repo ]; then
+            # first run: create the orphan `state` branch in a fresh clone
+            git clone --quiet --depth 1 "$REPO_URL" state-repo
+            git -C state-repo checkout --quiet --orphan state
+            git -C state-repo rm -rq . >/dev/null 2>&1 || true
+          fi
+          rm -rf state-repo/verderer-data
+          cp -r verderer-data state-repo/verderer-data
+          git -C state-repo add -A
+          git -C state-repo -c user.name=verderer-bot -c user.email=bot@verderer.invalid \
+            commit -q -m "ledger state @ ${{ github.run_id }}" \
+            && git -C state-repo push --quiet "$REPO_URL" HEAD:state \
+            && echo "persisted ledger at size $(wc -l < verderer-data/ledger/entries.b64)" \
+            || echo "no ledger change to persist"
+
+      - name: Deploy the public record to GitHub Pages
+        run: |
+          cd web/dist
+          git init -q -b gh-pages
+          # .gitattributes (* -text) is shipped in web/public -> dist; stage it FIRST so git
+          # applies "no EOL normalization" to the content-addressed WARC/tile bytes it then adds.
+          git config user.name verderer-bot
+          git config user.email bot@verderer.invalid
+          test -f .gitattributes && git add .gitattributes
+          git add -A
+          git commit -q -m "publish record @ ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" gh-pages
+
+      - name: Mirror the checkpoint to independent archives
+        continue-on-error: true # archive rate limits must never fail the watch
+        run: |
+          export PATH="$PWD/rust/target/release:$PATH"
+          python -m verderer --data-dir verderer-data mirror

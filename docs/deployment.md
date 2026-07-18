@@ -178,6 +178,34 @@ Under systemd, put the credentials in a root-owned `EnvironmentFile` rather than
 EnvironmentFile=/etc/verderer/s3.env      # chmod 600, root:root
 ```
 
+## Running continuously in the cloud (M15) — GitHub Actions
+
+The zero-cost way to make Verderer a *running* watchdog (not a snapshot). A scheduled workflow
+(`.github/workflows/watch.yml`, every 6 h) restores the ledger, re-observes the curated set,
+redeploys the site, persists the new ledger state, and mirrors the checkpoint — all on a public
+repo, so the Actions minutes are free.
+
+**One-time setup (the signing key is yours alone to hold):**
+
+```bash
+# 1) Generate the log's signing key (whoever holds it IS the log operator).
+python -m verderer keygen           # prints the key JSON to stdout, the public key to stderr
+```
+
+2. Copy the **entire JSON line** it printed. In GitHub: your repo → **Settings → Secrets and
+   variables → Actions → New repository secret**. Name it **`VERDERER_SIGNING_KEY`**, paste the
+   JSON as the value, Save. (The private key never leaves your machine except into GitHub's
+   encrypted secret store; the workflow writes it to disk only at runtime and never commits it.)
+3. **Publish the public key** (the `stderr` line) in the README so verifiers can pin it —
+   `verderer verify-consistency … --pubkey <that hex>` and any bundle check are only meaningful
+   against a key pinned from a trusted channel.
+4. Kick the first run: repo → **Actions → watch → Run workflow** (or `gh workflow run watch.yml`).
+
+After that it runs itself every 6 h. The append-only ledger lives on a `state` branch (the key
+excluded); the site is force-published to `gh-pages` each run; both are safe to inspect. To
+pause it, disable the workflow in the Actions tab. To move blobs off the repo onto S3 later, set
+the `VERDERER_S3_*` secrets (see above) — no code change.
+
 ## Mirroring the checkpoint (M14b-2)
 
 After each export/deploy, push the signed checkpoint beyond the operator's control:

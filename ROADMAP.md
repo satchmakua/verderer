@@ -350,6 +350,24 @@ schedule, real network) as well as offline.
     as designed. **Test (passed live):** the MCL page, Keeling page, and climate.gov (a
     faithfully-attested `403`) all observed through the real pipeline; ledger VALID.
 
+## Phase 7 — Actually running
+
+M0–M14 built and proved every *capability*, and deployed a public record — but as a **snapshot**:
+nothing re-observed on its own, so the "watchdog" had caught zero real changes. A watchdog that
+does not watch is a demo. This phase closes that gap: continuous, unattended operation, so the
+record accumulates real observations and attests the first real change it sees. This is the
+milestone that converts "could" into "did."
+
+- [ ] **M15 — Continuous cloud operation.** A scheduled **GitHub Actions** workflow
+  (`.github/workflows/watch.yml`, every 6 h; public repo → free minutes) that *is* the running
+  watchdog: restore the append-only ledger from a `state` branch → provision the signing key
+  from an encrypted secret (never the repo) → build the kernel → `verderer run --once` over the
+  curated set through the polite layer → export + rebuild + deploy the site to `gh-pages` →
+  persist the new ledger state → `verderer mirror`. Concurrency-guarded so two runs never
+  interleave one append-only log; `verderer keygen` provisions the instance key. **Test:** the
+  scheduled workflow runs unattended end to end; the live record updates itself and grows across
+  runs; a proof bundle downloaded from the self-updated site still verifies offline.
+
 ---
 
 **North star:** A skeptical third party can verify, offline and trusting neither the
@@ -357,7 +375,14 @@ government nor Verderer, exactly what a source said and when — and Verderer fl
 specific meaningful change, classified and alertable — over a curated set that Verderer
 **observes continuously, politely, and interoperably**, deployed for real.
 
-**Status:** **the Phase 5–6 arc is COMPLETE** (2026-07-17). M0–M8 proved every capability
+**Status:** **the Phase 5–6 *capability* arc is complete** (2026-07-17) — but a critical
+self-review surfaced that "deployed" meant a static *snapshot*, not a *running* watchdog: nothing
+re-observed on its own, so the live record had caught zero real changes. **Phase 7 (M15) fixes
+that** — continuous cloud operation, in progress. Until M15 lands, the honest status is
+"capability proven, deployed, not yet continuously operating."
+
+*(Prior over-claim, kept visible for honesty: this line read "the arc is COMPLETE" before the
+self-review.)* The M0–M8 + M9–M14 detail below stands unchanged. M0–M8 proved every capability
 (confirmed 2026-07-10); M9–M12, M13a, and all of M14 (S3 store, live public deploy at
 **verderer.satchelhamilton.com** + independent mirrors, independently-run witness, fuzz/scale
 hardening, and a 12-target curated set with published criteria) turned it into a self-running,
