@@ -58,7 +58,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22' # Astro 6 requires Node >= 22.12
 
       - name: Observe the due set (through the polite M9 layer)
         run: |
