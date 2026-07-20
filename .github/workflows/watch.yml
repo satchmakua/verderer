@@ -87,18 +87,28 @@ jobs:
         run: |
           rm -f verderer-data/ledger/key.json # the key lives in the secret, never a branch
           if [ ! -d state-repo ]; then
-            # first run: create the orphan `state` branch in a fresh clone
+            # First run: create the orphan `state` branch in a fresh clone. `-f` because
+            # phantom CRLF-normalization "modifications" must not block the wipe, and NO
+            # error silencing: a silently-failed wipe once left main's .gitignore in place,
+            # which masked verderer-data from `add -A` and committed main's tree as "state"
+            # while the step still claimed success.
             git clone --quiet --depth 1 "$REPO_URL" state-repo
             git -C state-repo checkout --quiet --orphan state
-            git -C state-repo rm -rq . >/dev/null 2>&1 || true
+            git -C state-repo rm -rfq --ignore-unmatch .
+            printf '* -text\n' > state-repo/.gitattributes # never EOL-normalize content-addressed bytes
           fi
           rm -rf state-repo/verderer-data
           cp -r verderer-data state-repo/verderer-data
           git -C state-repo add -A
+          # Assert what "persisted" claims before saying it: the ledger is tracked, the key never is.
+          git -C state-repo ls-files --error-unmatch verderer-data/ledger/entries.b64 >/dev/null
+          if git -C state-repo ls-files | grep -q 'key\.json$'; then
+            echo "::error::key.json must never reach the state branch"; exit 1
+          fi
           git -C state-repo -c user.name=verderer-bot -c user.email=bot@verderer.invalid \
             commit -q -m "ledger state @ ${{ github.run_id }}" \
             && git -C state-repo push --quiet "$REPO_URL" HEAD:state \
-            && echo "persisted ledger at size $(wc -l < verderer-data/ledger/entries.b64)" \
+            && echo "persisted ledger at size $(wc -l < state-repo/verderer-data/ledger/entries.b64)" \
             || echo "no ledger change to persist"
 
       - name: Deploy the public record to GitHub Pages
