@@ -7,26 +7,43 @@
 **Live: [verderer.satchelhamilton.com](https://verderer.satchelhamilton.com)** — the public
 record, with downloadable proof bundles, WARCs, and in-browser offline verification.
 
+## Pin the log's key
+
+Checkpoints of the live log are C2SP signed notes under the origin
+`verderer.watchdog/m1-log`, with this Ed25519 public key (operating since 2026-07-20):
+
+```
+5ba707a9c137b726d5494d73d9d946e581969cbc65f01dab5e3bcf83a52a24db
+```
+
+Pin it from here (or from an independent mirror of this README), then bind your checks to
+it: `verderer verify-consistency gossip.json --pubkey <hex above>`. A proof verified only
+under a bundle's *own* embedded key proves internal consistency — the pinned key is what
+ties it to Verderer's log. (The 2026-07-16 → 2026-07-20 bootstrap snapshot was signed by a
+now-retired development key; it stays archived under the `pre-m15-snapshot` tag and on the
+Wayback/Software Heritage mirrors, and bundles downloaded from it remain offline-valid
+under their own embedded key.)
+
 Verderer continuously observes a curated set of high-value U.S. government environmental
 pages and datasets, cryptographically attests every observation in a tamper-evident
 ledger, detects *meaningful* change (definition swaps, threshold edits, silent dataset
 shifts — not byte noise), and emits a public, citable, self-verifying record. Its
 differentiator: a **downloadable proof bundle** anyone can verify **offline**, trusting
-neither the government nor Verderer' operators. Complementary to the volunteer rescue
+neither the government nor Verderer's operators. Complementary to the volunteer rescue
 ecosystem (EDGI, PEDP, End-of-Term, Data Rescue Project) — adding the two things none of
 them treat as primary: **provable observation integrity** and **classified manipulation
 detection**.
 
-**Status:** **the roadmap is complete — the Phase 5–6 "real tool" arc confirmed 2026-07-17**
-(the only open item is M13b/OpenTimestamps, deferred pending a real Bitcoin-confirmed
-fixture). A provable trust spine: a Rust
+**Status:** **every capability arc through Phase 6 is confirmed (2026-07-17); Phase 7 —
+continuous cloud operation (M15) — is bootstrapping (2026-07-20)**, with M13b/OpenTimestamps
+deferred pending a real Bitcoin-confirmed fixture. A provable trust spine: a Rust
 Merkle log, C2SP signed checkpoints published as
 tile files (M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from
 independent TSAs (M2b), and multi-party **witness cosignatures** with quorum verification
 (M8). Change detection spans five layers over static pages, JS-rendered tools (M3b render
 collector), and scientific/tabular datasets — CSV/JSON, NetCDF/HDF, zip/xlsx (M4a/M4b) — plus
 reviewer-aid triage that ranks reworded passages and drafts plain-language summaries (M6). A
-federated overlay (M7) cross-references third-party archives (Wayback CDX) with Verderer'
+federated overlay (M7) cross-references third-party archives (Wayback CDX) with Verderer's
 attested record, badging what carries a proof. The public product: a browsable Astro record
 with RSS, webhook/email alerts, search, and in-browser (WASM) offline proof verification.
 Collection is **polite by construction** (M9): robots.txt (Disallow + Crawl-delay), per-host
