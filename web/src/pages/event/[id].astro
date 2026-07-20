@@ -9,7 +9,7 @@ export function getStaticPaths() {
 const { ev } = Astro.props as { ev: Event };
 ---
 
-<Base title={`Annals — ${ev.diff_type}`}>
+<Base title={`Verderer — ${ev.diff_type}`}>
   <p><a href={`/target/${ev.target_id}`}>← {ev.target_id}</a></p>
   <h1><span class={`badge ${sevClass(ev.severity)}`}>{ev.severity}</span> {ev.diff_type}</h1>
   <p class="muted">Detected {ev.detected_at} · differ layer {ev.layer}</p>
@@ -24,7 +24,7 @@ const { ev } = Astro.props as { ev: Event };
   </p>
   <p class="muted">
     That content A was observed at one time and content B at another is cryptographically attested and
-    offline-verifiable (download the proof bundle for either observation). This classification is Annals'
+    offline-verifiable (download the proof bundle for either observation). This classification is Verderer's
     best-effort, human-reviewable interpretation — not a verified fact.
   </p>
 

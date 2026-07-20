@@ -1,8 +1,8 @@
-//! Offline verification of RFC 3161 timestamp tokens (Annals M2b anchoring).
+//! Offline verification of RFC 3161 timestamp tokens (Verderer M2b anchoring).
 //!
 //! An RFC 3161 TimeStampToken is a CMS `SignedData` whose eContent is a `TSTInfo`. It
 //! binds "a TSA (identified by a cert chaining to a pinned root) asserts that the bytes
-//! with hash `h` existed at `genTime`". Combined with Annals' checkpoint signature, an
+//! with hash `h` existed at `genTime`". Combined with Verderer's checkpoint signature, an
 //! anchored bundle proves *checkpoint root R existed no later than genTime* — an UPPER
 //! time bound, contingent on trusting the pinned TSA. We use ≥2 independent TSAs so the
 //! claim degrades gracefully (DESIGN §4.2). No interpretation enters here — bytes,
