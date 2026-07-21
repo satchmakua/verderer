@@ -58,3 +58,6 @@ site-data/
 # on the gh-pages branch — never committed to main (the dataset bundle alone is ~38 MB).
 web/public/bundles/
 web/public/warc/
+
+# --- OTS fixtures: keep them (they are the M13b anchor), do not let the blob ignores hide them
+!tests/fixtures/ots/

@@ -280,8 +280,12 @@ schedule, real network) as well as offline.
     live-proven in a session without a synthetic fixture (which this arc's "no mocks on a
     production path" rule forbids). Real time bounds already exist via M2b's independent TSAs;
     OTS is the incremental, maximally-adversary-resistant addition, to be done as a focused
-    slice with a real confirmed fixture. **Test:** an OTS anchor validates offline against its
-    carried header; a forged one is rejected.
+    slice with a real confirmed fixture. **In progress (2026-07-21):** a real stamp over the
+    live size-15 checkpoint is committed at `tests/fixtures/ots/checkpoint-15.ots` — four
+    independent public calendars, currently *pending* the Bitcoin aggregation tx. Once it
+    upgrades to a confirmed `BitcoinBlockHeaderAttestation`, the verifier slice lands (an `ots`
+    `anchors` entry + offline block-header verification in the Rust core). **Test:** an OTS
+    anchor validates offline against its carried header; a forged one is rejected.
 
 - **M14 — Production deployment & scale.** Make it deployable, multi-party for real, and
   proven at scale. (Split into runnable slices; the robustness/scale slice is done first,
@@ -358,15 +362,22 @@ does not watch is a demo. This phase closes that gap: continuous, unattended ope
 record accumulates real observations and attests the first real change it sees. This is the
 milestone that converts "could" into "did."
 
-- [ ] **M15 — Continuous cloud operation.** A scheduled **GitHub Actions** workflow
-  (`.github/workflows/watch.yml`, every 6 h; public repo → free minutes) that *is* the running
-  watchdog: restore the append-only ledger from a `state` branch → provision the signing key
-  from an encrypted secret (never the repo) → build the kernel → `verderer run --once` over the
+- [x] **M15 — Continuous cloud operation.** _Confirmed 2026-07-21._ A scheduled **GitHub Actions**
+  workflow (`.github/workflows/watch.yml`, every 6 h; public repo → free minutes) that *is* the
+  running watchdog: restore the append-only ledger from a `state` branch → provision the signing
+  key from an encrypted secret (never the repo) → build the kernel → `verderer run --once` over the
   curated set through the polite layer → export + rebuild + deploy the site to `gh-pages` →
   persist the new ledger state → `verderer mirror`. Concurrency-guarded so two runs never
-  interleave one append-only log; `verderer keygen` provisions the instance key. **Test:** the
-  scheduled workflow runs unattended end to end; the live record updates itself and grows across
-  runs; a proof bundle downloaded from the self-updated site still verifies offline.
+  interleave one append-only log; `verderer keygen` provisions the instance key. Live-hardened
+  during bootstrap: Node pinned to 22 (Astro 6), and the persist step made **assertive** (loud
+  `git rm -rfq`, `entries.b64` must be tracked + `key.json` absent before it claims "persisted",
+  `* -text` on the state branch) after a silent-wipe bug once committed the wrong tree — recovered
+  by reconstructing the ledger from the log's own published proofs.
+  **Test (passed live):** five+ `schedule`-fired runs completed unattended (first 2026-07-20T19:56Z);
+  the live record self-updated and **grew across runs** (size 9 → 15), `verderer-verify consistency`
+  proving size 15 extends size 9 under the pinned key with no fork; a proof bundle downloaded from
+  the self-updated site verifies offline. The record **caught its first real change**
+  (`ContentEdit [Medium]` on `fema-nri`, 2026-07-20T15:09Z).
 
 ---
 
@@ -375,18 +386,22 @@ government nor Verderer, exactly what a source said and when — and Verderer fl
 specific meaningful change, classified and alertable — over a curated set that Verderer
 **observes continuously, politely, and interoperably**, deployed for real.
 
-**Status:** **the Phase 5–6 *capability* arc is complete** (2026-07-17) — but a critical
-self-review surfaced that "deployed" meant a static *snapshot*, not a *running* watchdog: nothing
-re-observed on its own, so the live record had caught zero real changes. **Phase 7 (M15) fixes
-that** — continuous cloud operation, in progress. Until M15 lands, the honest status is
-"capability proven, deployed, not yet continuously operating."
-
-*(Prior over-claim, kept visible for honesty: this line read "the arc is COMPLETE" before the
-self-review.)* The M0–M8 + M9–M14 detail below stands unchanged. M0–M8 proved every capability
+**Status:** **Verderer is a running watchdog (2026-07-21).** Phase 7 (M15) has landed: the
+GitHub Actions workflow re-observes the curated set every 6 h unattended, the live record
+self-updates and grows across runs (size 9 → 15 and counting), and it has already attested its
+first real change (`ContentEdit` on `fema-nri`). Every capability arc M0–M14 was confirmed by
+2026-07-17; M15 turned "deployed snapshot" into "continuously operating." The **one** remaining
+open item is **M13b (OpenTimestamps)** — no longer purely deferred: a **real OTS stamp over the
+live size-15 checkpoint** now exists (`tests/fixtures/ots/`, pending Bitcoin confirmation as of
+2026-07-21); the verifier slice lands once that proof upgrades to a confirmed block-header
+attestation. *(Prior over-claim, kept visible for honesty: this line once read "the arc is
+COMPLETE" before a self-review found "deployed" then meant a static snapshot; M15 has since made
+it literally true.)* The M0–M8 + M9–M14 detail below stands unchanged. M0–M8 proved every capability
 (confirmed 2026-07-10); M9–M12, M13a, and all of M14 (S3 store, live public deploy at
 **verderer.satchelhamilton.com** + independent mirrors, independently-run witness, fuzz/scale
 hardening, and a 12-target curated set with published criteria) turned it into a self-running,
-polite, interoperable, precise, deeply-verifiable, **deployed** watchdog — every milestone
-proven live against the real thing, per this arc's guiding rule. The single open item is
-**M13b (OpenTimestamps)**, deferred pending a real Bitcoin-confirmed fixture (never a
-synthetic anchor on the trust path).
+polite, interoperable, precise, deeply-verifiable, **deployed** watchdog, and **M15** made it
+**continuously operating** — every milestone proven live against the real thing, per this arc's
+guiding rule. The single open item is **M13b (OpenTimestamps)**: a real stamp over the live
+checkpoint now exists (`tests/fixtures/ots/checkpoint-15.ots`) and awaits Bitcoin confirmation
+before the offline-verifier slice lands — still never a synthetic anchor on the trust path.

@@ -1,0 +1,5 @@
+# Byte-exact anchor fixtures: checkpoint-15's SHA-256 is cryptographically committed inside
+# checkpoint-15.ots. NEVER EOL-normalize them — a Windows checkout under the repo's
+# `* text=auto` would rewrite LF->CRLF, change the hash, and invalidate the OTS proof.
+checkpoint-15 -text
+checkpoint-15.ots -text
