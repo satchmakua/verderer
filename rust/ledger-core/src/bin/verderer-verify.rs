@@ -18,8 +18,10 @@ use std::io::Read;
 
 use base64::Engine;
 use ledger_core::{
-    verify_bundle, verify_consistency, verify_inclusion, verify_inclusion_from_tiles, Ledger,
+    unix_to_iso8601, verify_bundle, verify_consistency, verify_inclusion,
+    verify_inclusion_from_tiles, verify_ots, Ledger, ERR_OTS_NO_HEADER, ERR_OTS_PENDING,
 };
+use sha2::{Digest, Sha256};
 use tlog_tiles::Hash;
 
 fn opt(args: &[String], key: &str) -> Option<String> {
@@ -189,6 +191,73 @@ fn run() -> i32 {
                 }
                 Err(e) => {
                     println!("INCONSISTENT {e}");
+                    1
+                }
+            }
+        }
+        Some("ots") => {
+            // (JSON on stdin) verify an OpenTimestamps anchor over a checkpoint offline (M13b):
+            //   {"checkpoint": "<signed note>", "proof": "<base64 .ots>",
+            //    "headers": {"<height>": "<80-byte header hex>", ...}}
+            let mut s = String::new();
+            if std::io::stdin().read_to_string(&mut s).is_err() {
+                eprintln!("failed to read JSON from stdin");
+                return 1;
+            }
+            let value: serde_json::Value = match serde_json::from_str(&s) {
+                Ok(v) => v,
+                Err(e) => {
+                    eprintln!("{e}");
+                    return 1;
+                }
+            };
+            let anchored = Sha256::digest(value["checkpoint"].as_str().unwrap_or("").as_bytes());
+            let proof = match base64::engine::general_purpose::STANDARD
+                .decode(value["proof"].as_str().unwrap_or(""))
+            {
+                Ok(b) => b,
+                Err(e) => {
+                    println!("INVALID ots: bad base64 proof: {e}");
+                    return 1;
+                }
+            };
+            let mut headers: std::collections::BTreeMap<u32, [u8; 80]> =
+                std::collections::BTreeMap::new();
+            if let Some(obj) = value["headers"].as_object() {
+                for (height, hex_val) in obj {
+                    match (
+                        height.parse::<u32>(),
+                        hex::decode(hex_val.as_str().unwrap_or("")),
+                    ) {
+                        (Ok(h), Ok(bytes)) if bytes.len() == 80 => {
+                            let mut arr = [0u8; 80];
+                            arr.copy_from_slice(&bytes);
+                            headers.insert(h, arr);
+                        }
+                        _ => {
+                            println!("INVALID ots: bad header entry for height {height}");
+                            return 1;
+                        }
+                    }
+                }
+            }
+            match verify_ots(anchored.as_slice(), &proof, &headers) {
+                Ok(b) => {
+                    println!(
+                        "VALID ots: existed no later than {} (Bitcoin block {} {})",
+                        unix_to_iso8601(b.unix_time),
+                        b.height,
+                        b.block_hash_hex
+                    );
+                    0
+                }
+                // Real proof, but nothing to bound offline (pending, or header not carried).
+                Err(e) if e == ERR_OTS_PENDING || e == ERR_OTS_NO_HEADER => {
+                    println!("UNVERIFIED {e}");
+                    2
+                }
+                Err(e) => {
+                    println!("INVALID {e}");
                     1
                 }
             }

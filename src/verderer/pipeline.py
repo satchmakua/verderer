@@ -9,6 +9,7 @@ records are appended as their own leaves *alongside* the observation.
 from __future__ import annotations
 
 import base64
+import json
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
@@ -355,6 +356,30 @@ class Verderer:
             (self.data_dir / "ledger" / f"{anchorer.name}-root.pem").write_text(root, encoding="utf-8")
         return {"tsa": anchorer.name, "anchored_hash": digest.hex(), "token_bytes": len(token)}
 
+    def store_ots_anchor(self, ots_bytes: bytes, headers: dict[int, bytes]) -> dict:
+        """Attach a Bitcoin-confirmed OpenTimestamps proof to the current checkpoint (M13b).
+
+        The `.ots` must commit to the current checkpoint's digest (it is refused otherwise, so
+        a bundle can never advertise an anchor for different bytes). Stored as
+        `{digest}.ots.json` beside the RFC 3161 tokens; `_anchors_for` then rides it into any
+        bundle for a leaf whose checkpoint still matches. Verified before it is stored.
+        """
+        from .anchors import verify_ots_offline
+
+        checkpoint = self.log.signed_checkpoint()
+        digest = anchored_hash(checkpoint)
+        ok, message = verify_ots_offline(checkpoint, ots_bytes, headers)
+        if not ok:
+            raise ValueError(f"refusing to store an OTS proof that does not verify: {message}")
+        adir = self._anchors_dir()
+        adir.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "proof_b64": base64.b64encode(ots_bytes).decode(),
+            "headers": {str(h): hdr.hex() for h, hdr in headers.items()},
+        }
+        (adir / f"{digest.hex()}.ots.json").write_text(json.dumps(payload), encoding="utf-8")
+        return {"anchored_hash": digest.hex(), "message": message}
+
     def _cosignatures_dir(self) -> Path:
         return self.data_dir / "ledger" / "cosignatures"
 
@@ -419,6 +444,18 @@ class Verderer:
                     "anchored_hash": digest,
                     "tsa_name": tsa_name,
                     "token": base64.b64encode(path.read_bytes()).decode(),
+                }
+            )
+        # OpenTimestamps / Bitcoin anchors (M13b), stored as `{digest}.ots.json`.
+        ots_path = adir / f"{digest}.ots.json"
+        if ots_path.exists():
+            stored = json.loads(ots_path.read_text(encoding="utf-8"))
+            anchors.append(
+                {
+                    "type": "ots",
+                    "anchored_hash": digest,
+                    "proof": stored["proof_b64"],
+                    "headers": stored["headers"],
                 }
             )
         return anchors

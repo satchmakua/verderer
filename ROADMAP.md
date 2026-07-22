@@ -69,9 +69,10 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
       `--root`) → `VALID … N anchor(s) verified - existed no later than <T>`; `cargo test`
       verifies committed real DigiCert + FreeTSA tokens and rejects each under the other's
       root. (Live submission is network-gated + skips offline.)
-    - [ ] **M2b-3 — OpenTimestamps.** Add an OTS proof + the Bitcoin block header needed
-      to bound time offline (a distinct `anchors` entry type). **Test:** an OTS anchor
-      validates offline against the carried header; a forged one is rejected.
+    - [x] **M2b-3 — OpenTimestamps.** _Confirmed 2026-07-21 (as M13b)._ An OTS proof + the
+      Bitcoin block header bound time offline as a distinct `anchors` type. **Test (passed):** a
+      real Bitcoin-confirmed anchor validates offline against its carried header; a forged one is
+      rejected. See M13b.
   - [x] **M2c — Tile serving.** _Confirmed 2026-07-10._ Every append publishes the C2SP
     tile files (`tile/<h>/<l>/<n>[.p/<w>]`, height 8) beside the ledger; `verderer tiles`
     regenerates them for pre-tile ledgers; `verderer export` ships `checkpoint` + `tile/`
@@ -260,9 +261,9 @@ schedule, real network) as well as offline.
   with a rotating nonce yields no diff; a truncated dataset emits no spurious index-column
   `DistributionalShift`. `pytest` green.
 
-- **M13 — Consistency gossip + OpenTimestamps (completes the trust core).** Close the
-  last "trust the operator" gaps. (Split like M2b: the consistency half is done; OTS is the
-  deferred M2b-3 piece it was folded into.)
+- **M13 — Consistency gossip + OpenTimestamps (completes the trust core).** _Complete
+  2026-07-21._ Closed the last "trust the operator" gaps: consistency gossip (M13a) + a real
+  Bitcoin-anchored OpenTimestamps proof (M13b, the M2b-3 piece it folded in).
   - [x] **M13a — Consistency-proof gossip.** _Confirmed 2026-07-12._ Consistency proofs
     surfaced to verifiers: prove that checkpoint A is a prefix of a later checkpoint B — the
     log never forked, shrank, or rewrote history — via `verderer-verify consistency`, with the
@@ -272,20 +273,23 @@ schedule, real network) as well as offline.
     **Test:** a consistency proof between two real checkpoints validates; a forged history (a
     changed leaf, a shorter tree claiming to extend a longer one, or an equivocation — two
     roots at one size) is rejected. `cargo test` + `pytest` green.
-  - [ ] **M13b — OpenTimestamps (M2b-3).** An OTS proof + the Bitcoin block header needed to
-    bound time **offline** (a distinct `anchors` type), the maximally adversary-resistant
-    "existed no later than" anchor. **Deferred, honestly:** unlike the RFC 3161 TSAs (M2b),
-    which respond instantly so real tokens can be committed live, a faithful OTS anchor needs
-    a *Bitcoin-confirmed* `.ots` proof — hours of confirmation latency — so it can't be
-    live-proven in a session without a synthetic fixture (which this arc's "no mocks on a
-    production path" rule forbids). Real time bounds already exist via M2b's independent TSAs;
-    OTS is the incremental, maximally-adversary-resistant addition, to be done as a focused
-    slice with a real confirmed fixture. **In progress (2026-07-21):** a real stamp over the
-    live size-15 checkpoint is committed at `tests/fixtures/ots/checkpoint-15.ots` — four
-    independent public calendars, currently *pending* the Bitcoin aggregation tx. Once it
-    upgrades to a confirmed `BitcoinBlockHeaderAttestation`, the verifier slice lands (an `ots`
-    `anchors` entry + offline block-header verification in the Rust core). **Test:** an OTS
-    anchor validates offline against its carried header; a forged one is rejected.
+  - [x] **M13b — OpenTimestamps (M2b-3).** _Confirmed 2026-07-21._ An OTS proof + the Bitcoin
+    block header bound time **offline** as a distinct `anchors` type — the maximally
+    adversary-resistant "existed no later than" anchor. The two-phase reality OTS demands was
+    honored to the letter: the live size-15 checkpoint was stamped 2026-07-20 (four independent
+    public calendars), and once the aggregation tx **confirmed on Bitcoin** (blocks 959058 &
+    959061) the proof was upgraded and committed as a **real** fixture (`tests/fixtures/ots/`) —
+    no synthetic anchor, ever. The verifier is `rust/ledger-core/src/ots.rs`: it parses the
+    `.ots`, applies the {append, prepend, sha256} op chain from the checkpoint digest to each
+    block's merkle root, checks that against the **carried 80-byte header** (merkle field +
+    proof-of-work), and reports the block time — offline, no Bitcoin node. It honors the DESIGN
+    §4.2 non-overclaim / ADR-0005 discriminant: a mis-binding proof or a bad header is *tamper*
+    (reject); a pending or header-less proof is "present, not verified" (no bound). Wired into
+    `verify_bundle` as an `ots` anchor, a `verderer-verify ots` subcommand, and a `verderer
+    anchor --ots` producer. **Test (passed):** a real Bitcoin-confirmed bundle verifies offline
+    ("existed no later than 2026-07-21T21:09:36Z, Bitcoin block 959058"); a forged proof, a
+    tampered header (merkle *and* PoW), and a wrong checkpoint are each rejected; a header-less
+    proof is reported unverified, not invalid. 8 Rust + 7 Python tests, all offline.
 
 - **M14 — Production deployment & scale.** Make it deployable, multi-party for real, and
   proven at scale. (Split into runnable slices; the robustness/scale slice is done first,
@@ -386,22 +390,20 @@ government nor Verderer, exactly what a source said and when — and Verderer fl
 specific meaningful change, classified and alertable — over a curated set that Verderer
 **observes continuously, politely, and interoperably**, deployed for real.
 
-**Status:** **Verderer is a running watchdog (2026-07-21).** Phase 7 (M15) has landed: the
-GitHub Actions workflow re-observes the curated set every 6 h unattended, the live record
-self-updates and grows across runs (size 9 → 15 and counting), and it has already attested its
-first real change (`ContentEdit` on `fema-nri`). Every capability arc M0–M14 was confirmed by
-2026-07-17; M15 turned "deployed snapshot" into "continuously operating." The **one** remaining
-open item is **M13b (OpenTimestamps)** — no longer purely deferred: a **real OTS stamp over the
-live size-15 checkpoint** now exists (`tests/fixtures/ots/`, pending Bitcoin confirmation as of
-2026-07-21); the verifier slice lands once that proof upgrades to a confirmed block-header
-attestation. *(Prior over-claim, kept visible for honesty: this line once read "the arc is
-COMPLETE" before a self-review found "deployed" then meant a static snapshot; M15 has since made
-it literally true.)* The M0–M8 + M9–M14 detail below stands unchanged. M0–M8 proved every capability
+**Status:** **The roadmap is complete — Verderer is a running watchdog with a fully closed
+trust core (2026-07-21).** Phase 7 (M15) landed: the GitHub Actions workflow re-observes the
+curated set every 6 h unattended, the live record self-updates and grows across runs (size 9 →
+15 and counting), and it has already attested its first real change (`ContentEdit` on
+`fema-nri`). And the **last open item, M13b (OpenTimestamps), is done**: a real, Bitcoin-confirmed
+OTS proof over the live checkpoint (blocks 959058 & 959061) verifies **offline** against its
+carried block header, as a distinct `anchors` type — the maximally adversary-resistant time
+anchor, added without ever placing a synthetic anchor on the trust path. *(Prior over-claim,
+kept visible for honesty: this line once read "the arc is COMPLETE" before a self-review found
+"deployed" then meant a static snapshot; M15 has since made it literally true.)* The M0–M8 + M9–M14 detail below stands unchanged. M0–M8 proved every capability
 (confirmed 2026-07-10); M9–M12, M13a, and all of M14 (S3 store, live public deploy at
 **verderer.satchelhamilton.com** + independent mirrors, independently-run witness, fuzz/scale
 hardening, and a 12-target curated set with published criteria) turned it into a self-running,
-polite, interoperable, precise, deeply-verifiable, **deployed** watchdog, and **M15** made it
-**continuously operating** — every milestone proven live against the real thing, per this arc's
-guiding rule. The single open item is **M13b (OpenTimestamps)**: a real stamp over the live
-checkpoint now exists (`tests/fixtures/ots/checkpoint-15.ots`) and awaits Bitcoin confirmation
-before the offline-verifier slice lands — still never a synthetic anchor on the trust path.
+polite, interoperable, precise, deeply-verifiable, **deployed** watchdog, **M15** made it
+**continuously operating**, and **M13b** closed the trust core with a real Bitcoin-anchored
+OpenTimestamps proof that verifies offline — every milestone proven live against the real thing,
+per this arc's guiding rule, never a synthetic anchor on the trust path. **No open items remain.**

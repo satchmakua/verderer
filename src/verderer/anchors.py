@@ -63,6 +63,51 @@ def anchored_hash(checkpoint: str) -> bytes:
     return hashlib.sha256(checkpoint.encode("utf-8")).digest()
 
 
+def build_ots_anchor(ots_bytes: bytes, headers: dict[int, bytes]) -> dict:
+    """Assemble an OpenTimestamps `anchors` entry (M13b) for a proof bundle.
+
+    `ots_bytes` is a `.ots` proof over the checkpoint's SHA-256; `headers` maps each attested
+    Bitcoin block height to its raw 80-byte header, so the anchor verifies **offline** (the
+    verifier never needs to reach a Bitcoin node). The differ/interpretation boundary is
+    untouched — this is a time anchor over already-attested bytes, not a heuristic.
+    """
+    import base64
+
+    return {
+        "type": "ots",
+        "proof": base64.b64encode(ots_bytes).decode(),
+        "headers": {str(height): header.hex() for height, header in headers.items()},
+    }
+
+
+def verify_ots_offline(checkpoint: str, ots_bytes: bytes, headers: dict[int, bytes]) -> tuple[bool, str]:
+    """Verify an OTS anchor over `checkpoint` offline via the Rust `verderer-verify ots`.
+
+    Returns (verified, message). `verified` is True only when a Bitcoin-confirmed bound is
+    proven; a real-but-unbounded proof (pending, or a block whose header isn't carried) is
+    (False, "UNVERIFIED ...") — not tamper. A corrupt/mismatched proof is (False, "INVALID ...").
+    """
+    import base64
+    import json
+
+    from .ledger.core import find_binary
+
+    payload = json.dumps(
+        {
+            "checkpoint": checkpoint,
+            "proof": base64.b64encode(ots_bytes).decode(),
+            "headers": {str(h): hdr.hex() for h, hdr in headers.items()},
+        }
+    )
+    result = subprocess.run(
+        [str(find_binary("verderer-verify")), "ots"],
+        input=payload.encode("utf-8"),
+        capture_output=True,
+    )
+    message = result.stdout.decode("utf-8", errors="replace").strip()
+    return result.returncode == 0, message
+
+
 class OpensslTsaAnchorer:
     """A self-hosted RFC 3161 TSA backed by openssl. Keys live under `tsa_dir` (keep it
     out of version control — `verderer-data/` is gitignored). NOT an independent anchor."""

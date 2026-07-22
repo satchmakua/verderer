@@ -125,6 +125,23 @@ def cmd_anchor(args: argparse.Namespace) -> int:
     if not verderer.log.entries():
         print("nothing to anchor — run `verderer observe <target>` first")
         return 1
+
+    # OpenTimestamps (M13b): attach an already-confirmed `.ots` proof (+ its Bitcoin block
+    # headers) to the current checkpoint. Stamping/upgrading happen out of band — a faithful
+    # OTS proof needs Bitcoin confirmation (hours), so it can't be minted synchronously here.
+    if args.ots:
+        headers: dict[int, bytes] = {}
+        if args.ots_headers:
+            raw = json.loads(Path(args.ots_headers).read_text(encoding="utf-8"))
+            headers = {int(h): bytes.fromhex(hexstr) for h, hexstr in raw.items()}
+        try:
+            info = verderer.store_ots_anchor(Path(args.ots).read_bytes(), headers)
+        except Exception as error:
+            print(f"OTS anchor rejected: {error}")
+            return 1
+        print(f"OTS anchor stored for checkpoint {info['anchored_hash'][:16]}...: {info['message']}")
+        return 0
+
     names = [n.strip() for n in args.tsa.split(",") if n.strip()]
     succeeded = 0
     for name in names:
@@ -500,6 +517,14 @@ def main(argv: list[str] | None = None) -> int:
     anchor.add_argument(
         "--tsa", default="digicert,freetsa",
         help="comma-separated TSAs: digicert, freetsa, sectigo (real, need network), or dev (self-hosted, offline)",
+    )
+    anchor.add_argument(
+        "--ots", type=Path, default=None,
+        help="attach a Bitcoin-confirmed OpenTimestamps .ots proof over the current checkpoint (M13b)",
+    )
+    anchor.add_argument(
+        "--ots-headers", type=Path, default=None,
+        help="JSON mapping each attested block height to its 80-byte header hex (for offline OTS verification)",
     )
     bundle = sub.add_parser("bundle", help="export a self-verifying proof bundle for a target")
     bundle.add_argument("target_id")

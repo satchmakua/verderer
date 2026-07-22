@@ -34,9 +34,11 @@ ecosystem (EDGI, PEDP, End-of-Term, Data Rescue Project) — adding the two thin
 them treat as primary: **provable observation integrity** and **classified manipulation
 detection**.
 
-**Status:** **every capability arc through Phase 6 is confirmed (2026-07-17); Phase 7 —
-continuous cloud operation (M15) — is bootstrapping (2026-07-20)**, with M13b/OpenTimestamps
-deferred pending a real Bitcoin-confirmed fixture. A provable trust spine: a Rust
+**Status:** **the roadmap is complete (2026-07-21) — a running watchdog with a fully closed
+trust core.** Phase 7 (M15) continuous cloud operation is live (a GitHub Actions workflow
+re-observes the curated set every 6 h, unattended; the record has already caught its first real
+change), and the last trust-core item — M13b/OpenTimestamps — landed: a real Bitcoin-confirmed
+OTS proof over the live checkpoint verifies **offline** against its carried block header. A provable trust spine: a Rust
 Merkle log, C2SP signed checkpoints published as
 tile files (M2c) so verifiers recompute proofs with no live service, RFC 3161 anchors from
 independent TSAs (M2b), and multi-party **witness cosignatures** with quorum verification
@@ -60,8 +62,10 @@ suppression, and an index-column truncation fix. And **gossip** closes the equiv
 checkpoint *extends* an earlier one, so a forked, shrunk, or rewritten log is caught. And the
 core is now **stress-tested** (M14d-1): Hypothesis fuzzing proves the differ and the WARC
 reader never crash on untrusted bytes, and a 100k-leaf scale test proves inclusion/consistency
-proofs stay logarithmic. OpenTimestamps (M2b-3 / M13b) stays deferred until a real
-Bitcoin-confirmed fixture can be verified (no synthetic anchors on the trust path). See
+proofs stay logarithmic. And the trust core is now **fully closed** (M13b): a real
+Bitcoin-confirmed **OpenTimestamps** proof over the live checkpoint verifies offline against its
+carried block header — a distinct `anchors` type, the maximally adversary-resistant time bound,
+added without a synthetic anchor on the trust path. See
 [ROADMAP.md](ROADMAP.md).
 
 ---

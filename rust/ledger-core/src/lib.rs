@@ -15,11 +15,13 @@
 
 mod cosignature;
 mod note;
+mod ots;
 mod rfc3161;
 
 pub use cosignature::{cosig_key_id, cosign_line, verify_cosign_line};
 pub use ed25519_dalek::VerifyingKey;
 pub use note::{key_id, sign_note, verify_note, NoteError};
+pub use ots::{unix_to_iso8601, verify_ots, OtsBound, ERR_OTS_NO_HEADER, ERR_OTS_PENDING};
 pub use rfc3161::{verify_rfc3161_token, AnchorInfo, ERR_UNTRUSTED_ROOT};
 
 use std::fs::{File, OpenOptions};
@@ -669,31 +671,69 @@ pub fn verify_bundle(
     let mut unverified = 0usize; // present but uncheckable: unpinned TSA root or unsupported type
     let mut earliest: Option<String> = None; // ISO-8601 sorts chronologically
     for anchor in anchors {
-        if anchor["type"] != "rfc3161" {
-            unverified += 1;
-            continue;
-        }
-        let token = B64
-            .decode(anchor["token"].as_str().ok_or("anchor missing token")?)
-            .map_err(|e| e.to_string())?;
-        if roots.is_empty() {
-            unverified += 1;
-            continue;
-        }
-        match verify_rfc3161_token(&token, anchored_hash.as_slice(), &roots) {
-            Ok(info) => {
-                verified += 1;
-                earliest = Some(match earliest {
-                    Some(current) if current <= info.gen_time => current,
-                    _ => info.gen_time,
-                });
+        match anchor["type"].as_str() {
+            Some("rfc3161") => {
+                let token = B64
+                    .decode(anchor["token"].as_str().ok_or("anchor missing token")?)
+                    .map_err(|e| e.to_string())?;
+                if roots.is_empty() {
+                    unverified += 1;
+                    continue;
+                }
+                match verify_rfc3161_token(&token, anchored_hash.as_slice(), &roots) {
+                    Ok(info) => {
+                        verified += 1;
+                        earliest = Some(match earliest {
+                            Some(current) if current <= info.gen_time => current,
+                            _ => info.gen_time,
+                        });
+                    }
+                    // An internally-consistent token from a TSA we don't pin proves nothing but
+                    // spoils nothing — the C2SP witness model: report it, ignore it, let the
+                    // inclusion proof and the other anchors stand. Every other failure means
+                    // the bundle carries a corrupt or mismatched token and is rejected.
+                    Err(e) if e == rfc3161::ERR_UNTRUSTED_ROOT => unverified += 1,
+                    Err(e) => return Err(format!("anchor verification failed: {e}")),
+                }
             }
-            // An internally-consistent token from a TSA we don't pin proves nothing but
-            // spoils nothing — the C2SP witness model: report it, ignore it, let the
-            // inclusion proof and the other anchors stand. Every other failure means
-            // the bundle carries a corrupt or mismatched token and is rejected.
-            Err(e) if e == rfc3161::ERR_UNTRUSTED_ROOT => unverified += 1,
-            Err(e) => return Err(format!("anchor verification failed: {e}")),
+            // OpenTimestamps / Bitcoin (M13b): the proof commits the checkpoint digest into a
+            // Bitcoin block, whose 80-byte header the anchor carries so the check is offline.
+            Some("ots") => {
+                let proof = B64
+                    .decode(anchor["proof"].as_str().ok_or("ots anchor missing proof")?)
+                    .map_err(|e| e.to_string())?;
+                let mut headers: std::collections::BTreeMap<u32, [u8; 80]> =
+                    std::collections::BTreeMap::new();
+                if let Some(obj) = anchor["headers"].as_object() {
+                    for (height, hex_val) in obj {
+                        let h: u32 = height
+                            .parse()
+                            .map_err(|_| "ots anchor: bad header height")?;
+                        let bytes = hex::decode(hex_val.as_str().ok_or("ots header not a string")?)
+                            .map_err(|e| e.to_string())?;
+                        let arr: [u8; 80] = bytes
+                            .try_into()
+                            .map_err(|_| "ots header not 80 bytes".to_string())?;
+                        headers.insert(h, arr);
+                    }
+                }
+                match ots::verify_ots(anchored_hash.as_slice(), &proof, &headers) {
+                    Ok(bound) => {
+                        verified += 1;
+                        let iso = ots::unix_to_iso8601(bound.unix_time);
+                        earliest = Some(match earliest {
+                            Some(current) if current <= iso => current,
+                            _ => iso,
+                        });
+                    }
+                    // Pending, or the attested block's header not carried: real but no bound.
+                    Err(e) if e == ots::ERR_OTS_PENDING || e == ots::ERR_OTS_NO_HEADER => {
+                        unverified += 1
+                    }
+                    Err(e) => return Err(format!("anchor verification failed: {e}")),
+                }
+            }
+            _ => unverified += 1,
         }
     }
     let mut anchor_note = String::new();
