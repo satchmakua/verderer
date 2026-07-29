@@ -1,8 +1,8 @@
 {
   "validators": {
     "https://www.climatehubs.usda.gov/": {
-      "etag": "\"1785247641-gzip\"",
-      "last_modified": "Tue, 28 Jul 2026 14:07:21 GMT"
+      "etag": "\"1785333990-gzip\"",
+      "last_modified": "Wed, 29 Jul 2026 14:06:30 GMT"
     },
     "https://www.epa.gov/climate-indicators": {
       "etag": "W/\"699dda15-1976\""
