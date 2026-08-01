@@ -16,9 +16,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785527588.1303256,
+      "last_run": 1785573267.2024267,
       "last_status": "unchanged",
-      "next_due": 1785572016.0077314,
+      "next_due": 1785613199.7730587,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -36,24 +36,24 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 47,
-      "last_run": 1785556261.6414914,
+      "consecutive_failures": 48,
+      "last_run": 1785573267.5439508,
       "last_status": "error",
-      "next_due": 1785559861.6414914,
+      "next_due": 1785576867.5439508,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 47,
-      "last_run": 1785556266.9623604,
+      "consecutive_failures": 48,
+      "last_run": 1785573278.3117132,
       "last_status": "error",
-      "next_due": 1785559866.9623604,
+      "next_due": 1785576878.3117132,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 47,
-      "last_run": 1785556274.1803145,
+      "consecutive_failures": 48,
+      "last_run": 1785573286.4599483,
       "last_status": "error",
-      "next_due": 1785559874.1803145,
+      "next_due": 1785576886.4599483,
       "target_id": "nca5"
     },
     {
