@@ -16,16 +16,16 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785699328.1151803,
+      "last_run": 1785751585.5400019,
       "last_status": "unchanged",
-      "next_due": 1785745269.5592813,
+      "next_due": 1785792308.256964,
       "target_id": "epa-drinking-water-mcl"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785659847.168514,
+      "last_run": 1785751585.754088,
       "last_status": "unchanged",
-      "next_due": 1785744083.6140864,
+      "next_due": 1785840583.410059,
       "target_id": "epa-glyphosate"
     },
     {
@@ -36,24 +36,24 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 55,
-      "last_run": 1785729318.0074086,
+      "consecutive_failures": 56,
+      "last_run": 1785751586.9500487,
       "last_status": "error",
-      "next_due": 1785732918.0074086,
+      "next_due": 1785755186.9500487,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 55,
-      "last_run": 1785729331.5580885,
+      "consecutive_failures": 56,
+      "last_run": 1785751596.9900796,
       "last_status": "error",
-      "next_due": 1785732931.5580885,
+      "next_due": 1785755196.9900796,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 55,
-      "last_run": 1785729340.75068,
+      "consecutive_failures": 56,
+      "last_run": 1785751603.6808841,
       "last_status": "error",
-      "next_due": 1785732940.75068,
+      "next_due": 1785755203.6808841,
       "target_id": "nca5"
     },
     {
@@ -79,9 +79,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785659880.16007,
+      "last_run": 1785751610.752214,
       "last_status": "observed",
-      "next_due": 1785744100.3172143,
+      "next_due": 1785834934.4428406,
       "target_id": "fema-nri"
     }
   ]
