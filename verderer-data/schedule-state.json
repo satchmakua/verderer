@@ -2,9 +2,9 @@
   "entries": [
     {
       "consecutive_failures": 0,
-      "last_run": 1785659846.907409,
+      "last_run": 1785729316.5274282,
       "last_status": "unchanged",
-      "next_due": 1785702713.7246237,
+      "next_due": 1785769345.7077844,
       "target_id": "epa-ghgrp"
     },
     {
@@ -30,37 +30,37 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785659848.1720717,
+      "last_run": 1785729316.9137564,
       "last_status": "unchanged",
-      "next_due": 1785706727.7088778,
+      "next_due": 1785768645.6316147,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 54,
-      "last_run": 1785699328.340146,
+      "consecutive_failures": 55,
+      "last_run": 1785729318.0074086,
       "last_status": "error",
-      "next_due": 1785702928.340146,
+      "next_due": 1785732918.0074086,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 54,
-      "last_run": 1785699342.4601266,
+      "consecutive_failures": 55,
+      "last_run": 1785729331.5580885,
       "last_status": "error",
-      "next_due": 1785702942.4601266,
+      "next_due": 1785732931.5580885,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 54,
-      "last_run": 1785699352.8335516,
+      "consecutive_failures": 55,
+      "last_run": 1785729340.75068,
       "last_status": "error",
-      "next_due": 1785702952.8335516,
+      "next_due": 1785732940.75068,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785659879.5465822,
+      "last_run": 1785729350.0583756,
       "last_status": "observed",
-      "next_due": 1785703134.3689456,
+      "next_due": 1785770925.158761,
       "target_id": "noaa-climate-gov"
     },
     {
@@ -72,9 +72,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785642835.655389,
+      "last_run": 1785729350.344384,
       "last_status": "observed",
-      "next_due": 1785727548.1931176,
+      "next_due": 1785821952.401366,
       "target_id": "usda-climate-hubs"
     },
     {
