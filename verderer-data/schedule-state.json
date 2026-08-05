@@ -16,9 +16,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785854397.375309,
-      "last_status": "observed",
-      "next_due": 1785897117.315065,
+      "last_run": 1785900797.129094,
+      "last_status": "unchanged",
+      "next_due": 1785942220.6246097,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -30,44 +30,44 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785834461.5298388,
+      "last_run": 1785900797.3686175,
       "last_status": "unchanged",
-      "next_due": 1785874680.877014,
+      "next_due": 1785946374.419935,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 62,
-      "last_run": 1785873398.5055566,
+      "consecutive_failures": 63,
+      "last_run": 1785900798.6251352,
       "last_status": "error",
-      "next_due": 1785876998.5055566,
+      "next_due": 1785904398.6251352,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 62,
-      "last_run": 1785873406.2622788,
+      "consecutive_failures": 63,
+      "last_run": 1785900809.0829077,
       "last_status": "error",
-      "next_due": 1785877006.2622788,
+      "next_due": 1785904409.0829077,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 62,
-      "last_run": 1785873413.8777652,
+      "consecutive_failures": 63,
+      "last_run": 1785900819.5521894,
       "last_status": "error",
-      "next_due": 1785877013.8777652,
+      "next_due": 1785904419.5521894,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785834487.0411422,
+      "last_run": 1785900827.741732,
       "last_status": "observed",
-      "next_due": 1785875750.0342689,
+      "next_due": 1785945224.573656,
       "target_id": "noaa-climate-gov"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1785787124.273984,
+      "last_run": 1785900828.1311026,
       "last_status": "unchanged",
-      "next_due": 1785877219.2136269,
+      "next_due": 1785990615.808752,
       "target_id": "noaa-co2-trends"
     },
     {
