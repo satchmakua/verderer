@@ -2,9 +2,9 @@
   "entries": [
     {
       "consecutive_failures": 0,
-      "last_run": 1787017862.7491949,
+      "last_run": 1787058479.8575065,
       "last_status": "unchanged",
-      "next_due": 1787057103.9972787,
+      "next_due": 1787105126.837175,
       "target_id": "epa-ghgrp"
     },
     {
@@ -23,9 +23,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1786971976.0362885,
-      "last_status": "observed",
-      "next_due": 1787055675.2674847,
+      "last_run": 1787058481.2872727,
+      "last_status": "unchanged",
+      "next_due": 1787144534.974266,
       "target_id": "epa-glyphosate"
     },
     {
@@ -36,24 +36,24 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 116,
-      "last_run": 1787036681.351169,
+      "consecutive_failures": 117,
+      "last_run": 1787058483.5402913,
       "last_status": "error",
-      "next_due": 1787040281.351169,
+      "next_due": 1787062083.5402913,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 116,
-      "last_run": 1787036690.5543332,
+      "consecutive_failures": 117,
+      "last_run": 1787058491.8338218,
       "last_status": "error",
-      "next_due": 1787040290.5543332,
+      "next_due": 1787062091.8338218,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 116,
-      "last_run": 1787036696.0475569,
+      "consecutive_failures": 117,
+      "last_run": 1787058501.9519336,
       "last_status": "error",
-      "next_due": 1787040296.0475569,
+      "next_due": 1787062101.9519336,
       "target_id": "nca5"
     },
     {
