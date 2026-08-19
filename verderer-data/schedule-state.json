@@ -36,24 +36,24 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 118,
-      "last_run": 1787079424.2404113,
+      "consecutive_failures": 119,
+      "last_run": 1787104395.8011863,
       "last_status": "error",
-      "next_due": 1787083024.2404113,
+      "next_due": 1787107995.8011863,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 118,
-      "last_run": 1787079430.5938916,
+      "consecutive_failures": 119,
+      "last_run": 1787104403.8111718,
       "last_status": "error",
-      "next_due": 1787083030.5938916,
+      "next_due": 1787108003.8111718,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 118,
-      "last_run": 1787079435.1223464,
+      "consecutive_failures": 119,
+      "last_run": 1787104414.2127936,
       "last_status": "error",
-      "next_due": 1787083035.1223464,
+      "next_due": 1787108014.2127936,
       "target_id": "nca5"
     },
     {
@@ -78,10 +78,10 @@
       "target_id": "usda-climate-hubs"
     },
     {
-      "consecutive_failures": 1,
-      "last_run": 1787079444.7462466,
-      "last_status": "error",
-      "next_due": 1787079744.7462466,
+      "consecutive_failures": 0,
+      "last_run": 1787104425.0894096,
+      "last_status": "observed",
+      "next_due": 1787188723.134656,
       "target_id": "fema-nri"
     }
   ]
