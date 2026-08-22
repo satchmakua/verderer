@@ -23,9 +23,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1787317880.1344056,
+      "last_run": 1787403680.2481716,
       "last_status": "unchanged",
-      "next_due": 1787398858.2163255,
+      "next_due": 1787494829.1899784,
       "target_id": "epa-glyphosate"
     },
     {
@@ -36,38 +36,38 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 132,
-      "last_run": 1787381975.1902106,
+      "consecutive_failures": 133,
+      "last_run": 1787403680.5889916,
       "last_status": "error",
-      "next_due": 1787385575.1902106,
+      "next_due": 1787407280.5889916,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 132,
-      "last_run": 1787381981.8318293,
+      "consecutive_failures": 133,
+      "last_run": 1787403693.2493167,
       "last_status": "error",
-      "next_due": 1787385581.8318293,
+      "next_due": 1787407293.2493167,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 132,
-      "last_run": 1787381989.439644,
+      "consecutive_failures": 133,
+      "last_run": 1787403700.5065105,
       "last_status": "error",
-      "next_due": 1787385589.439644,
+      "next_due": 1787407300.5065105,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1787338596.998243,
+      "last_run": 1787403709.4454544,
       "last_status": "observed",
-      "next_due": 1787384437.2590547,
+      "next_due": 1787448817.1498294,
       "target_id": "noaa-climate-gov"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1787317915.039722,
+      "last_run": 1787403710.257334,
       "last_status": "unchanged",
-      "next_due": 1787402907.284298,
+      "next_due": 1787498502.9861495,
       "target_id": "noaa-co2-trends"
     },
     {
@@ -78,10 +78,10 @@
       "target_id": "usda-climate-hubs"
     },
     {
-      "consecutive_failures": 1,
-      "last_run": 1787381997.0425317,
-      "last_status": "error",
-      "next_due": 1787382297.0425317,
+      "consecutive_failures": 0,
+      "last_run": 1787403710.6345336,
+      "last_status": "observed",
+      "next_due": 1787495882.3318856,
       "target_id": "fema-nri"
     }
   ]
