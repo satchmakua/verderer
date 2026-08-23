@@ -1,8 +1,8 @@
 {
   "validators": {
     "https://www.climatehubs.usda.gov/": {
-      "etag": "\"1787378784-gzip\"",
-      "last_modified": "Sat, 22 Aug 2026 06:06:24 GMT"
+      "etag": "\"1787465230-gzip\"",
+      "last_modified": "Sun, 23 Aug 2026 06:07:10 GMT"
     },
     "https://www.epa.gov/climate-indicators": {
       "etag": "W/\"699dda15-1976\""
@@ -12,8 +12,8 @@
       "last_modified": "Sat, 22 Aug 2026 18:49:08 GMT"
     },
     "https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations": {
-      "etag": "W/\"1787420792\"",
-      "last_modified": "Sat, 22 Aug 2026 17:46:32 GMT"
+      "etag": "W/\"1787424294\"",
+      "last_modified": "Sat, 22 Aug 2026 18:44:54 GMT"
     },
     "https://www.epa.gov/ingredients-used-pesticide-products/glyphosate": {
       "etag": "W/\"1787348139\"",
