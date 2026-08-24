@@ -2,9 +2,9 @@
   "entries": [
     {
       "consecutive_failures": 0,
-      "last_run": 1787536696.3293998,
+      "last_run": 1787577191.1989543,
       "last_status": "unchanged",
-      "next_due": 1787576425.339239,
+      "next_due": 1787622725.9615088,
       "target_id": "epa-ghgrp"
     },
     {
@@ -16,9 +16,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1787536696.6805403,
+      "last_run": 1787577192.1214461,
       "last_status": "unchanged",
-      "next_due": 1787576627.891746,
+      "next_due": 1787623446.766474,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -30,30 +30,30 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1787510931.9525023,
+      "last_run": 1787577192.3990426,
       "last_status": "unchanged",
-      "next_due": 1787556550.0239463,
+      "next_due": 1787624150.4949427,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 140,
-      "last_run": 1787556075.3994355,
+      "consecutive_failures": 141,
+      "last_run": 1787577193.7345262,
       "last_status": "error",
-      "next_due": 1787559675.3994355,
+      "next_due": 1787580793.7345262,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 140,
-      "last_run": 1787556083.5499136,
+      "consecutive_failures": 141,
+      "last_run": 1787577200.501315,
       "last_status": "error",
-      "next_due": 1787559683.5499136,
+      "next_due": 1787580800.501315,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 140,
-      "last_run": 1787556090.9734263,
+      "consecutive_failures": 141,
+      "last_run": 1787577207.6629705,
       "last_status": "error",
-      "next_due": 1787559690.9734263,
+      "next_due": 1787580807.6629705,
       "target_id": "nca5"
     },
     {
@@ -72,9 +72,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1787468513.5630639,
+      "last_run": 1787577214.3623738,
       "last_status": "observed",
-      "next_due": 1787560240.7000465,
+      "next_due": 1787660710.6770787,
       "target_id": "usda-climate-hubs"
     },
     {
