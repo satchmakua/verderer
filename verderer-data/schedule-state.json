@@ -2,9 +2,9 @@
   "entries": [
     {
       "consecutive_failures": 0,
-      "last_run": 1788154543.3076532,
-      "last_status": "unchanged",
-      "next_due": 1788198569.3850129,
+      "last_run": 1788216680.1168745,
+      "last_status": "observed",
+      "next_due": 1788262685.3515067,
       "target_id": "epa-ghgrp"
     },
     {
@@ -16,51 +16,51 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1788154545.0040922,
-      "last_status": "unchanged",
-      "next_due": 1788195266.395449,
+      "last_run": 1788216680.372044,
+      "last_status": "observed",
+      "next_due": 1788255921.7822895,
       "target_id": "epa-drinking-water-mcl"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1788123997.8047864,
-      "last_status": "unchanged",
-      "next_due": 1788209180.7887604,
+      "last_run": 1788216681.592369,
+      "last_status": "observed",
+      "next_due": 1788309769.0471582,
       "target_id": "epa-glyphosate"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1788154545.7033532,
+      "last_run": 1788216682.369594,
       "last_status": "unchanged",
-      "next_due": 1788198706.0946813,
+      "next_due": 1788262797.314064,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 163,
-      "last_run": 1788184276.1037486,
+      "consecutive_failures": 164,
+      "last_run": 1788216683.6808336,
       "last_status": "error",
-      "next_due": 1788187876.1037486,
+      "next_due": 1788220283.6808336,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 163,
-      "last_run": 1788184284.8634315,
+      "consecutive_failures": 164,
+      "last_run": 1788216693.6228461,
       "last_status": "error",
-      "next_due": 1788187884.8634315,
+      "next_due": 1788220293.6228461,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 163,
-      "last_run": 1788184295.626209,
+      "consecutive_failures": 164,
+      "last_run": 1788216704.3502054,
       "last_status": "error",
-      "next_due": 1788187895.626209,
+      "next_due": 1788220304.3502054,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1788154572.519086,
+      "last_run": 1788216710.4842584,
       "last_status": "observed",
-      "next_due": 1788197572.5315857,
+      "next_due": 1788259750.0674565,
       "target_id": "noaa-climate-gov"
     },
     {
@@ -79,9 +79,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1788108108.9429,
+      "last_run": 1788216710.8321931,
       "last_status": "observed",
-      "next_due": 1788193895.427502,
+      "next_due": 1788311297.2413013,
       "target_id": "fema-nri"
     }
   ]
