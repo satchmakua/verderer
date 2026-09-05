@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A verifiable, tamper-evident record of what U.S. government environmental data said, and how it is being changed."><title>Verderer — verify a proof bundle</title><link rel="alternate" type="application/rss+xml" title="Verderer — all changes" href="/feed.xml"><style>:root{--bg: #0f1216;--panel: #171b21;--ink: #e7ecf2;--muted: #97a3b2;--line: #263040;--accent: #6fb2c6;--high: #e5534b;--med: #d9a441;--low: #7f8a99}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#b9c6d6}.wrap{max-width:900px;margin:0 auto;padding:0 20px}header.site{border-bottom:1px solid var(--line)}header.site .wrap{display:flex;align-items:baseline;gap:14px;padding:16px 20px}header.site .mark{font-weight:700;letter-spacing:.5px}header.site .tag{color:var(--muted);font-size:13px}main .wrap{padding:28px 20px 60px}h1{font-size:26px;line-height:1.25;margin:0 0 12px}h2{font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:34px 0 12px}h3{margin:0 0 6px;font-size:16px}.muted{color:var(--muted)}.hero p{color:var(--muted);max-width:62ch}.badge{display:inline-block;min-width:58px;text-align:center;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#0f1216}.badge.high{background:var(--high)}.badge.med{background:var(--med)}.badge.low{background:var(--low)}ul.events{list-style:none;margin:0;padding:0}ul.events li{display:grid;grid-template-columns:70px 190px 1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line)}ul.events .type{font-weight:600}ul.events .summary{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}time{color:var(--low);font-size:12px;font-variant-numeric:tabular-nums}.targets{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}.card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}.card .url{color:var(--muted);font-size:12px;word-break:break-all;margin:4px 0}.card .stat{color:var(--low);font-size:12px;margin:8px 0 0}ol.timeline{list-style:none;margin:0;padding:0}ol.timeline li{padding:10px 0;border-bottom:1px solid var(--line)}ol.timeline .obs{color:var(--muted);font-size:13px}pre{background:#0b0e12;border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto;font-size:12.5px;color:#cdd8e6}footer.site{border-top:1px solid var(--line);color:var(--muted);font-size:12px}footer.site .wrap{padding:18px 20px 40px}@media(max-width:640px){ul.events li{grid-template-columns:60px 1fr}ul.events time{display:none}}
+.verify[data-astro-cid-iv4vc336]{display:flex;gap:10px;align-items:center;margin:18px 0 8px;flex-wrap:wrap}#verify-btn[data-astro-cid-iv4vc336]{background:var(--accent);color:#0b0e12;border:0;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer}#verify-btn[data-astro-cid-iv4vc336]:disabled{opacity:.5;cursor:default}input[data-astro-cid-iv4vc336][type=file]{color:var(--muted)}.result[data-astro-cid-iv4vc336]{white-space:pre-wrap;border-radius:8px;padding:12px;margin-top:10px}.result[data-astro-cid-iv4vc336].ok{border:1px solid #2f8a5b;background:#10231a;color:#7ee2a8}.result[data-astro-cid-iv4vc336].bad{border:1px solid #7a2f2f;background:#241012;color:#f0a0a0}.small[data-astro-cid-iv4vc336]{font-size:12.5px;max-width:62ch}
+</style></head> <body> <header class="site"> <div class="wrap"> <a class="mark" href="/">VERDERER</a> <span class="tag">a provable record of public environmental data</span> </div> </header> <main><div class="wrap"> <h1 data-astro-cid-iv4vc336>Verify a proof bundle</h1> <p class="muted" data-astro-cid-iv4vc336>
+Choose a <code data-astro-cid-iv4vc336>verderer.proofbundle/v1</code> file. It is verified <strong data-astro-cid-iv4vc336>entirely in your
+    browser</strong> (WebAssembly) — trusting neither the government nor Verderer's servers. Nothing is
+    uploaded. This is the whole point: the proof is transferable, and you can check it yourself.
+</p> <div class="verify" data-astro-cid-iv4vc336> <input type="file" id="bundle-file" accept="application/json,.json" data-astro-cid-iv4vc336> <button id="verify-btn" data-astro-cid-iv4vc336>Verify offline</button> </div> <p id="verify-status" class="muted" data-astro-cid-iv4vc336>Loading the verifier…</p> <pre id="verify-result" class="result" hidden data-astro-cid-iv4vc336></pre> <p class="muted small" data-astro-cid-iv4vc336>
+A valid result attests: Verderer observed exactly this content at this URL, faithfully preserved and
+    included in the signed log, and (if anchored) that the log existed no later than the timestamp — none
+    of which routes through Verderer's live service.
+</p>  <script type="module">
+    import init, { verify_bundle } from '/wasm/ledger_wasm.js';
+    const status = document.getElementById('verify-status');
+    const btn = document.getElementById('verify-btn');
+    const out = document.getElementById('verify-result');
+    const ready = init().then(() => { status.textContent = 'Verifier ready (runs offline in your browser).'; })
+                         .catch((e) => { status.textContent = 'Could not load the WASM verifier: ' + e; });
+
+    function show(message) {
+      const ok = message.startsWith('VALID');
+      out.hidden = false;
+      out.className = 'result ' + (ok ? 'ok' : 'bad');
+      out.textContent = (ok ? '✓ ' : '✗ ') + message;
+    }
+
+    btn.addEventListener('click', async () => {
+      const file = document.getElementById('bundle-file').files[0];
+      if (!file) { status.textContent = 'Choose a proof.json first.'; return; }
+      await ready;
+      const text = await file.text();
+      try { show(verify_bundle(text)); }
+      catch (e) { show('INVALID could not parse bundle: ' + e); }
+    });
+
+    // Test hook so the WASM path can be checked headlessly.
+    window.__verifyBundle = async (text) => { await ready; return verify_bundle(text); };
+  </script> </div></main> <footer class="site"> <div class="wrap">
+Verderer attests only what it observed, faithfully preserved and offline-verifiable. Severity labels
+        are a best-effort, human-reviewable interpretation — never a verified fact.
+<a href="/feed.xml">RSS</a> · <a href="/record.json">record.json</a> </div> </footer> </body></html>
