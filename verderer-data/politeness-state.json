@@ -1,15 +1,15 @@
 {
   "validators": {
     "https://www.climatehubs.usda.gov/": {
-      "etag": "\"1788494770-gzip\"",
-      "last_modified": "Fri, 04 Sep 2026 04:06:10 GMT"
+      "etag": "\"1788581106-gzip\"",
+      "last_modified": "Sat, 05 Sep 2026 04:05:06 GMT"
     },
     "https://www.epa.gov/climate-indicators": {
       "etag": "W/\"6a7f3f7d-1976\""
     },
     "https://www.epa.gov/ghgreporting": {
-      "etag": "W/\"1788538916\"",
-      "last_modified": "Fri, 04 Sep 2026 16:21:56 GMT"
+      "etag": "W/\"1788555326\"",
+      "last_modified": "Fri, 04 Sep 2026 20:55:26 GMT"
     },
     "https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations": {
       "etag": "W/\"1788528293\"",
