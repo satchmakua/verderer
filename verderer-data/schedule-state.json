@@ -16,9 +16,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1788726275.9486625,
+      "last_run": 1788784415.15342,
       "last_status": "unchanged",
-      "next_due": 1788771096.7366505,
+      "next_due": 1788825416.5181737,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -36,24 +36,24 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 189,
-      "last_run": 1788756140.2739153,
+      "consecutive_failures": 190,
+      "last_run": 1788784415.2930665,
       "last_status": "error",
-      "next_due": 1788759740.2739153,
+      "next_due": 1788788015.2930665,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 189,
-      "last_run": 1788756147.1031353,
+      "consecutive_failures": 190,
+      "last_run": 1788784421.769412,
       "last_status": "error",
-      "next_due": 1788759747.1031353,
+      "next_due": 1788788021.769412,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 189,
-      "last_run": 1788756155.9455972,
+      "consecutive_failures": 190,
+      "last_run": 1788784430.921493,
       "last_status": "error",
-      "next_due": 1788759755.9455972,
+      "next_due": 1788788030.921493,
       "target_id": "nca5"
     },
     {
@@ -65,9 +65,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1788669606.831492,
+      "last_run": 1788784440.362292,
       "last_status": "unchanged",
-      "next_due": 1788757520.3608918,
+      "next_due": 1788866759.4116473,
       "target_id": "noaa-co2-trends"
     },
     {
