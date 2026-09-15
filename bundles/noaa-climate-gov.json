@@ -1,0 +1,45 @@
+{
+  "schema": "verderer.proofbundle/v1",
+  "origin": "verderer.watchdog/m1-log",
+  "observation": {
+    "captured_requests_hash": null,
+    "collector_type": "static",
+    "collector_version": "0.1.0",
+    "fetched_at": "2026-09-15T11:45:14Z",
+    "http_status": 403,
+    "raw_bytes_hash": "12209ec2a97247d0714b56d2837f536129b046eb060fb24e9c966ef836304beee5d8",
+    "rendered_dom_hash": null,
+    "response_headers_hash": "122075f9a6663a634b33ba2fe4dec704c0c7010525f5de1700f9c643f3dc7d3bfc06",
+    "schema": "verderer.observation/v1",
+    "target_id": "noaa-climate-gov",
+    "tls_cert_chain_hash": null,
+    "url": "https://www.noaa.gov/climate",
+    "warc_record_hash": "122011c2e92dc11a02d091082645f2a9e56f65afc211b86081acdea3cb0d04c3bf95"
+  },
+  "artifacts": [
+    {
+      "hash": "12209ec2a97247d0714b56d2837f536129b046eb060fb24e9c966ef836304beee5d8",
+      "media_type": "application/octet-stream",
+      "bytes_b64": "PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMDEgVHJhbnNpdGlvbmFsLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0L2xvb3NlLmR0ZCI+CjxIVE1MPjxIRUFEPjxNRVRBIEhUVFAtRVFVSVY9IkNvbnRlbnQtVHlwZSIgQ09OVEVOVD0idGV4dC9odG1sOyBjaGFyc2V0PWlzby04ODU5LTEiPgo8VElUTEU+RVJST1I6IFRoZSByZXF1ZXN0IGNvdWxkIG5vdCBiZSBzYXRpc2ZpZWQ8L1RJVExFPgo8L0hFQUQ+PEJPRFk+CjxIMT40MDMgRVJST1I8L0gxPgo8SDI+VGhlIHJlcXVlc3QgY291bGQgbm90IGJlIHNhdGlzZmllZC48L0gyPgo8SFIgbm9zaGFkZSBzaXplPSIxcHgiPgpSZXF1ZXN0IGJsb2NrZWQuCldlIGNhbid0IGNvbm5lY3QgdG8gdGhlIHNlcnZlciBmb3IgdGhpcyBhcHAgb3Igd2Vic2l0ZSBhdCB0aGlzIHRpbWUuIFRoZXJlIG1pZ2h0IGJlIHRvbyBtdWNoIHRyYWZmaWMgb3IgYSBjb25maWd1cmF0aW9uIGVycm9yLiBUcnkgYWdhaW4gbGF0ZXIsIG9yIGNvbnRhY3QgdGhlIGFwcCBvciB3ZWJzaXRlIG93bmVyLgo8QlIgY2xlYXI9ImFsbCI+CklmIHlvdSBwcm92aWRlIGNvbnRlbnQgdG8gY3VzdG9tZXJzIHRocm91Z2ggQ2xvdWRGcm9udCwgeW91IGNhbiBmaW5kIHN0ZXBzIHRvIHRyb3VibGVzaG9vdCBhbmQgaGVscCBwcmV2ZW50IHRoaXMgZXJyb3IgYnkgcmV2aWV3aW5nIHRoZSBDbG91ZEZyb250IGRvY3VtZW50YXRpb24uCjxCUiBjbGVhcj0iYWxsIj4KPEhSIG5vc2hhZGUgc2l6ZT0iMXB4Ij4KPFBSRT4KR2VuZXJhdGVkIGJ5IGNsb3VkZnJvbnQgKENsb3VkRnJvbnQpClJlcXVlc3QgSUQ6IDBWNUFReFRURGZRNmM4X3d4cmZjVzVCblRPWjdMNklLOEJTTmYtbVFHUzFxYnFCMENMMm5UZz09CjwvUFJFPgo8QUREUkVTUz4KPC9BRERSRVNTPgo8L0JPRFk+PC9IVE1MPg=="
+    }
+  ],
+  "leaf": {
+    "index": 292,
+    "record_b64": "eyJjYXB0dXJlZF9yZXF1ZXN0c19oYXNoIjpudWxsLCJjb2xsZWN0b3JfdHlwZSI6InN0YXRpYyIsImNvbGxlY3Rvcl92ZXJzaW9uIjoiMC4xLjAiLCJmZXRjaGVkX2F0IjoiMjAyNi0wOS0xNVQxMTo0NToxNFoiLCJodHRwX3N0YXR1cyI6NDAzLCJyYXdfYnl0ZXNfaGFzaCI6IjEyMjA5ZWMyYTk3MjQ3ZDA3MTRiNTZkMjgzN2Y1MzYxMjliMDQ2ZWIwNjBmYjI0ZTljOTY2ZWY4MzYzMDRiZWVlNWQ4IiwicmVuZGVyZWRfZG9tX2hhc2giOm51bGwsInJlc3BvbnNlX2hlYWRlcnNfaGFzaCI6IjEyMjA3NWY5YTY2NjNhNjM0YjMzYmEyZmU0ZGVjNzA0YzBjNzAxMDUyNWY1ZGUxNzAwZjljNjQzZjNkYzdkM2JmYzA2Iiwic2NoZW1hIjoidmVyZGVyZXIub2JzZXJ2YXRpb24vdjEiLCJ0YXJnZXRfaWQiOiJub2FhLWNsaW1hdGUtZ292IiwidGxzX2NlcnRfY2hhaW5faGFzaCI6bnVsbCwidXJsIjoiaHR0cHM6Ly93d3cubm9hYS5nb3YvY2xpbWF0ZSIsIndhcmNfcmVjb3JkX2hhc2giOiIxMjIwMTFjMmU5MmRjMTFhMDJkMDkxMDgyNjQ1ZjJhOWU1NmY2NWFmYzIxMWI4NjA4MWFjZGVhM2NiMGQwNGMzYmY5NSJ9",
+    "leaf_hash": "e3bcf499eaeb87dc5d2dcbb7442f1f3c28cec3e17222a3c53276372e4b1c610e"
+  },
+  "inclusion_proof": {
+    "tree_size": 296,
+    "proof": [
+      "f955f23af5af8c30a9b93bf901f1c7f17480ec55d9cfa4be04f6120407a985bd",
+      "8ac819d8e0c6a3c227bb76877feb77ebb6f7c20a79b71ecd306dedb75f10ca2b",
+      "a449541bd0b2bcfe116dd9b4b2c35517be850bfd780821509dedb9db0cbaa301",
+      "3cef637c284e8655f4dc2f29b19caf43e01759a105c1a8a1caab92f56e04561b",
+      "af429a95289ed482790a91375f26a54ded3aa560ce9c493858ec83c6a717cc35"
+    ]
+  },
+  "checkpoint": "verderer.watchdog/m1-log\n296\nlRdKoGFwGXenHYYQvXJRsTMdgr5txA+ZU9+FLCNJ5/k=\n\n\u2014 verderer.watchdog/m1-log IbxwBQmrEuPSknYOzaOqgc2LzvDOvrciAPwhhPQQBhOuY/Vet1k9uAFkXOBCsdKsyy3QGGvrnYbg7Cggfwjm8tWXeg8=\n",
+  "pubkey_hex": "5ba707a9c137b726d5494d73d9d946e581969cbc65f01dab5e3bcf83a52a24db",
+  "anchors": [],
+  "cosignatures": []
+}
