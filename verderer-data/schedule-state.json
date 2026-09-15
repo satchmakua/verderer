@@ -2,9 +2,9 @@
   "entries": [
     {
       "consecutive_failures": 0,
-      "last_run": 1789422590.6787658,
+      "last_run": 1789472693.2553885,
       "last_status": "unchanged",
-      "next_due": 1789466539.1932325,
+      "next_due": 1789516885.402304,
       "target_id": "epa-ghgrp"
     },
     {
@@ -23,9 +23,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1789361855.0324965,
+      "last_run": 1789472693.4564059,
       "last_status": "unchanged",
-      "next_due": 1789451014.9934006,
+      "next_due": 1789552231.4349134,
       "target_id": "epa-glyphosate"
     },
     {
@@ -36,31 +36,31 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 219,
-      "last_run": 1789448126.17045,
+      "consecutive_failures": 220,
+      "last_run": 1789472694.622026,
       "last_status": "error",
-      "next_due": 1789451726.17045,
+      "next_due": 1789476294.622026,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 219,
-      "last_run": 1789448134.3756802,
+      "consecutive_failures": 220,
+      "last_run": 1789472699.487365,
       "last_status": "error",
-      "next_due": 1789451734.3756802,
+      "next_due": 1789476299.487365,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 219,
-      "last_run": 1789448143.0820043,
+      "consecutive_failures": 220,
+      "last_run": 1789472706.5371714,
       "last_status": "error",
-      "next_due": 1789451743.0820043,
+      "next_due": 1789476306.5371714,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1789422623.56576,
+      "last_run": 1789472714.2187645,
       "last_status": "observed",
-      "next_due": 1789462818.889424,
+      "next_due": 1789512881.4580665,
       "target_id": "noaa-climate-gov"
     },
     {
@@ -72,9 +72,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1789390096.7899148,
+      "last_run": 1789472714.9139376,
       "last_status": "observed",
-      "next_due": 1789468713.773575,
+      "next_due": 1789562360.308558,
       "target_id": "usda-climate-hubs"
     },
     {
