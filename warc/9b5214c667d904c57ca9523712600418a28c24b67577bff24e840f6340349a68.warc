@@ -1,0 +1,48 @@
+WARC/1.0
+WARC-Date: 2026-07-20T14:54:14Z
+WARC-Type: response
+WARC-Record-ID: <urn:uuid:3a446efd-46bd-492d-aba1-d5469a61ffa4>
+WARC-Target-URI: https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool
+WARC-Payload-Digest: sha1:B4ZLHPMSCRD62KFJMAHYVHT5PEEQ3D5J
+WARC-Block-Digest: sha1:6CHDB53FK3KAHKRJFDZUSSP3BHOP6HP4
+Content-Type: application/http; msgtype=response
+Content-Length: 737
+
+HTTP/1.1 403 Forbidden
+server: AkamaiGHost
+mime-version: 1.0
+content-type: text/html
+expires: Mon, 20 Jul 2026 14:54:14 GMT
+date: Mon, 20 Jul 2026 14:54:14 GMT
+connection: close
+strict-transport-security: max-age=31536000 ; includeSubDomains
+Content-Length: 464
+
+<HTML><HEAD>
+<TITLE>Access Denied</TITLE>
+</HEAD><BODY>
+<H1>Access Denied</H1>
+ 
+You don't have permission to access "http&#58;&#47;&#47;www&#46;fema&#46;gov&#47;emergency&#45;managers&#47;practitioners&#47;resilience&#45;analysis&#45;and&#45;planning&#45;tool" on this server.<P>
+Reference&#32;&#35;18&#46;6755c817&#46;1784559254&#46;6749f51c
+<P>https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;6755c817&#46;1784559254&#46;6749f51c</P>
+</BODY>
+</HTML>
+
+
+WARC/1.0
+WARC-Date: 2026-07-20T14:54:14Z
+WARC-Type: request
+WARC-Record-ID: <urn:uuid:055b435b-5aa8-49fe-b0f2-ccb61179d327>
+WARC-Target-URI: https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool
+WARC-Payload-Digest: sha1:3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ
+WARC-Block-Digest: sha1:S6V3ZIFQOMIOKSBA67EGYB3H5QO7TM7F
+Content-Type: application/http; msgtype=request
+Content-Length: 210
+
+GET /emergency-managers/practitioners/resilience-analysis-and-planning-tool HTTP/1.1
+Host: www.fema.gov
+User-Agent: VerdererWatchdog/0.0 (+https://github.com/satchmakua/verderer) polite-archival-collector
+
+
+
