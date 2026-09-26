@@ -1,0 +1,1720 @@
+WARC/1.0
+WARC-Date: 2026-07-22T14:25:07Z
+WARC-Type: response
+WARC-Record-ID: <urn:uuid:fd171abe-7804-4c39-b87b-c130688980a6>
+WARC-Target-URI: https://www.climatehubs.usda.gov/
+WARC-Payload-Digest: sha1:J3SIE3W2DKSB6LK3XXMAJBFGVYSPW5DI
+WARC-Block-Digest: sha1:DXIB7L2HUFZOYEO7GYFKUPGC2EYTD4XL
+Content-Type: application/http; msgtype=response
+Content-Length: 71750
+
+HTTP/1.1 200 OK
+date: Wed, 22 Jul 2026 14:25:07 GMT
+content-type: text/html; charset=UTF-8
+connection: keep-alive
+x-content-type-options: nosniff
+cache-control: max-age=60, public
+x-drupal-dynamic-cache: MISS
+content-language: en
+x-frame-options: SAMEORIGIN
+expires: Sun, 19 Nov 1978 05:00:00 GMT
+last-modified: Wed, 22 Jul 2026 14:06:56 GMT
+etag: "1784729216-gzip"
+vary: Cookie,Accept-Encoding
+x-generator: Drupal 10 (https://www.drupal.org)
+x-drupal-cache: HIT
+access-control-allow-origin: *
+x-varnish: 4403665 4499012
+age: 88
+via: 1.1 varnish-v4
+accept-ranges: bytes
+strict-transport-security: max-age=31536000; includeSubDomains
+Content-Length: 71071
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PM493617DJ"></script>
+<script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments)};gtag("js", new Date());gtag("set", "developer_id.dMDhkMT", true);gtag("config", "G-PM493617DJ", {"groups":"default","page_placeholder":"PLACEHOLDER_page_location","allow_ad_personalization_signals":false});gtag("config", "UA-62178319-1", {"groups":"default","anonymize_ip":true,"page_placeholder":"PLACEHOLDER_page_path","allow_ad_personalization_signals":false});</script>
+<link rel="canonical" href="https://www.climatehubs.usda.gov/" />
+<link rel="shortlink" href="https://www.climatehubs.usda.gov/" />
+<meta name="Generator" content="Drupal 10 (https://www.drupal.org)" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style media="all">.usa-hero {background-color: #FFFFFF ;background-image:  url('https://www.climatehubs.usda.gov/sites/default/files/hayfield3.jpg') ;background-repeat: no-repeat ;background-attachment: scroll ;background-position: center top ;z-index: auto;background-size: cover ;-webkit-background-size: cover ;-moz-background-size: cover ;-o-background-size: cover ;}</style>
+<link rel="icon" href="/sites/default/files/favicon_0.ico" type="image/vnd.microsoft.icon" />
+
+  <title>Welcome to the USDA Climate Hubs | USDA Climate Hubs</title>
+  <link rel="stylesheet" media="all" href="/sites/default/files/css/css_CAroT0F2jA7fIEE0m_38IcLl4U7HxE-9V2j0e5Wpyr0.css?delta=0&amp;language=en&amp;theme=hubs2&amp;include=eJyFilEKhDAMBS8ULOyFSqthLTZN8CWKt1_Wz2XBn4EZZo2KVyoAO2i9JXAuyHPAVWhnmA60g7PwiPTjU925bKZt-OMqXz5e8Ku38SY0sc7Z1MJy7TpvSH8a4YKzpFrAdDQ-kW5Ookt0_gAsFVmt" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_T1bvwrR_PUR9GdNwp6BU-ta2gvaFjpyt_T_UGtGiF4M.css?delta=1&amp;language=en&amp;theme=hubs2&amp;include=eJyFilEKhDAMBS8ULOyFSqthLTZN8CWKt1_Wz2XBn4EZZo2KVyoAO2i9JXAuyHPAVWhnmA60g7PwiPTjU925bKZt-OMqXz5e8Ku38SY0sc7Z1MJy7TpvSH8a4YKzpFrAdDQ-kW5Ookt0_gAsFVmt" />
+
+  <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" defer crossorigin="anonymous"></script>
+<script src="https://use.fontawesome.com/releases/v6.1.0/js/v4-shims.js" defer crossorigin="anonymous"></script>
+
+</head>
+<body class="exclude-node-title">
+<a href="#main-content" class="usa-sr-only focusable">
+  Skip to main content
+</a>
+
+<div class="responsive-menu-page-wrapper">
+        <section class="usa-banner">
+      
+<div class="usa-banner">
+  <div class="usa-accordion">
+    <header class="usa-banner__header">
+      <div class="usa-banner__inner">
+        <div class="grid-col-auto">
+          <img class="usa-banner__header-flag" aria-hidden="true" src="/themes/contrib/hubs2/package/dist/img/us_flag_small.png" alt="">
+        </div>
+        <div class="grid-col-fill tablet:grid-col-auto" aria-hidden="true">
+          <p class="usa-banner__header-text">An official website of the United States government</p>
+          <p class="usa-banner__header-action" aria-hidden="true">Here's how you know</p>
+        </div>
+        <button type="button" class="usa-accordion__button usa-banner__button" aria-expanded="false" aria-controls="gov-banner">
+          <span class="usa-banner__button-text">Here's how you know</span>
+        </button>
+      </div>
+    </header>
+    <div class="usa-banner__content usa-accordion__content" id="gov-banner" hidden="">
+      <div class="grid-row grid-gap-lg">
+        <div class="usa-banner__guidance tablet:grid-col-6">
+          <img class="usa-banner__icon usa-media-block__img" src="/themes/contrib/hubs2/package/dist/img/icon-dot-gov.svg" alt="Dot gov">
+          <div class="usa-media-block__body">
+            <p>
+              <strong>Official websites use .gov</strong>
+              <br>
+              A <strong>.gov</strong> website belongs to an official government organization in the United States.
+            </p>
+          </div>
+        </div>
+        <div class="usa-banner__guidance tablet:grid-col-6">
+          <img class="usa-banner__icon usa-media-block__img" src="/themes/contrib/hubs2/package/dist/img/icon-https.svg" alt="Https">
+          <div class="usa-media-block__body">
+            <p>
+              <strong>Secure .gov websites use HTTPS</strong>
+              <br>
+              A <strong>lock</strong> (   <span class="icon-lock">
+    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="64" viewBox="0 0 52 64" class="usa-banner__lock-image" role="img" aria-labelledby="banner-lock-description" focusable="false">
+      <title id="banner-lock-title">Lock</title>
+      <desc id="banner-lock-description">Locked padlock</desc>
+      <path fill="#000000" fill-rule="evenodd" d="M26 0c10.493 0 19 8.507 19 19v9h3a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V32a4 4 0 0 1 4-4h3v-9C7 8.507 15.507 0 26 0zm0 8c-5.979 0-10.843 4.77-10.996 10.712L15 19v9h22v-9c0-6.075-4.925-11-11-11z"/>
+    </svg>
+  </span>
+ ) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </section>
+  
+<div class="usa-overlay"></div>
+
+  <header class="usa-header usa-header--extended" id="header" role="banner">
+
+  
+  
+    <div class="region region-header usa-navbar">
+    <div class="usa-logo site-logo" id="logo">
+
+  <em class="usa-logo__text">
+      <a class="logo-img" href="/" accesskey="1" title="Home" aria-label="Home">
+      <img src="/sites/default/files/climatehubs_sm.png" alt="Home" />
+    </a>
+  
+  
+    </em>
+
+</div>
+<button class="usa-menu-btn" type="button">Menu</button>
+
+</div>
+
+
+    <nav class="usa-nav" role="navigation">
+            <div class="usa-nav__inner">
+        
+        <button class="usa-nav__close">
+          <img src="/themes/contrib/hubs2/package/dist/img/close.svg" alt="close"/>
+        </button>
+
+        
+        
+                      <div id="block-usasearchblock" class="settings-tray-editable block block-block-content block-block-content:d9fc3f39-8f92-4898-85f9-73b4dea48a52" data-drupal-settingstray="editable">
+  
+    
+      
+            <div class="field__item"><form class="usa-search usa-search--small" action="/search-view" method="get" id="views-exposed-form-search-view-page-1" accept-charset="UTF-8">
+<div role="search">
+<label class="usa-sr-only" for="header-search">Search USDA Climate Hubs</label>
+ <input  id="header-search" placeholder="Search Climate Hubs" data-drupal-selector="edit-search-api-fulltext" type="search" name="search_api_fulltext" tabindex="0" />
+  
+                   
+          <button type="submit">
+            <span class="usa-sr-only">Search</span>
+      <img
+        src="https://designsystem.digital.gov/assets/img/usa-icons-bg/search--white.svg"
+        class="usa-search__submit-icon"
+        alt=""
+      />
+          </button>
+</div>
+</form></div>
+      
+  </div>
+  
+          
+  
+  
+  
+          <ul class="usa-nav__primary usa-accordion">
+    
+                        
+                    
+      
+              <li class="usa-nav__primary-item">
+      
+              <button type="button" class="usa-accordion__button usa-nav__link " aria-expanded="false" aria-controls="basic-nav-section-1">
+          <span class="white-icon">Hubs</span>
+        </button>
+      
+                
+          
+  
+  
+  
+          <ul id="basic-nav-section-1" class="usa-nav__submenu" hidden="">
+
+          
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/california" class="link" data-drupal-link-system-path="node/55">          <span>California</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/caribbean" class="link" data-drupal-link-system-path="node/46">          <span>Caribbean</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/midwest" class="link" data-drupal-link-system-path="node/13">          <span>Midwest</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/northeast" class="link" data-drupal-link-system-path="node/34">          <span>Northeast</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/northern-forests" class="link" data-drupal-link-system-path="node/47">          <span>Northern Forests</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/northern-plains" class="link" data-drupal-link-system-path="node/12">          <span>Northern Plains</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/northwest" class="link" data-drupal-link-system-path="node/11">          <span>Northwest</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/southeast" class="link" data-drupal-link-system-path="node/30">          <span>Southeast</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/southern-plains" class="link" data-drupal-link-system-path="node/10">          <span>Southern Plains</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/southwest" class="link" data-drupal-link-system-path="node/29">          <span>Southwest</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/hubs/international" class="link" data-drupal-link-system-path="node/3721">          <span>International</span>
+        </a>
+              
+              </li>
+      
+    
+          </ul>
+    
+  
+
+      
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__primary-item">
+      
+              <button type="button" class="usa-accordion__button usa-nav__link " aria-expanded="false" aria-controls="basic-nav-section-2">
+          <span class="white-icon">Priorities</span>
+        </button>
+      
+                
+          
+  
+  
+  
+          <ul id="basic-nav-section-2" class="usa-nav__submenu" hidden="">
+
+          
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/priorities/climate-literacy-training" class="link" data-drupal-link-system-path="taxonomy/term/1192">          <span>Climate Literacy &amp; Training</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/priorities/climate-solutions" class="link" data-drupal-link-system-path="taxonomy/term/1193">          <span>Climate Solutions</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/priorities/climate-vulnerabilities" class="link" data-drupal-link-system-path="taxonomy/term/1194">          <span>Climate Vulnerabilities</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/agency" class="link" data-drupal-link-system-path="node/3699">          <span>Partnering Agencies</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/priorities/tribal-nations" class="link" data-drupal-link-system-path="taxonomy/term/1196">          <span>Tribal Nations</span>
+        </a>
+              
+              </li>
+      
+    
+          </ul>
+    
+  
+
+      
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__primary-item">
+      
+              <button type="button" class="usa-accordion__button usa-nav__link " aria-expanded="false" aria-controls="basic-nav-section-3">
+          <span class="white-icon">Topics</span>
+        </button>
+      
+                
+          
+  
+  
+  
+          <ul id="basic-nav-section-3" class="usa-nav__submenu" hidden="">
+
+          
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/taxonomy/term/504" class="link" data-drupal-link-system-path="taxonomy/term/504">          <span>Greenhouse Gases</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/topics/pollinators" class="link" data-drupal-link-system-path="taxonomy/term/1017">          <span>Pollinators</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/animals" class="link" data-drupal-link-system-path="taxonomy/term/29">          <span>Animals</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/bioenergy" class="link" data-drupal-link-system-path="taxonomy/term/42">          <span>Bioenergy</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/carbon-greenhouse-gases" class="link" data-drupal-link-system-path="taxonomy/term/397">          <span>Carbon &amp; Greenhouse Gases</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/climate-science" class="link" data-drupal-link-system-path="taxonomy/term/386">          <span>Climate Science</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/crops" class="link" data-drupal-link-system-path="taxonomy/term/45">          <span>Crops</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/climate-impacts/disturbances" class="link" data-drupal-link-system-path="taxonomy/term/75">          <span>Disturbances</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/economics" class="link" data-drupal-link-system-path="taxonomy/term/164">          <span>Economics</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/education" class="link" data-drupal-link-system-path="taxonomy/term/852">          <span>Education (K-12)</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/climate-impacts/extreme-weather" class="link" data-drupal-link-system-path="taxonomy/term/402">          <span>Extreme Weather</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/forests-woodlands" class="link" data-drupal-link-system-path="taxonomy/term/57">          <span>Forests &amp; Woodlands</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/grazing-lands" class="link" data-drupal-link-system-path="taxonomy/term/65">          <span>Grazing Lands</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/rural-urban-communities" class="link" data-drupal-link-system-path="taxonomy/term/392">          <span>Rural &amp; Urban Communities</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/climate-impacts/growing-season" class="link" data-drupal-link-system-path="taxonomy/term/73">          <span>Seasonal Shifts</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/soil" class="link" data-drupal-link-system-path="taxonomy/term/396">          <span>Soil</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/commodity/water" class="link" data-drupal-link-system-path="taxonomy/term/387">          <span>Water</span>
+        </a>
+              
+              </li>
+      
+    
+          </ul>
+    
+  
+
+      
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__primary-item">
+      
+              <button type="button" class="usa-accordion__button usa-nav__link " aria-expanded="false" aria-controls="basic-nav-section-4">
+          <span class="white-icon">Actions &amp; Resources</span>
+        </button>
+      
+                
+          
+  
+  
+  
+          <ul id="basic-nav-section-4" class="usa-nav__submenu" hidden="">
+
+          
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/actions-and-resources/assessments" class="link" data-drupal-link-system-path="taxonomy/term/76">          <span>Assessments</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/actions-and-resources/climate-literacy-training" class="link" data-drupal-link-system-path="taxonomy/term/1203">          <span>Climate Literacy &amp; Training</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/actions-and-resources/demonstrations" class="link" data-drupal-link-system-path="taxonomy/term/89">          <span>Demonstrations</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/actions-resources/emergency-resources" class="link" data-drupal-link-system-path="taxonomy/term/408">          <span>Emergency Resources</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/actions-and-resources/management-actions" class="link" data-drupal-link-system-path="taxonomy/term/80">          <span>Management Actions</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/actions-and-resources/programs" class="link" data-drupal-link-system-path="actions-and-resources/programs">          <span>Programs</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/actions-and-resources/research-data" class="link" data-drupal-link-system-path="taxonomy/term/382">          <span>Research &amp; Data</span>
+        </a>
+              
+              </li>
+      
+                        
+                    
+      
+              <li class="usa-nav__submenu-item">
+      
+      
+              
+        
+                        <a href="/tools/all" class="link" data-drupal-link-system-path="tools/all">          <span>Tools</span>
+        </a>
+              
+              </li>
+      
+    
+          </ul>
+    
+  
+
+      
+              </li>
+      
+    
+          </ul>
+    
+  
+
+
+
+
+
+          
+                      <div class="usa-nav__secondary">
+  
+    
+    <ul class="usa-nav__secondary-links">
+
+      
+                                
+                          
+        
+                <li class="usa-nav__secondary-item">
+          <a href="/about-us" title="" class="link" data-drupal-link-system-path="node/62">About Us</a>
+        </li>
+                                
+                          
+        
+                <li class="usa-nav__secondary-item">
+          <a href="/contact" title="" class="link" data-drupal-link-system-path="node/1">Contact Us</a>
+        </li>
+                                
+                          
+        
+                <li class="usa-nav__secondary-item">
+          <a href="/newsletter-signup" class="link" data-drupal-link-system-path="node/283">Newsletter</a>
+        </li>
+      
+    </ul>
+  
+
+
+
+
+</div>
+
+          
+          
+              </div>
+          </nav>
+
+    
+</header>
+
+
+      <section class="usa-hero">
+      <div class="grid-container">
+        <div class="usa-hero__callout">
+  <div class="views-element-container settings-tray-editable block block-views block-views-block:front-featured-content-block-1" id="block-views-block-front-featured-content-block-1" data-drupal-settingstray="editable">
+  
+    
+      <div><div class="js-view-dom-id-d86aacde3de1b7b8f436c172d0c4e5b2d1329101d107b34ebaba514f18604aa7">
+  
+  
+  
+
+  
+  
+  
+
+      <div class="views-row"><div class="views-field views-field-field-image-caption"><div class="field-content"><div class="usa-grid-full">
+<div class="usa-hero-callout usa-section-light">
+<h1 class="usa-hero-title"><a href="/10-yr-anniversary" hreflang="en">10 years of USDA Climate Hubs</a></h1>
+<p>During the past decade the Climate Hubs have grown and expanded their collaborative efforts, enabling more climate-informed decision making and assistance in implementing those decisions.</p>
+<a href="/10-yr-anniversary" class="usa-button">Read More</a>
+</div>
+</div></div></div><div class="views-field views-field-field-topic-image"><div class="field-content"></div></div></div>
+
+    
+
+  
+  
+
+  
+  
+</div>
+</div>
+
+  </div>
+
+</div>
+
+      </div>
+    </section>
+  
+  <main class="main-content usa-layout-docs usa-section " role="main"
+        id="main-content">
+    <a id="main-content" tabindex="-1"></a>
+    <div class="grid-container">
+
+                        <div class="grid-row">
+            
+          </div>
+        
+                  <div class="">
+            <div data-drupal-messages-fallback class="hidden"></div>
+
+
+          </div>
+        
+                      
+      <div class="grid-row grid-gap">
+        
+                  <div class="usa-layout-docs__main desktop:grid-col-fill">
+                <div class="views-element-container settings-tray-editable block block-views block-views-block:block-feature-block-1" id="block-hubs2-views-block-block-feature-block-1" data-drupal-settingstray="editable">
+  
+    
+      <div><div class="js-view-dom-id-52eeeae95a9a47153d0a92aa6b131ade8d6ff0cb1b6a622af341550f616a6fbb">
+  
+  
+  
+
+      <header>
+      <div class="usa-grid">
+<h2>Featured</h2>
+<hr>
+</div>
+    </header>
+  
+  
+  
+
+  <div class="views-view-grid horizontal cols-3 clearfix">
+            <div class="grid-row grid-gap">
+                  <div class="tablet:grid-col-4"><div class="views-field views-field-title"><span class="field-content"><ul class="usa-card-group">
+  <li class="usa-card">
+    <div class="usa-card__container">
+      <header class="usa-card__header">
+        <h3 class="usa-card__heading"><a href="/hubs/northern-forests/topic/fire-management-adaptation-menu" hreflang="en">Fire Management Adaptation Menu</a></h3>
+      </header>
+      <div class="usa-card__media">
+        <div class="usa-card__img">
+            <a href="/hubs/northern-forests/topic/fire-management-adaptation-menu">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/brush_pile_fire_0.jpg?itok=CbFgT9bs 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/brush_pile_fire_0.jpg?itok=CbFgT9bs" alt="brush pile fire at night" />
+
+</a>
+
+        </div>
+      </div>
+      <div class="usa-card__body">
+        <p>
+          Climate change presents new challenges for managing wildland fires in fire-adapted ecosystems and near the Wildland Urban…
+        </p>
+      </div>
+    </div>
+  </li>
+</ul></span></div></div>
+                  <div class="tablet:grid-col-4"><div class="views-field views-field-title"><span class="field-content"><ul class="usa-card-group">
+  <li class="usa-card">
+    <div class="usa-card__container">
+      <header class="usa-card__header">
+        <h3 class="usa-card__heading"><a href="/dealing-drought" hreflang="und">Dealing with Drought</a></h3>
+      </header>
+      <div class="usa-card__media">
+        <div class="usa-card__img">
+            <a href="/dealing-drought">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/5954768061_02fe130961_o.jpg?itok=go06NtSJ 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/5954768061_02fe130961_o.jpg?itok=go06NtSJ" alt="" />
+
+</a>
+
+        </div>
+      </div>
+      <div class="usa-card__body">
+        <p>
+          Two ranchers walk across the parched dried soil where weeds provide the only color from the grays and browns of baked soil and…
+        </p>
+      </div>
+    </div>
+  </li>
+</ul></span></div></div>
+                  <div class="tablet:grid-col-4"><div class="views-field views-field-title"><span class="field-content"><ul class="usa-card-group">
+  <li class="usa-card">
+    <div class="usa-card__container">
+      <header class="usa-card__header">
+        <h3 class="usa-card__heading"><a href="/hubs/southeast/topic/hurricane-preparation-and-recovery-southeast-us" hreflang="en">Hurricane Preparation and Recovery Commodity Guides</a></h3>
+      </header>
+      <div class="usa-card__media">
+        <div class="usa-card__img">
+            <a href="/hubs/southeast/topic/hurricane-preparation-and-recovery-southeast-us">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/Hurricane%20Humberto_NOAA%20clipped%20for%20web%20site.jpg?itok=rhyp8p9U 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/Hurricane%20Humberto_NOAA%20clipped%20for%20web%20site.jpg?itok=rhyp8p9U" alt="Hurricane Humberto approaching the US east coast in 2007" />
+
+</a>
+
+        </div>
+      </div>
+      <div class="usa-card__body">
+        <p>
+          People who live and work in the Southeastern United States are unfortunately familiar with the devastation and loss of life and…
+        </p>
+      </div>
+    </div>
+  </li>
+</ul></span></div></div>
+              </div>
+      </div>
+
+    
+
+  
+  
+
+  
+  
+</div>
+</div>
+
+  </div>
+<div class="views-element-container settings-tray-editable block block-views block-views-block:events-front-home-page-block-1" id="block-hubs2-views-block-events-front-home-page-block-1" data-drupal-settingstray="editable">
+  
+    
+      <div><div class="js-view-dom-id-dad9e07f9681f2d40466d2674ddf4066337ca0d69759d68e32f1d043c6983a3a">
+  
+  
+  
+
+  
+  
+  
+
+    
+
+  
+  
+
+  
+  
+</div>
+</div>
+
+  </div>
+<div id="block-hubs2-climatehubs-system-main" class="block block-system block-system-main-block">
+  
+    
+      <article data-history-node-id="59">
+
+  
+    
+
+  
+  <div>
+    
+  </div>
+
+</article>
+
+  </div>
+<div class="views-element-container settings-tray-editable block block-views block-views-block:recent-additions-home-page-block-1" id="block-views-block-recent-additions-home-page-block-1" data-drupal-settingstray="editable">
+  
+    
+      <div><div class="js-view-dom-id-5b8b51cb74fb50e34e3380d0196581e9e2382251276348bf999c7dabaa9f93e7">
+  
+  
+  
+
+      <header>
+      <h2>Recent Additions</h2>
+    </header>
+  
+  
+  
+
+  <div class="views-view-grid horizontal cols-4 clearfix">
+            <div class="grid-row grid-gap">
+                  <div class="tablet:grid-col-3"><li class="usa-collection__item">
+<div class="usa-collection__body">
+<div class="grid-card__img">
+  <a href="/hubs/northwest/topic/carbon-management-northwest-agriculture">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/WheatSoil_AdobeStock.jpeg?itok=k4BlC5oJ 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/WheatSoil_AdobeStock.jpeg?itok=k4BlC5oJ" alt="Wheat seedlings emerge from soil in a sunlit field." />
+
+</a>
+ </div>
+<ul class="usa-collection__meta" aria-label="More information"><li class="usa-collection__meta-item">
+<a class="usa-collection__meta-item usa-tag"> Northwest</a>    </li> 
+</ul>
+      <h3 class="usa-collection__heading">
+<a href="/hubs/northwest/topic/carbon-management-northwest-agriculture" hreflang="en">Carbon Management in Northwest Agriculture</a></h3>
+    </div>
+</li></div>
+                  <div class="tablet:grid-col-3"><li class="usa-collection__item">
+<div class="usa-collection__body">
+<div class="grid-card__img">
+  <a href="/hubs/southwest/topic/usda-southwest-climate-hub-fy24-annual-report">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/2024_OnRanchDemoSD_Sunset.jpg?itok=aK-6vxR3 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/2024_OnRanchDemoSD_Sunset.jpg?itok=aK-6vxR3" alt="2024 On Ranch Demo in SD" />
+
+</a>
+ </div>
+<ul class="usa-collection__meta" aria-label="More information"><li class="usa-collection__meta-item">
+<a class="usa-collection__meta-item usa-tag"> Southwest</a>    </li> 
+</ul>
+      <h3 class="usa-collection__heading">
+<a href="/hubs/southwest/topic/usda-southwest-climate-hub-fy24-annual-report" hreflang="en">USDA Southwest Climate Hub FY24 Annual Report</a></h3>
+    </div>
+</li></div>
+                  <div class="tablet:grid-col-3"><li class="usa-collection__item">
+<div class="usa-collection__body">
+<div class="grid-card__img">
+  <a href="/hubs/southwest/topic/tribal-ecological-knowledge-informs-revegetation-strategy">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/reveg_image_cvrcap_1.png?itok=F4_c-mON 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/reveg_image_cvrcap_1.png?itok=F4_c-mON" alt="Green shrubs of medium size grow in a flat, cold-desert style landscape, with some unvegetated patches between shrubs." />
+
+</a>
+ </div>
+<ul class="usa-collection__meta" aria-label="More information"><li class="usa-collection__meta-item">
+<a class="usa-collection__meta-item usa-tag"> Southwest</a>    </li> 
+</ul>
+      <h3 class="usa-collection__heading">
+<a href="/hubs/southwest/topic/tribal-ecological-knowledge-informs-revegetation-strategy" hreflang="en">Tribal Ecological Knowledge Informs Revegetation Strategy</a></h3>
+    </div>
+</li></div>
+                  <div class="tablet:grid-col-3"><li class="usa-collection__item">
+<div class="usa-collection__body">
+<div class="grid-card__img">
+  <a href="/hubs/southwest/topic/new-climate-projections-released-tribal-lands">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/NCProjections2.png?itok=CC-Ttacc 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/NCProjections2.png?itok=CC-Ttacc" alt="Graph with a black line representing average temperature since 1950 to present and four diverging lines of varying colors representing projected temperature pathways based on varying emissions scenarios." />
+
+</a>
+ </div>
+<ul class="usa-collection__meta" aria-label="More information"><li class="usa-collection__meta-item">
+<a class="usa-collection__meta-item usa-tag"> Southwest</a>    </li> 
+</ul>
+      <h3 class="usa-collection__heading">
+<a href="/hubs/southwest/topic/new-climate-projections-released-tribal-lands" hreflang="en">New Climate Projections Released for Tribal Lands</a></h3>
+    </div>
+</li></div>
+              </div>
+          <div class="grid-row grid-gap">
+                  <div class="tablet:grid-col-3"><li class="usa-collection__item">
+<div class="usa-collection__body">
+<div class="grid-card__img">
+  <a href="/hubs/northeast/topic/new-study-pennsylvania-indicates-extreme-short-duration-rainfall-events-spring">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/53212652837_399fea432f_k.jpg?itok=6tQuDzZc 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/53212652837_399fea432f_k.jpg?itok=6tQuDzZc" alt="Mahantango Boat Access     Hoffer Creek entering the Susquehanna River     This image was collected as part of the Headwaters to Estuaries: Western PA connecting to the Bay project, which was made possible through the partnership between the NOAA Chesapeake Bay Watershed Education &amp; Training Program and Saint Francis University." />
+
+</a>
+ </div>
+<ul class="usa-collection__meta" aria-label="More information"><li class="usa-collection__meta-item">
+<a class="usa-collection__meta-item usa-tag"> Northeast</a>    </li> 
+</ul>
+      <h3 class="usa-collection__heading">
+<a href="/hubs/northeast/topic/new-study-pennsylvania-indicates-extreme-short-duration-rainfall-events-spring" hreflang="en">Extreme Short-duration Rainfall Events in Spring Growing Larger and Happening More Often</a></h3>
+    </div>
+</li></div>
+                  <div class="tablet:grid-col-3"><li class="usa-collection__item">
+<div class="usa-collection__body">
+<div class="grid-card__img">
+  <a href="/hubs/northeast/news/continuity-and-commitment-usda-northeast-climate-hub-announces-new-director">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/53215591550_8b2ec5b9bf_k.jpg?itok=LStDHrWO 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/53215591550_8b2ec5b9bf_k.jpg?itok=LStDHrWO" alt="Pictured are privately owned forest stands in northern Vermont.  (USDA Forest Service photo by Korey Morgan)" title="Pictured are privately owned forest stands in northern Vermont.  (USDA Forest Service photo by Korey Morgan)" />
+
+</a>
+ </div>
+<ul class="usa-collection__meta" aria-label="More information"><li class="usa-collection__meta-item">
+<a class="usa-collection__meta-item usa-tag"> Northeast</a>    </li> 
+</ul>
+      <h3 class="usa-collection__heading">
+<a href="/hubs/northeast/news/continuity-and-commitment-usda-northeast-climate-hub-announces-new-director" hreflang="en">Continuity and Commitment: USDA Northeast Climate Hub Announces New Director</a></h3>
+    </div>
+</li></div>
+                  <div class="tablet:grid-col-3"><li class="usa-collection__item">
+<div class="usa-collection__body">
+<div class="grid-card__img">
+  <a href="/hubs/southwest/topic/building-resilience-through-resource-management-hawaii-us-pacific-islands">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/cnmi_main.jpg?itok=ui_lDoLd 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/cnmi_main.jpg?itok=ui_lDoLd" alt="Verdant landscape with mountains in the distance under a blue sky with clouds. A small white sign identifies a research plot in the foreground." />
+
+</a>
+ </div>
+<ul class="usa-collection__meta" aria-label="More information"><li class="usa-collection__meta-item">
+<a class="usa-collection__meta-item usa-tag"> Southwest</a>    </li> 
+</ul>
+      <h3 class="usa-collection__heading">
+<a href="/hubs/southwest/topic/building-resilience-through-resource-management-hawaii-us-pacific-islands" hreflang="en">Building Resilience Through Resource Management in Hawaiʻi &amp; US Pacific Islands</a></h3>
+    </div>
+</li></div>
+                  <div class="tablet:grid-col-3"><li class="usa-collection__item">
+<div class="usa-collection__body">
+<div class="grid-card__img">
+  <a href="/hubs/southwest/topic/southwestern-drought-seen-pasture-rangeland-and-forage-insurance-program">  <img loading="eager" srcset="/sites/default/files/styles/wide_article_ratio/public/Criollos_on_rangeland.jpg?itok=t0Xx5-39 1x" width="600" height="353" src="/sites/default/files/styles/wide_article_ratio/public/Criollos_on_rangeland.jpg?itok=t0Xx5-39" alt="Criollo cattle grazing on rangelands in the Chihuahuan Desert" />
+
+</a>
+ </div>
+<ul class="usa-collection__meta" aria-label="More information"><li class="usa-collection__meta-item">
+<a class="usa-collection__meta-item usa-tag"> Southwest</a>    </li> 
+</ul>
+      <h3 class="usa-collection__heading">
+<a href="/hubs/southwest/topic/southwestern-drought-seen-pasture-rangeland-and-forage-insurance-program" hreflang="en">Southwestern Drought Seen in Pasture, Rangeland, and Forage Insurance Program</a></h3>
+    </div>
+</li></div>
+              </div>
+      </div>
+
+    
+
+  
+  <div class="more-link"><a href="/national/recent-additions">View All</a></div>
+
+
+  
+  
+</div>
+</div>
+
+  </div>
+
+
+          </div>        
+              </div>
+    </div>
+  </main>
+
+  <footer class="usa-footer usa-footer--medium" role="contentinfo">
+    <div class="grid-container usa-footer__return-to-top">
+      <a href="#">Return to top</a>
+    </div>
+
+          <div class="usa-footer__primary-section">
+
+        <div class="usa-footer__primary-content">
+          
+              
+              
+              
+                      <div class="grid-container">
+              <div class="grid-row grid-gap">
+                <div class="grid-col-fill">
+                    <div>
+    <div id="block-hubs2-footerbuttons" class="settings-tray-editable block block-block-content block-block-content:d56b93f0-7b49-4c2c-abdd-49be14e5c9cf" data-drupal-settingstray="editable">
+  
+    
+      
+            <div class="field__item"><p></p><br />
+<div class="grid-row grid-gap">
+  <div class="tablet:grid-col-3"><a class="usa-button footer-button" href="/contact">CONTACT US</a></div>
+  <div class="tablet:grid-col-3"><a class="usa-button footer-button" href="/about">ABOUT US</a></div>
+  <div class="tablet:grid-col-3"><a class="usa-button footer-button" href="/newsletter-signup">NEWSLETTER</a></div>
+  <div class="tablet:grid-col-3"><a class="usa-button footer-button" href="https://www.usda.gov">USDA HOME</a></div>
+</div></div>
+      
+  </div>
+<div id="block-hubs2-bottomnavigationlinks" class="settings-tray-editable block block-block-content block-block-content:3010c960-d53b-43d1-9bd9-a836f5901662" data-drupal-settingstray="editable">
+  
+    
+      
+            <div class="field__item"><div class="grid-row grid-gap">
+    <div class="tablet:grid-col-3">
+      <h4>About the Site</h4>
+     <a href="http://www.usda.gov/wps/portal/usda/usdahome?navtype=FT&navid=POLICY_LINK">Web Policies</a><br />
+     <a href="http://www.dm.usda.gov/privacy/index.htm">Privacy</a><br />
+     <a href="http://www.usda.gov/open">Open Gov</a><br />
+     <a href="http://www.usda.gov/wps/portal/usda/usdahome?navtype=FT&navid=ACCESSIBILITY_STATEM">Accessibility</a>
+    </div>
+<div class="tablet:grid-col-3">
+      <h4>Hubs</h4>
+       <a href="/hubs/california">California</a><br />
+       <a href="/hubs/caribbean">Caribbean</a><br />
+       <a href="/hubs/midwest">Midwest</a><br />
+       <a href="/hubs/northeast">Northeast</a><br />
+       <a href="/hubs/northern-forests">Northern Forests</a><br />
+       <a href="/hubs/northern-plains">Northern Plains</a><br />
+       <a href="/hubs/northwest">Northwest</a><br />
+       <a href="/hubs/southeast">Southeast</a><br />
+       <a href="/hubs/southern-plains">Southern Plains</a><br />
+       <a href="/hubs/southwest">Southwest</a><br />
+       <a href="/hubs/international">International</a>
+    </div>
+<div class="tablet:grid-col-3">
+      <h4>Participate</h4>
+      <a href="https://twitter.com/USDAClimateHubs">Follow Us on Twitter</a><br />
+      <a href="/tools/all">Tools</a><br />
+      <h4>Reporting</h4>
+      <a href="/climate-hub-quarterly-reporting">Quarterly Reports</a><br />
+    </div>
+<div class="tablet:grid-col-3">
+      <h4>Federal Government</h4>
+      <a href="http://www.whitehouse.gov/">The White House</a><br />
+      <a href="http://www.usa.gov/">USA.gov</a><br />
+      <a href="http://www.usda.gov/">USDA.gov</a>
+    </div>
+</div>
+<br /></div>
+      
+  </div>
+
+  </div>
+
+                </div>
+              </div>
+            </div>
+                  </div>
+
+      </div>
+    
+          <div class="usa-footer__secondary-section">
+        <div class="grid-container">
+          <div class="grid-row grid-gap">
+            
+                      <div class="grid-container">
+              <div class="grid-row grid-gap">
+                <div class="grid-col-fill">
+                    <div>
+    <div id="block-hubs2-climatehubs-block-9" class="settings-tray-editable block block-block-content block-block-content:e8ab3d35-db3a-4278-a3ea-866403b407b6" data-drupal-settingstray="editable">
+  
+    
+      
+            <div class="field__item"><div class="bottomlinks" align="center" style="font-size:1.4rem;">
+<hr /><h6><strong><a href="http://www.usda.gov/">USDA.gov</a> | <a href="http://www.usda.gov/wps/portal/usda/usdahome?navtype=FT&amp;navid=POLICY_LINK">Policies &amp; Links</a> | <a href="http://www.usda.gov/wps/portal/usda/usdahome?navid=PERFORMANCE_IMP">Our Performance</a> | <a href="http://www.usda.gov/oig/contractorform.htm">Report Fraud on USDA Contracts</a> | <a href="http://www.usda.gov/oig/index.htm" target="_top">Visit OIG</a> | <a href="http://www.usda.gov/wps/portal/usda/usdahome?navid=PLAIN_WRITING">Plain Writing </a> | <a href="http://www.usda.gov/open">Open Gov</a> | <a href="http://www.dm.usda.gov/foia/index.htm" target="_top">FOIA</a> | <a href="http://www.usda.gov/wps/portal/usda/usdahome?navtype=FT&amp;navid=ACCESSIBILITY_STATEM">Accessibility Statement</a> <a href="http://www.dm.usda.gov/privacy/index.htm">Privacy Policy</a> | <a href="https://www.usda.gov/oascr/civil-rights-statements">Civil Rights Statements </a> | <a href="http://www.usda.gov/wps/portal/usda/usdahome?navtype=FT&amp;navid=NON_DISCRIMINATION">Non-Discrimination Statement</a> | <a href="http://www.ocio.usda.gov/qi_guide/index.html" target="_top">Information Quality</a> | <a href="http://www.usa.gov" target="_top">USA.gov</a> | <a href="http://www.whitehouse.gov" target="_top">Whitehouse.gov</a></strong></h6></div>
+</div>
+      
+  </div>
+
+  </div>
+
+                </div>
+              </div>
+            </div>
+                  </div>
+      </div>
+    
+  </footer>
+
+</div>
+<div class="off-canvas-wrapper"><div id="off-canvas">
+              <ul>
+                    <li class="menu-item--_aef8d3c-0e72-4045-a505-21dce39890b4 menu-name--main">
+        <span>Hubs</span>
+                                <ul>
+                    <li class="menu-item--b412b2ae-33aa-4995-a760-a3a8d49c251b menu-name--main">
+        <a href="/hubs/california" data-drupal-link-system-path="node/55">California</a>
+              </li>
+                <li class="menu-item--e290c96d-911c-4ffd-a81e-8f0c3aa5ab41 menu-name--main">
+        <a href="/hubs/caribbean" data-drupal-link-system-path="node/46">Caribbean</a>
+              </li>
+                <li class="menu-item--fcf6d775-a92a-485a-ba85-b88302326848 menu-name--main">
+        <a href="/hubs/midwest" data-drupal-link-system-path="node/13">Midwest</a>
+              </li>
+                <li class="menu-item--_80a0e38-add9-463c-a86e-7c223f25abaf menu-name--main">
+        <a href="/hubs/northeast" data-drupal-link-system-path="node/34">Northeast</a>
+              </li>
+                <li class="menu-item--_d5f311b-9839-4487-9941-44ee1e6497d1 menu-name--main">
+        <a href="/hubs/northern-forests" data-drupal-link-system-path="node/47">Northern Forests</a>
+              </li>
+                <li class="menu-item--_f3d52ac-6d5e-4c92-a28a-d5536e41d184 menu-name--main">
+        <a href="/hubs/northern-plains" data-drupal-link-system-path="node/12">Northern Plains</a>
+              </li>
+                <li class="menu-item--fae61abd-613c-4a9a-bb44-51911dbfeeab menu-name--main">
+        <a href="/hubs/northwest" data-drupal-link-system-path="node/11">Northwest</a>
+              </li>
+                <li class="menu-item--_24de650-fcc7-40ca-87bb-d2613aee1cd8 menu-name--main">
+        <a href="/hubs/southeast" data-drupal-link-system-path="node/30">Southeast</a>
+              </li>
+                <li class="menu-item--_23952d4-35d4-4bb7-b730-09ce66771238 menu-name--main">
+        <a href="/hubs/southern-plains" data-drupal-link-system-path="node/10">Southern Plains</a>
+              </li>
+                <li class="menu-item--_c4a8dae-9c6d-417d-b49b-0d05e9574c0b menu-name--main">
+        <a href="/hubs/southwest" data-drupal-link-system-path="node/29">Southwest</a>
+              </li>
+                <li class="menu-item--_1cb5f9e-c1a1-4395-be7f-021952fb011e menu-name--main">
+        <a href="/hubs/international" data-drupal-link-system-path="node/3721">International</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--_dcb5a7f-0386-4935-9d2d-c62321fdf689 menu-name--main">
+        <span>Priorities</span>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linkpriorities1192 menu-name--main">
+        <a href="/priorities/climate-literacy-training" data-drupal-link-system-path="taxonomy/term/1192">Climate Literacy &amp; Training</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkpriorities1193 menu-name--main">
+        <a href="/priorities/climate-solutions" data-drupal-link-system-path="taxonomy/term/1193">Climate Solutions</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkpriorities1194 menu-name--main">
+        <a href="/priorities/climate-vulnerabilities" data-drupal-link-system-path="taxonomy/term/1194">Climate Vulnerabilities</a>
+              </li>
+                <li class="menu-item--_b8a63fd-10ef-44c6-aa35-7781bd20a174 menu-name--main">
+        <a href="/agency" data-drupal-link-system-path="node/3699">Partnering Agencies</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkpriorities1196 menu-name--main">
+        <a href="/priorities/tribal-nations" data-drupal-link-system-path="taxonomy/term/1196">Tribal Nations</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--_cfad9ca-6f86-442a-901e-c3bf45cb8aca menu-name--main">
+        <span>Topics</span>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics504 menu-name--main">
+        <a href="/taxonomy/term/504" data-drupal-link-system-path="taxonomy/term/504">Greenhouse Gases</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics1017 menu-name--main">
+        <a href="/topics/pollinators" data-drupal-link-system-path="taxonomy/term/1017">Pollinators</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics29 menu-name--main">
+        <a href="/commodity/animals" data-drupal-link-system-path="taxonomy/term/29">Animals</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics30 menu-name--main">
+        <a href="/topics/aquaculture" data-drupal-link-system-path="taxonomy/term/30">Aquaculture</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics32 menu-name--main">
+        <a href="/topics/dairy" data-drupal-link-system-path="taxonomy/term/32">Dairy</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics31 menu-name--main">
+        <a href="/topics/livestock" data-drupal-link-system-path="taxonomy/term/31">Livestock</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics36 menu-name--main">
+        <a href="/topics/beef-cattle" data-drupal-link-system-path="taxonomy/term/36">Beef &amp; Cattle</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics37 menu-name--main">
+        <a href="/topics/hogs" data-drupal-link-system-path="taxonomy/term/37">Hogs</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics38 menu-name--main">
+        <a href="/topics/sheep-goats" data-drupal-link-system-path="taxonomy/term/38">Sheep &amp; Goats</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics33 menu-name--main">
+        <a href="/topics/poultry" data-drupal-link-system-path="taxonomy/term/33">Poultry</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics39 menu-name--main">
+        <a href="/topics/chicken" data-drupal-link-system-path="taxonomy/term/39">Chicken</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics41 menu-name--main">
+        <a href="/topics/ducks" data-drupal-link-system-path="taxonomy/term/41">Ducks</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics40 menu-name--main">
+        <a href="/topics/turkey" data-drupal-link-system-path="taxonomy/term/40">Turkey</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics34 menu-name--main">
+        <a href="/topics/specialty-animals" data-drupal-link-system-path="taxonomy/term/34">Specialty Animals</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics35 menu-name--main">
+        <a href="/topics/wildlife" data-drupal-link-system-path="taxonomy/term/35">Wildlife</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics42 menu-name--main">
+        <a href="/commodity/bioenergy" data-drupal-link-system-path="taxonomy/term/42">Bioenergy</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics1205 menu-name--main">
+        <a href="/topics/biochar" data-drupal-link-system-path="taxonomy/term/1205">Biochar</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics43 menu-name--main">
+        <a href="/topics/biofuel" data-drupal-link-system-path="taxonomy/term/43">Biofuel</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics44 menu-name--main">
+        <a href="/topics/biomass" data-drupal-link-system-path="taxonomy/term/44">Biomass</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics397 menu-name--main">
+        <a href="/commodity/carbon-greenhouse-gases" data-drupal-link-system-path="taxonomy/term/397">Carbon &amp; Greenhouse Gases</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics386 menu-name--main">
+        <a href="/commodity/climate-science" data-drupal-link-system-path="taxonomy/term/386">Climate Science</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics45 menu-name--main">
+        <a href="/commodity/crops" data-drupal-link-system-path="taxonomy/term/45">Crops</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics1204 menu-name--main">
+        <a href="/topics/aquaculture-crops" data-drupal-link-system-path="taxonomy/term/1204">Aquaculture</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics52 menu-name--main">
+        <a href="/commodity/specialty-crops" data-drupal-link-system-path="taxonomy/term/52">Specialty Crops</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics48 menu-name--main">
+        <a href="/commodity/fruits-nuts" data-drupal-link-system-path="taxonomy/term/48">Fruits &amp; Nuts</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics50 menu-name--main">
+        <a href="/commodity/horticulture-nursery" data-drupal-link-system-path="taxonomy/term/50">Horticulture &amp; Nursery</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics53 menu-name--main">
+        <a href="/commodity/vegetables" data-drupal-link-system-path="taxonomy/term/53">Vegetables</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics46 menu-name--main">
+        <a href="/commodity/field-crops" data-drupal-link-system-path="taxonomy/term/46">Field Crops</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics47 menu-name--main">
+        <a href="/commodity/forage" data-drupal-link-system-path="taxonomy/term/47">Forage</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics49 menu-name--main">
+        <a href="/commodity/grain" data-drupal-link-system-path="taxonomy/term/49">Grain</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics51 menu-name--main">
+        <a href="/commodity/other" data-drupal-link-system-path="taxonomy/term/51">Other</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts75 menu-name--main">
+        <a href="/climate-impacts/disturbances" data-drupal-link-system-path="taxonomy/term/75">Disturbances</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linkclimate-impacts401 menu-name--main">
+        <a href="/climate-impacts/erosion" data-drupal-link-system-path="taxonomy/term/401">Erosion</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts400 menu-name--main">
+        <a href="/taxonomy/term/400" data-drupal-link-system-path="taxonomy/term/400">Pests &amp; Disease</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts399 menu-name--main">
+        <a href="/taxonomy/term/399" data-drupal-link-system-path="taxonomy/term/399">Saltwater Intrusion</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts398 menu-name--main">
+        <a href="/taxonomy/term/398" data-drupal-link-system-path="taxonomy/term/398">Wildfire</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics164 menu-name--main">
+        <a href="/commodity/economics" data-drupal-link-system-path="taxonomy/term/164">Economics</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics852 menu-name--main">
+        <a href="/commodity/education" data-drupal-link-system-path="taxonomy/term/852">Education (K-12)</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts402 menu-name--main">
+        <a href="/climate-impacts/extreme-weather" data-drupal-link-system-path="taxonomy/term/402">Extreme Weather</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linkclimate-impacts507 menu-name--main">
+        <a href="/climate-impacts/drought" data-drupal-link-system-path="taxonomy/term/507">Drought</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts508 menu-name--main">
+        <a href="/taxonomy/term/508" data-drupal-link-system-path="taxonomy/term/508">Altered Precipitation</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts406 menu-name--main">
+        <a href="/taxonomy/term/406" data-drupal-link-system-path="taxonomy/term/406">Temperature</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts407 menu-name--main">
+        <a href="/taxonomy/term/407" data-drupal-link-system-path="taxonomy/term/407">Wind</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics57 menu-name--main">
+        <a href="/commodity/forests-woodlands" data-drupal-link-system-path="taxonomy/term/57">Forests &amp; Woodlands</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics58 menu-name--main">
+        <a href="/commodity/forests" data-drupal-link-system-path="taxonomy/term/58">Forests</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics60 menu-name--main">
+        <a href="/commodity/non-timber" data-drupal-link-system-path="taxonomy/term/60">Non-timber</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics59 menu-name--main">
+        <a href="/commodity/timber" data-drupal-link-system-path="taxonomy/term/59">Timber</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics61 menu-name--main">
+        <a href="/commodity/agroforestry" data-drupal-link-system-path="taxonomy/term/61">Agroforestry</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics65 menu-name--main">
+        <a href="/commodity/grazing-lands" data-drupal-link-system-path="taxonomy/term/65">Grazing Lands</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics66 menu-name--main">
+        <a href="/commodity/rangelands" data-drupal-link-system-path="taxonomy/term/66">Rangelands</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics67 menu-name--main">
+        <a href="/commodity/pasture" data-drupal-link-system-path="taxonomy/term/67">Pasture</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics392 menu-name--main">
+        <a href="/commodity/rural-urban-communities" data-drupal-link-system-path="taxonomy/term/392">Rural &amp; Urban Communities</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics393 menu-name--main">
+        <a href="/topics/food-security" data-drupal-link-system-path="taxonomy/term/393">Food Security</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics395 menu-name--main">
+        <a href="/taxonomy/term/395" data-drupal-link-system-path="taxonomy/term/395">Tribal Nations</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics165 menu-name--main">
+        <a href="/commodity/urban" data-drupal-link-system-path="taxonomy/term/165">Urban</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics166 menu-name--main">
+        <a href="/commodity/agriculture" data-drupal-link-system-path="taxonomy/term/166">Agriculture</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics167 menu-name--main">
+        <a href="/commodity/urban-forests" data-drupal-link-system-path="taxonomy/term/167">Forests</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkclimate-impacts73 menu-name--main">
+        <a href="/climate-impacts/growing-season" data-drupal-link-system-path="taxonomy/term/73">Seasonal Shifts</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics396 menu-name--main">
+        <a href="/commodity/soil" data-drupal-link-system-path="taxonomy/term/396">Soil</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics387 menu-name--main">
+        <a href="/commodity/water" data-drupal-link-system-path="taxonomy/term/387">Water</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linktopics389 menu-name--main">
+        <a href="/topics/watersheds" data-drupal-link-system-path="taxonomy/term/389">Watersheds</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics388 menu-name--main">
+        <a href="/taxonomy/term/388" data-drupal-link-system-path="taxonomy/term/388">Wetlands</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics390 menu-name--main">
+        <a href="/taxonomy/term/390" data-drupal-link-system-path="taxonomy/term/390">Riparian</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linktopics391 menu-name--main">
+        <a href="/taxonomy/term/391" data-drupal-link-system-path="taxonomy/term/391">Coastal</a>
+              </li>
+        </ul>
+  
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--ce5ee241-40cf-4080-a637-3b9bd8e11b57 menu-name--main">
+        <span>Actions &amp; Resources</span>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linkactions-resources76 menu-name--main">
+        <a href="/actions-and-resources/assessments" data-drupal-link-system-path="taxonomy/term/76">Assessments</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linkactions-resources78 menu-name--main">
+        <a href="/actions-and-resources/impact-assessment" data-drupal-link-system-path="taxonomy/term/78">Impact Assessment</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkactions-resources79 menu-name--main">
+        <a href="/actions-and-resources/vulnerability-assessment" data-drupal-link-system-path="taxonomy/term/79">Vulnerability Assessment</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkactions-resources1203 menu-name--main">
+        <a href="/actions-and-resources/climate-literacy-training" data-drupal-link-system-path="taxonomy/term/1203">Climate Literacy &amp; Training</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkactions-resources89 menu-name--main">
+        <a href="/actions-and-resources/demonstrations" data-drupal-link-system-path="taxonomy/term/89">Demonstrations</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkactions-resources408 menu-name--main">
+        <a href="/actions-resources/emergency-resources" data-drupal-link-system-path="taxonomy/term/408">Emergency Resources</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkactions-resources80 menu-name--main">
+        <a href="/actions-and-resources/management-actions" data-drupal-link-system-path="taxonomy/term/80">Management Actions</a>
+                                <ul>
+                    <li class="menu-item--taxonomy-menumenu-linkactions-resources90 menu-name--main">
+        <a href="/actions-and-resources/adaptation" data-drupal-link-system-path="taxonomy/term/90">Adaptation</a>
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkactions-resources91 menu-name--main">
+        <a href="/actions-and-resources/mitigation-opportunities" data-drupal-link-system-path="taxonomy/term/91">Mitigation</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--d8349313-7625-4165-b4e2-0a39219bc13b menu-name--main">
+        <a href="/actions-and-resources/programs" data-drupal-link-system-path="actions-and-resources/programs">Programs</a>
+                                <ul>
+                    <li class="menu-item--_b3e36ca-5c61-46a2-937e-48c708ffef7f menu-name--main">
+        <a href="/tribal-resources" data-drupal-link-system-path="actions-and-resources/tribal-programs">Tribal Programs</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--taxonomy-menumenu-linkactions-resources382 menu-name--main">
+        <a href="/actions-and-resources/research-data" data-drupal-link-system-path="taxonomy/term/382">Research &amp; Data</a>
+              </li>
+                <li class="menu-item--_eb65938-b35b-4336-b600-0fad8a830255 menu-name--main">
+        <a href="/tools/all" data-drupal-link-system-path="tools/all">Tools</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="menu-item--_b2f8d59-ce2e-4ee7-9b8e-d4307435a92b menu-name--menu-top-links">
+        <a href="/about-us" title="" data-drupal-link-system-path="node/62">About Us</a>
+              </li>
+                <li class="menu-item--_6056ea5-e17c-4bce-85c3-e3d7751a7d08 menu-name--menu-top-links">
+        <a href="/contact" title="" data-drupal-link-system-path="node/1">Contact Us</a>
+              </li>
+                <li class="menu-item--e6fd455d-3bdc-45c5-9370-17ce7b4770c8 menu-name--menu-top-links">
+        <a href="/newsletter-signup" data-drupal-link-system-path="node/283">Newsletter</a>
+              </li>
+        </ul>
+  
+
+</div></div>
+<script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"","currentPath":"node\/59","currentPathIsAdmin":false,"isFront":true,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"responsive_menu":{"position":"right","theme":"theme-dark","pagedim":"pagedim","modifyViewport":true,"use_bootstrap":false,"breakpoint":"all and (min-width: 851px)","drag":false},"fitvids":{"selectors":".node","custom_vendors":["iframe[src^=\u0022https:\/\/youtu.be\u0022]"],"ignore_selectors":""},"google_analytics":{"account":"G-PM493617DJ","trackOutbound":true,"trackMailto":true,"trackTel":true,"trackDownload":true,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip"},"simple_popup_blocks":{"settings":[{"uid":"hubs_survey","type":0,"css_selector":"1","identifier":"block-surveypopup","layout":"4","visit_counts":"1,7","overlay":"1","trigger_method":0,"trigger_selector":"#custom-css-id","delay":"3","enable_escape":"1","trigger_width":null,"minimize":false,"close":"1","use_time_frequency":false,"time_frequency":"3600","show_minimized_button":false,"width":"400","cookie_expiry":0,"status":"1"}]},"statistics":{"data":{"nid":"59"},"url":"\/modules\/contrib\/statistics\/statistics.php"},"user":{"uid":0,"permissionsHash":"3c09a953bddb654471ff2d7febce72d8ef9e51e26b3a2201ea3b83b59d6b758c"}}</script>
+<script src="/sites/default/files/js/js_QKT_Xk3FGYNkPREKA0rn5QAzCkybmj14th5sTlsP_A4.js?scope=footer&amp;delta=0&amp;language=en&amp;theme=hubs2&amp;include=eJx9j-GKAyEMhF9IFO6FxGq0oWsiTtxyb39Lu8eVUu7X5JuBZFLZdi4I9anu1MDC5qqKpTtBO4WX2WNv_2UeV-6uqbaNYpK0fRtnhHfDXdcFXyEBZL-wcC-IecG0u0kYKuCdYidZ4Y19VqncHLiPY-_QsUa8bJpvCB88B0vGeFQpc420-T_HnYdvVNh0RhajNo9U5eyUctZZDvZ1Hu-SlB9b634V"></script>
+<script src="/modules/contrib/uswds_ckeditor_integration/js/aftermarket/uswds_accordion.js?tikxsd"></script>
+
+</body>
+</html>
+
+
+WARC/1.0
+WARC-Date: 2026-07-22T14:25:07Z
+WARC-Type: request
+WARC-Record-ID: <urn:uuid:d3f158b5-5c6c-41db-9627-edb7fb33c594>
+WARC-Target-URI: https://www.climatehubs.usda.gov/
+WARC-Payload-Digest: sha1:3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ
+WARC-Block-Digest: sha1:TTDLCDPK2QNELT5OXLO456FHN5IQ7GYI
+Content-Type: application/http; msgtype=request
+Content-Length: 152
+
+GET / HTTP/1.1
+Host: www.climatehubs.usda.gov
+User-Agent: VerdererWatchdog/0.0 (+https://github.com/satchmakua/verderer) polite-archival-collector
+
+
+
