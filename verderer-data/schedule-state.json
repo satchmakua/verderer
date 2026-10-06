@@ -2,9 +2,9 @@
   "entries": [
     {
       "consecutive_failures": 0,
-      "last_run": 1791211202.178398,
+      "last_run": 1791267686.250677,
       "last_status": "unchanged",
-      "next_due": 1791256108.266087,
+      "next_due": 1791312090.0157123,
       "target_id": "epa-ghgrp"
     },
     {
@@ -16,9 +16,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1791211202.422736,
+      "last_run": 1791267686.5910766,
       "last_status": "unchanged",
-      "next_due": 1791251691.6079326,
+      "next_due": 1791308073.2389328,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -30,37 +30,37 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1791211204.428443,
+      "last_run": 1791267687.5070958,
       "last_status": "unchanged",
-      "next_due": 1791257792.228572,
+      "next_due": 1791309014.858779,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 294,
-      "last_run": 1791245039.3488724,
+      "consecutive_failures": 295,
+      "last_run": 1791267688.9228582,
       "last_status": "error",
-      "next_due": 1791248639.3488724,
+      "next_due": 1791271288.9228582,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 294,
-      "last_run": 1791245050.157476,
+      "consecutive_failures": 295,
+      "last_run": 1791267699.8749723,
       "last_status": "error",
-      "next_due": 1791248650.157476,
+      "next_due": 1791271299.8749723,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 294,
-      "last_run": 1791245060.211951,
+      "consecutive_failures": 295,
+      "last_run": 1791267709.182987,
       "last_status": "error",
-      "next_due": 1791248660.211951,
+      "next_due": 1791271309.182987,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1791211229.5824282,
+      "last_run": 1791267715.375611,
       "last_status": "observed",
-      "next_due": 1791255378.794881,
+      "next_due": 1791313828.4213636,
       "target_id": "noaa-climate-gov"
     },
     {
