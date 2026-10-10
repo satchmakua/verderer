@@ -1,0 +1,48 @@
+{
+  "schema": "verderer.proofbundle/v1",
+  "origin": "verderer.watchdog/m1-log",
+  "observation": {
+    "captured_requests_hash": null,
+    "collector_type": "static",
+    "collector_version": "0.1.0",
+    "fetched_at": "2026-10-10T12:33:06Z",
+    "http_status": 403,
+    "raw_bytes_hash": "1220c36103f0a07a7b62e0b4de2024b9be7cc9e5051bccda383369c066d89e77a54f",
+    "rendered_dom_hash": null,
+    "response_headers_hash": "12203e3756806ff78f0959af9c48f51da339d2e8b6bd7bf0081d3b93a284ea422438",
+    "schema": "verderer.observation/v1",
+    "target_id": "noaa-climate-gov",
+    "tls_cert_chain_hash": null,
+    "url": "https://www.noaa.gov/climate",
+    "warc_record_hash": "122095f04f6d7e93cdb50b423ebd413d6d07b6fe375a015e4f318bf12470af77e073"
+  },
+  "artifacts": [
+    {
+      "hash": "1220c36103f0a07a7b62e0b4de2024b9be7cc9e5051bccda383369c066d89e77a54f",
+      "media_type": "application/octet-stream",
+      "bytes_b64": "PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMDEgVHJhbnNpdGlvbmFsLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0L2xvb3NlLmR0ZCI+CjxIVE1MPjxIRUFEPjxNRVRBIEhUVFAtRVFVSVY9IkNvbnRlbnQtVHlwZSIgQ09OVEVOVD0idGV4dC9odG1sOyBjaGFyc2V0PWlzby04ODU5LTEiPgo8VElUTEU+RVJST1I6IFRoZSByZXF1ZXN0IGNvdWxkIG5vdCBiZSBzYXRpc2ZpZWQ8L1RJVExFPgo8L0hFQUQ+PEJPRFk+CjxIMT40MDMgRVJST1I8L0gxPgo8SDI+VGhlIHJlcXVlc3QgY291bGQgbm90IGJlIHNhdGlzZmllZC48L0gyPgo8SFIgbm9zaGFkZSBzaXplPSIxcHgiPgpSZXF1ZXN0IGJsb2NrZWQuCldlIGNhbid0IGNvbm5lY3QgdG8gdGhlIHNlcnZlciBmb3IgdGhpcyBhcHAgb3Igd2Vic2l0ZSBhdCB0aGlzIHRpbWUuIFRoZXJlIG1pZ2h0IGJlIHRvbyBtdWNoIHRyYWZmaWMgb3IgYSBjb25maWd1cmF0aW9uIGVycm9yLiBUcnkgYWdhaW4gbGF0ZXIsIG9yIGNvbnRhY3QgdGhlIGFwcCBvciB3ZWJzaXRlIG93bmVyLgo8QlIgY2xlYXI9ImFsbCI+CklmIHlvdSBwcm92aWRlIGNvbnRlbnQgdG8gY3VzdG9tZXJzIHRocm91Z2ggQ2xvdWRGcm9udCwgeW91IGNhbiBmaW5kIHN0ZXBzIHRvIHRyb3VibGVzaG9vdCBhbmQgaGVscCBwcmV2ZW50IHRoaXMgZXJyb3IgYnkgcmV2aWV3aW5nIHRoZSBDbG91ZEZyb250IGRvY3VtZW50YXRpb24uCjxCUiBjbGVhcj0iYWxsIj4KPEhSIG5vc2hhZGUgc2l6ZT0iMXB4Ij4KPFBSRT4KR2VuZXJhdGVkIGJ5IGNsb3VkZnJvbnQgKENsb3VkRnJvbnQpClJlcXVlc3QgSUQ6IHRDQzZQNnpHQ1BadzI5SnhfSGtrbWNkZFpwMmhEc3ltbmVLeEVxeU9mV3p4QS1FOUVSWkFmdz09CjwvUFJFPgo8QUREUkVTUz4KPC9BRERSRVNTPgo8L0JPRFk+PC9IVE1MPg=="
+    }
+  ],
+  "leaf": {
+    "index": 414,
+    "record_b64": "eyJjYXB0dXJlZF9yZXF1ZXN0c19oYXNoIjpudWxsLCJjb2xsZWN0b3JfdHlwZSI6InN0YXRpYyIsImNvbGxlY3Rvcl92ZXJzaW9uIjoiMC4xLjAiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMC0xMFQxMjozMzowNloiLCJodHRwX3N0YXR1cyI6NDAzLCJyYXdfYnl0ZXNfaGFzaCI6IjEyMjBjMzYxMDNmMGEwN2E3YjYyZTBiNGRlMjAyNGI5YmU3Y2M5ZTUwNTFiY2NkYTM4MzM2OWMwNjZkODllNzdhNTRmIiwicmVuZGVyZWRfZG9tX2hhc2giOm51bGwsInJlc3BvbnNlX2hlYWRlcnNfaGFzaCI6IjEyMjAzZTM3NTY4MDZmZjc4ZjA5NTlhZjljNDhmNTFkYTMzOWQyZThiNmJkN2JmMDA4MWQzYjkzYTI4NGVhNDIyNDM4Iiwic2NoZW1hIjoidmVyZGVyZXIub2JzZXJ2YXRpb24vdjEiLCJ0YXJnZXRfaWQiOiJub2FhLWNsaW1hdGUtZ292IiwidGxzX2NlcnRfY2hhaW5faGFzaCI6bnVsbCwidXJsIjoiaHR0cHM6Ly93d3cubm9hYS5nb3YvY2xpbWF0ZSIsIndhcmNfcmVjb3JkX2hhc2giOiIxMjIwOTVmMDRmNmQ3ZTkzY2RiNTBiNDIzZWJkNDEzZDZkMDdiNmZlMzc1YTAxNWU0ZjMxOGJmMTI0NzBhZjc3ZTA3MyJ9",
+    "leaf_hash": "1114e9f17eda454e59da4de1fb803832ef4a987ebd4d5bb667b77bab363b9a48"
+  },
+  "inclusion_proof": {
+    "tree_size": 417,
+    "proof": [
+      "69237d31a4e91c3c041c1ae8ecc032c27d5c34060f61343c695d2f6b2b513d37",
+      "32f2d987e39ed21e31a483dbddecc9ce7e7b9d55c326be58ca503d87c2d7ef74",
+      "2b9a6b90cb286246702a812910769015a6b93e0339de1ef9308c67a44fd55cbc",
+      "75b5ecd50f1b6acbd2042077ef2765beb7e5ebc17986a6ff5b0ef408b681eb38",
+      "1cab66692afe2622f3d54df644f53ce9c8623653d6deb454ee9012fbc005200c",
+      "4c12c68666a0d064820bf955fa246621f7c19dc7426a275d10e902c82253eb0c",
+      "b341ac84e0ea9d093b9ab7ef333e20ed9a960ab82a9cba1e26775391250bbba5",
+      "af429a95289ed482790a91375f26a54ded3aa560ce9c493858ec83c6a717cc35"
+    ]
+  },
+  "checkpoint": "verderer.watchdog/m1-log\n417\nA3TDiXYNy3k6fGXloUjOwpCQXcMSZiJKhIcGEhTGHRg=\n\n\u2014 verderer.watchdog/m1-log IbxwBcNJDl/v+BqKKb1URGViJDNnapOJgMbPg8jdDD65fdZYMCz87F/AtnMRjLHcYYyQeAyz45jh4mb6U6+iMbaj0Qg=\n",
+  "pubkey_hex": "5ba707a9c137b726d5494d73d9d946e581969cbc65f01dab5e3bcf83a52a24db",
+  "anchors": [],
+  "cosignatures": []
+}
