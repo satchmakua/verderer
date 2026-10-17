@@ -1,0 +1,47 @@
+{
+  "schema": "verderer.proofbundle/v1",
+  "origin": "verderer.watchdog/m1-log",
+  "observation": {
+    "captured_requests_hash": null,
+    "collector_type": "static",
+    "collector_version": "0.1.0",
+    "fetched_at": "2026-10-17T15:35:57Z",
+    "http_status": 403,
+    "raw_bytes_hash": "122049a118c973fdbd01861b69fbbdb64a134532f270627493d81bbabc10e7ba89f4",
+    "rendered_dom_hash": null,
+    "response_headers_hash": "122040a42e05bccf0716e84dafe5aeaef557c0ed96e35ea561ed8923aa30428ab8de",
+    "schema": "verderer.observation/v1",
+    "target_id": "fema-nri",
+    "tls_cert_chain_hash": null,
+    "url": "https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+    "warc_record_hash": "12207040e7a3054862625283eac6f115bc0a76f7697a6cf998e12cc01225886ba0ed"
+  },
+  "artifacts": [
+    {
+      "hash": "122049a118c973fdbd01861b69fbbdb64a134532f270627493d81bbabc10e7ba89f4",
+      "media_type": "application/octet-stream",
+      "bytes_b64": "PEhUTUw+PEhFQUQ+CjxUSVRMRT5BY2Nlc3MgRGVuaWVkPC9USVRMRT4KPC9IRUFEPjxCT0RZPgo8SDE+QWNjZXNzIERlbmllZDwvSDE+CiAKWW91IGRvbid0IGhhdmUgcGVybWlzc2lvbiB0byBhY2Nlc3MgImh0dHAmIzU4OyYjNDc7JiM0Nzt3d3cmIzQ2O2ZlbWEmIzQ2O2dvdiYjNDc7ZW1lcmdlbmN5JiM0NTttYW5hZ2VycyYjNDc7cHJhY3RpdGlvbmVycyYjNDc7cmVzaWxpZW5jZSYjNDU7YW5hbHlzaXMmIzQ1O2FuZCYjNDU7cGxhbm5pbmcmIzQ1O3Rvb2wiIG9uIHRoaXMgc2VydmVyLjxQPgpSZWZlcmVuY2UmIzMyOyYjMzU7MTgmIzQ2Ozg2NzdkOTE3JiM0NjsxNzkyMjUxMzU3JiM0Njs1ODY5MGIyNAo8UD5odHRwcyYjNTg7JiM0NzsmIzQ3O2Vycm9ycyYjNDY7ZWRnZXN1aXRlJiM0NjtuZXQmIzQ3OzE4JiM0Njs4Njc3ZDkxNyYjNDY7MTc5MjI1MTM1NyYjNDY7NTg2OTBiMjQ8L1A+CjwvQk9EWT4KPC9IVE1MPgo="
+    }
+  ],
+  "leaf": {
+    "index": 470,
+    "record_b64": "eyJjYXB0dXJlZF9yZXF1ZXN0c19oYXNoIjpudWxsLCJjb2xsZWN0b3JfdHlwZSI6InN0YXRpYyIsImNvbGxlY3Rvcl92ZXJzaW9uIjoiMC4xLjAiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMC0xN1QxNTozNTo1N1oiLCJodHRwX3N0YXR1cyI6NDAzLCJyYXdfYnl0ZXNfaGFzaCI6IjEyMjA0OWExMThjOTczZmRiZDAxODYxYjY5ZmJiZGI2NGExMzQ1MzJmMjcwNjI3NDkzZDgxYmJhYmMxMGU3YmE4OWY0IiwicmVuZGVyZWRfZG9tX2hhc2giOm51bGwsInJlc3BvbnNlX2hlYWRlcnNfaGFzaCI6IjEyMjA0MGE0MmUwNWJjY2YwNzE2ZTg0ZGFmZTVhZWFlZjU1N2MwZWQ5NmUzNWVhNTYxZWQ4OTIzYWEzMDQyOGFiOGRlIiwic2NoZW1hIjoidmVyZGVyZXIub2JzZXJ2YXRpb24vdjEiLCJ0YXJnZXRfaWQiOiJmZW1hLW5yaSIsInRsc19jZXJ0X2NoYWluX2hhc2giOm51bGwsInVybCI6Imh0dHBzOi8vd3d3LmZlbWEuZ292L2VtZXJnZW5jeS1tYW5hZ2Vycy9wcmFjdGl0aW9uZXJzL3Jlc2lsaWVuY2UtYW5hbHlzaXMtYW5kLXBsYW5uaW5nLXRvb2wiLCJ3YXJjX3JlY29yZF9oYXNoIjoiMTIyMDcwNDBlN2EzMDU0ODYyNjI1MjgzZWFjNmYxMTViYzBhNzZmNzY5N2E2Y2Y5OThlMTJjYzAxMjI1ODg2YmEwZWQifQ==",
+    "leaf_hash": "0bb5b5734f0be109a686f7d114057d70171f5e9cca9a336f528c4a42665aec36"
+  },
+  "inclusion_proof": {
+    "tree_size": 472,
+    "proof": [
+      "84d592a59dd20c412b96d7c46ed07c20e875b49fe52f62b715e4b4b53a4835db",
+      "5c13a883cde3cd224be30933d48c3f8c9ad7aeb851f608b9e74b1fd13f21fd33",
+      "84c0bb16f2f9784214e28d49c73479a133761a89d6fb2cb57d044d92f1806ad5",
+      "bbee27cb1d71297e60d10a2c40810a1dd68119ed6942a8c12653dad0014e6bab",
+      "a06bb3727d4d98457f3cd76f1029dfa5eda84091c65ba1cba30f67cf326d8743",
+      "b341ac84e0ea9d093b9ab7ef333e20ed9a960ab82a9cba1e26775391250bbba5",
+      "af429a95289ed482790a91375f26a54ded3aa560ce9c493858ec83c6a717cc35"
+    ]
+  },
+  "checkpoint": "verderer.watchdog/m1-log\n472\nuDYRu8ZLiH9grCE709zXTFGkqWz3dVeOXxN/DBvOVn8=\n\n\u2014 verderer.watchdog/m1-log IbxwBfFaQUWoPp1bfkP2bgl4aBKRwa+641I54yKKIjbYCFrF5cbXH843yCploduMyhZ1dwRzFzsWj8vxnlPnZlIKGQs=\n",
+  "pubkey_hex": "5ba707a9c137b726d5494d73d9d946e581969cbc65f01dab5e3bcf83a52a24db",
+  "anchors": [],
+  "cosignatures": []
+}
