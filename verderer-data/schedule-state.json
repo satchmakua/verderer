@@ -15,17 +15,17 @@
       "target_id": "epa-ghgrp-data"
     },
     {
-      "consecutive_failures": 0,
-      "last_run": 1792384866.711659,
-      "last_status": "unchanged",
-      "next_due": 1792424308.6185937,
+      "consecutive_failures": 1,
+      "last_run": 1792448501.1488194,
+      "last_status": "error",
+      "next_due": 1792448801.1488194,
       "target_id": "epa-drinking-water-mcl"
     },
     {
-      "consecutive_failures": 0,
-      "last_run": 1792321542.0712762,
-      "last_status": "unchanged",
-      "next_due": 1792416436.6869988,
+      "consecutive_failures": 1,
+      "last_run": 1792448509.9813862,
+      "last_status": "error",
+      "next_due": 1792448809.9813862,
       "target_id": "epa-glyphosate"
     },
     {
@@ -36,24 +36,24 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 338,
-      "last_run": 1792415792.8008392,
+      "consecutive_failures": 339,
+      "last_run": 1792448518.7023222,
       "last_status": "error",
-      "next_due": 1792419392.8008392,
+      "next_due": 1792452118.7023222,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 338,
-      "last_run": 1792415802.3385522,
+      "consecutive_failures": 339,
+      "last_run": 1792448531.6873178,
       "last_status": "error",
-      "next_due": 1792419402.3385522,
+      "next_due": 1792452131.6873178,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 338,
-      "last_run": 1792415813.9336753,
+      "consecutive_failures": 339,
+      "last_run": 1792448537.3071814,
       "last_status": "error",
-      "next_due": 1792419413.9336753,
+      "next_due": 1792452137.3071814,
       "target_id": "nca5"
     },
     {
@@ -79,9 +79,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792356269.4588318,
+      "last_run": 1792448542.9736612,
       "last_status": "observed",
-      "next_due": 1792436940.118374,
+      "next_due": 1792531836.2263079,
       "target_id": "fema-nri"
     }
   ]
