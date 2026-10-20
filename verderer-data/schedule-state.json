@@ -1,10 +1,10 @@
 {
   "entries": [
     {
-      "consecutive_failures": 1,
-      "last_run": 1792471906.9772606,
+      "consecutive_failures": 2,
+      "last_run": 1792496237.0354762,
       "last_status": "error",
-      "next_due": 1792472206.9772606,
+      "next_due": 1792496837.0354762,
       "target_id": "epa-ghgrp"
     },
     {
@@ -15,45 +15,45 @@
       "target_id": "epa-ghgrp-data"
     },
     {
-      "consecutive_failures": 2,
-      "last_run": 1792471911.5313697,
+      "consecutive_failures": 3,
+      "last_run": 1792496247.6324139,
       "last_status": "error",
-      "next_due": 1792472511.5313697,
+      "next_due": 1792497447.6324139,
       "target_id": "epa-drinking-water-mcl"
     },
     {
-      "consecutive_failures": 2,
-      "last_run": 1792471922.5718768,
+      "consecutive_failures": 3,
+      "last_run": 1792496255.3448713,
       "last_status": "error",
-      "next_due": 1792472522.5718768,
+      "next_due": 1792497455.3448713,
       "target_id": "epa-glyphosate"
     },
     {
-      "consecutive_failures": 1,
-      "last_run": 1792471932.5950313,
+      "consecutive_failures": 2,
+      "last_run": 1792496267.0141323,
       "last_status": "error",
-      "next_due": 1792472232.5950313,
+      "next_due": 1792496867.0141323,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 340,
-      "last_run": 1792471943.0794318,
+      "consecutive_failures": 341,
+      "last_run": 1792496280.8982139,
       "last_status": "error",
-      "next_due": 1792475543.0794318,
+      "next_due": 1792499880.8982139,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 340,
-      "last_run": 1792471949.9847908,
+      "consecutive_failures": 341,
+      "last_run": 1792496292.4569201,
       "last_status": "error",
-      "next_due": 1792475549.9847908,
+      "next_due": 1792499892.4569201,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 340,
-      "last_run": 1792471957.8200083,
+      "consecutive_failures": 341,
+      "last_run": 1792496303.9049516,
       "last_status": "error",
-      "next_due": 1792475557.8200083,
+      "next_due": 1792499903.9049516,
       "target_id": "nca5"
     },
     {
