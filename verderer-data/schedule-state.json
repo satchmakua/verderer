@@ -1,59 +1,59 @@
 {
   "entries": [
     {
-      "consecutive_failures": 4,
-      "last_run": 1792532269.2852614,
-      "last_status": "error",
-      "next_due": 1792534669.2852614,
+      "consecutive_failures": 0,
+      "last_run": 1792558093.8175237,
+      "last_status": "unchanged",
+      "next_due": 1792602841.5512953,
       "target_id": "epa-ghgrp"
     },
     {
-      "consecutive_failures": 2,
-      "last_run": 1792532281.4369466,
-      "last_status": "error",
-      "next_due": 1792532881.4369466,
+      "consecutive_failures": 0,
+      "last_run": 1792558094.2599423,
+      "last_status": "unchanged",
+      "next_due": 1792648032.6448941,
       "target_id": "epa-ghgrp-data"
     },
     {
-      "consecutive_failures": 5,
-      "last_run": 1792532292.4038143,
-      "last_status": "error",
-      "next_due": 1792535892.4038143,
+      "consecutive_failures": 0,
+      "last_run": 1792558095.4260342,
+      "last_status": "unchanged",
+      "next_due": 1792604342.9687798,
       "target_id": "epa-drinking-water-mcl"
     },
     {
-      "consecutive_failures": 5,
-      "last_run": 1792532297.6507423,
-      "last_status": "error",
-      "next_due": 1792535897.6507423,
+      "consecutive_failures": 0,
+      "last_run": 1792558096.0544736,
+      "last_status": "unchanged",
+      "next_due": 1792642287.5702405,
       "target_id": "epa-glyphosate"
     },
     {
-      "consecutive_failures": 4,
-      "last_run": 1792532302.6511648,
-      "last_status": "error",
-      "next_due": 1792534702.6511648,
+      "consecutive_failures": 0,
+      "last_run": 1792558097.054454,
+      "last_status": "unchanged",
+      "next_due": 1792597479.9301584,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 343,
-      "last_run": 1792532314.6498058,
+      "consecutive_failures": 344,
+      "last_run": 1792558098.5718465,
       "last_status": "error",
-      "next_due": 1792535914.6498058,
+      "next_due": 1792561698.5718465,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 343,
-      "last_run": 1792532323.2983484,
+      "consecutive_failures": 344,
+      "last_run": 1792558103.462786,
       "last_status": "error",
-      "next_due": 1792535923.2983484,
+      "next_due": 1792561703.462786,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 343,
-      "last_run": 1792532330.6728091,
+      "consecutive_failures": 344,
+      "last_run": 1792558109.6818342,
       "last_status": "error",
-      "next_due": 1792535930.6728091,
+      "next_due": 1792561709.6818342,
       "target_id": "nca5"
     },
     {
