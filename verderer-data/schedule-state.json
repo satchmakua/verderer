@@ -36,24 +36,24 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 350,
-      "last_run": 1792689068.8430817,
+      "consecutive_failures": 351,
+      "last_run": 1792704972.2423303,
       "last_status": "error",
-      "next_due": 1792692668.8430817,
+      "next_due": 1792708572.2423303,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 350,
-      "last_run": 1792689076.69908,
+      "consecutive_failures": 351,
+      "last_run": 1792704985.1176786,
       "last_status": "error",
-      "next_due": 1792692676.69908,
+      "next_due": 1792708585.1176786,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 350,
-      "last_run": 1792689082.268314,
+      "consecutive_failures": 351,
+      "last_run": 1792704992.5061064,
       "last_status": "error",
-      "next_due": 1792692682.268314,
+      "next_due": 1792708592.5061064,
       "target_id": "nca5"
     },
     {
@@ -65,9 +65,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792602796.2220178,
+      "last_run": 1792704998.9228928,
       "last_status": "unchanged",
-      "next_due": 1792697616.193846,
+      "next_due": 1792785341.030367,
       "target_id": "noaa-co2-trends"
     },
     {
