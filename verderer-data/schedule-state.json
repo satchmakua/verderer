@@ -2,9 +2,9 @@
   "entries": [
     {
       "consecutive_failures": 0,
-      "last_run": 1792731005.055074,
+      "last_run": 1792790693.9504738,
       "last_status": "unchanged",
-      "next_due": 1792777678.7392004,
+      "next_due": 1792835343.7084284,
       "target_id": "epa-ghgrp"
     },
     {
@@ -16,9 +16,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792731005.3896418,
+      "last_run": 1792790694.2740834,
       "last_status": "unchanged",
-      "next_due": 1792775404.5006971,
+      "next_due": 1792835174.1954849,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -30,30 +30,30 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792731007.3928387,
+      "last_run": 1792790695.2684042,
       "last_status": "unchanged",
-      "next_due": 1792778391.8469632,
+      "next_due": 1792837355.714592,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 354,
-      "last_run": 1792775265.5853908,
+      "consecutive_failures": 355,
+      "last_run": 1792790696.5114295,
       "last_status": "error",
-      "next_due": 1792778865.5853908,
+      "next_due": 1792794296.5114295,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 354,
-      "last_run": 1792775273.555112,
+      "consecutive_failures": 355,
+      "last_run": 1792790704.7149866,
       "last_status": "error",
-      "next_due": 1792778873.555112,
+      "next_due": 1792794304.7149866,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 354,
-      "last_run": 1792775286.0411718,
+      "consecutive_failures": 355,
+      "last_run": 1792790713.8063235,
       "last_status": "error",
-      "next_due": 1792778886.0411718,
+      "next_due": 1792794313.8063235,
       "target_id": "nca5"
     },
     {
@@ -65,16 +65,16 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792704998.9228928,
+      "last_run": 1792790725.0671341,
       "last_status": "unchanged",
-      "next_due": 1792785341.030367,
+      "next_due": 1792878665.9415264,
       "target_id": "noaa-co2-trends"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792689092.5719717,
+      "last_run": 1792790725.3609068,
       "last_status": "observed",
-      "next_due": 1792780308.9561996,
+      "next_due": 1792878229.8240345,
       "target_id": "usda-climate-hubs"
     },
     {
