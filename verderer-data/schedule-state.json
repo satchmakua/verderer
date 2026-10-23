@@ -36,31 +36,31 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 352,
-      "last_run": 1792731008.4953587,
+      "consecutive_failures": 353,
+      "last_run": 1792755576.773177,
       "last_status": "error",
-      "next_due": 1792734608.4953587,
+      "next_due": 1792759176.773177,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 352,
-      "last_run": 1792731021.3980727,
+      "consecutive_failures": 353,
+      "last_run": 1792755587.9434505,
       "last_status": "error",
-      "next_due": 1792734621.3980727,
+      "next_due": 1792759187.9434505,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 352,
-      "last_run": 1792731031.01673,
+      "consecutive_failures": 353,
+      "last_run": 1792755594.330522,
       "last_status": "error",
-      "next_due": 1792734631.01673,
+      "next_due": 1792759194.330522,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792689092.0993285,
+      "last_run": 1792755598.408274,
       "last_status": "observed",
-      "next_due": 1792732599.8593857,
+      "next_due": 1792795632.5504746,
       "target_id": "noaa-climate-gov"
     },
     {
