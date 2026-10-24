@@ -9,9 +9,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792775265.0199447,
+      "last_run": 1792875023.7789068,
       "last_status": "unchanged",
-      "next_due": 1792868075.4167352,
+      "next_due": 1792964923.750895,
       "target_id": "epa-ghgrp-data"
     },
     {
@@ -36,31 +36,31 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 358,
-      "last_run": 1792857462.5390866,
+      "consecutive_failures": 359,
+      "last_run": 1792875024.2650847,
       "last_status": "error",
-      "next_due": 1792861062.5390866,
+      "next_due": 1792878624.2650847,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 358,
-      "last_run": 1792857474.2429156,
+      "consecutive_failures": 359,
+      "last_run": 1792875028.3263888,
       "last_status": "error",
-      "next_due": 1792861074.2429156,
+      "next_due": 1792878628.3263888,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 358,
-      "last_run": 1792857483.5581708,
+      "consecutive_failures": 359,
+      "last_run": 1792875039.5634604,
       "last_status": "error",
-      "next_due": 1792861083.5581708,
+      "next_due": 1792878639.5634604,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792816669.5873165,
+      "last_run": 1792875046.9692223,
       "last_status": "observed",
-      "next_due": 1792858419.8442688,
+      "next_due": 1792920789.176799,
       "target_id": "noaa-climate-gov"
     },
     {
@@ -79,9 +79,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1792775290.70507,
+      "last_run": 1792875047.469009,
       "last_status": "observed",
-      "next_due": 1792865146.3424282,
+      "next_due": 1792958123.4067743,
       "target_id": "fema-nri"
     }
   ]
