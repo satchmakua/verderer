@@ -16,9 +16,9 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1793124040.231326,
+      "last_run": 1793166170.5847108,
       "last_status": "unchanged",
-      "next_due": 1793163263.5058265,
+      "next_due": 1793206420.463247,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -30,44 +30,44 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1793103113.0924528,
+      "last_run": 1793166170.847568,
       "last_status": "unchanged",
-      "next_due": 1793150253.45583,
+      "next_due": 1793206989.8919332,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 370,
-      "last_run": 1793139252.7037847,
+      "consecutive_failures": 371,
+      "last_run": 1793166172.200337,
       "last_status": "error",
-      "next_due": 1793142852.7037847,
+      "next_due": 1793169772.200337,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 370,
-      "last_run": 1793139262.058532,
+      "consecutive_failures": 371,
+      "last_run": 1793166178.3417666,
       "last_status": "error",
-      "next_due": 1793142862.058532,
+      "next_due": 1793169778.3417666,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 370,
-      "last_run": 1793139274.0537152,
+      "consecutive_failures": 371,
+      "last_run": 1793166189.935183,
       "last_status": "error",
-      "next_due": 1793142874.0537152,
+      "next_due": 1793169789.935183,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1793103140.4154,
+      "last_run": 1793166194.7995915,
       "last_status": "observed",
-      "next_due": 1793148785.5903256,
+      "next_due": 1793208484.0148585,
       "target_id": "noaa-climate-gov"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1793077573.1814413,
+      "last_run": 1793166195.323909,
       "last_status": "unchanged",
-      "next_due": 1793155557.2796376,
+      "next_due": 1793244329.260726,
       "target_id": "noaa-co2-trends"
     },
     {
