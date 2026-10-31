@@ -1,0 +1,956 @@
+WARC/1.0
+WARC-Date: 2026-07-20T14:51:48Z
+WARC-Type: response
+WARC-Record-ID: <urn:uuid:74804266-bbcf-4dfb-b10b-0ec14f8d869e>
+WARC-Target-URI: https://www.epa.gov/ingredients-used-pesticide-products/glyphosate
+WARC-Payload-Digest: sha1:O3U62U4UR4ZY2SYVFQUP5BAEDZEXOCTN
+WARC-Block-Digest: sha1:KKFBIUOMM3UT3UBPW6BIQVVBUMF5K3ZK
+Content-Type: application/http; msgtype=response
+Content-Length: 74140
+
+HTTP/1.1 200 OK
+content-type: text/html; charset=UTF-8
+connection: keep-alive
+date: Mon, 20 Jul 2026 13:36:07 GMT
+etag: W/"1784550880"
+server: nginx
+cache-control: max-age=10800, public
+x-drupal-dynamic-cache: MISS
+content-language: en
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN, SAMEORIGIN
+expires: Sun, 19 Nov 1978 05:00:00 GMT
+last-modified: Mon, 20 Jul 2026 12:34:40 GMT
+strict-transport-security: max-age=31536000; preload
+x-generator: Drupal 10 (https://www.drupal.org)
+x-drupal-cache: HIT
+x-xss-protection: 1
+feature-policy: geolocation 'none';midi 'none';microphone 'none';camera 'none';magnetometer 'none';gyroscope 'none';fullscreen 'self';payment 'none'
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: block-all-mixed-content; default-src * data: 'unsafe-inline' 'unsafe-eval'; worker-src * blob: data: 'unsafe-inline' 'unsafe-eval'; child-src * blob: data: 'unsafe-inline' 'unsafe-eval'; img-src * blob: data: 'unsafe-inline' 'unsafe-eval';
+vary: Cookie,Accept-Encoding
+x-cache: Hit from cloudfront
+via: 1.1 9832e15ad117dafc81b031983cbde91e.cloudfront.net (CloudFront)
+x-amz-cf-pop: ORD56-P1
+x-amz-cf-id: nJptSMqO7JKbnb_-xAp5GlfKSNM78diCuX1jZLf8lH_1pZ5TtpXaeA==
+age: 4541
+Content-Length: 72867
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+<meta name="description" content="Glyphosate is a widely used herbicide that controls broadleaf weeds and grasses and has been in use since the 1970s." />
+<meta name="keywords" content="Community Organizers &amp; Educators,Concerned Citizens &amp; Students,Substances Management &gt; Pesticides Management &gt; Pesticide Registration &amp; Reregistration,Pesticides &gt; Herbicides" />
+<link rel="shortlink" href="https://www.epa.gov/node/63261" />
+<link rel="canonical" href="https://www.epa.gov/ingredients-used-pesticide-products/glyphosate" />
+<meta property="DC.title" content="Glyphosate" />
+<meta property="DC.description" content="Glyphosate is a widely used herbicide that controls broadleaf weeds and grasses and has been in use since the 1970s." />
+<meta property="DC.Subject.epachannel" content="Learn the Issues" />
+<meta property="DC.type" content="Overviews and Factsheets" />
+<meta property="DC.date.created" content="2014-09-18" />
+<meta property="DC.date.modified" content="2026-05-05" />
+<meta property="DC.date.reviewed" content="2027-05-05" />
+<meta property="DC.creator" content="US EPA,OCSPP" />
+<meta property="DC.language" content="en" />
+<meta property="WebArea" content="Ingredients Used in Pesticide Products" />
+<meta property="ContentType" content="Basic page" />
+<meta property="NavigationStyle" content="sidebar_navigation" />
+<meta property="og:site_name" content="US EPA" />
+<meta property="og:type" content="Basic page" />
+<meta property="og:url" content="https://www.epa.gov/ingredients-used-pesticide-products/glyphosate" />
+<meta property="og:title" content="Glyphosate | US EPA" />
+<meta property="og:description" content="Glyphosate is a widely used herbicide that controls broadleaf weeds and grasses and has been in use since the 1970s." />
+<meta property="og:image" content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="U.S. Environmental Protection Agency" />
+<meta property="og:updated_time" content="2026-05-05" />
+<meta property="og:country_name" content="United States of America" />
+<meta property="article:published_time" content="2014-09-18T15:45:54-04:00" />
+<meta property="article:modified_time" content="2026-05-05" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Glyphosate | US EPA" />
+<meta name="twitter:description" content="Glyphosate is a widely used herbicide that controls broadleaf weeds and grasses and has been in use since the 1970s." />
+<meta name="twitter:image" content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-twitter.jpg" />
+<meta name="twitter:image:alt" content="U.S. Environmental Protection Agency" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+    <title>Glyphosate | US EPA</title>
+    <link rel="icon" type="image/x-icon" href="/themes/epa_theme/images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/themes/epa_theme/images/favicon-144.png">
+    <meta name="application-name" content="">
+    <meta name="msapplication-config" content="/themes/epa_theme/images/ieconfig.xml">
+    <link rel="apple-touch-icon-precomposed" sizes="196x196" href="/themes/epa_theme/images/favicon-196.png">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/themes/epa_theme/images/favicon-152.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/themes/epa_theme/images/favicon-144.png">
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/themes/epa_theme/images/favicon-120.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/themes/epa_theme/images/favicon-114.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/themes/epa_theme/images/favicon-72.png">
+    <link rel="apple-touch-icon-precomposed" href="/themes/epa_theme/images/favicon-180.png">
+    <link rel="icon" href="/themes/epa_theme/images/favicon-32.png" sizes="32x32">
+    <link rel="preload" href="/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2" as="font" crossorigin="anonymous">
+    <link rel="preload" href="/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-bold-webfont.woff2" as="font" crossorigin="anonymous">
+    <link rel="preload" href="/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-italic-webfont.woff2" as="font" crossorigin="anonymous">
+    <link rel="preload" href="/themes/epa_theme/fonts/merriweather/Latin-Merriweather-Bold.woff2" as="font" crossorigin="anonymous">
+    <link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/align.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/fieldgroup.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/container-inline.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/clearfix.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/details.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/hidden.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/item-list.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/js.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/nowrap.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/position-container.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/reset-appearance.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/resize.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/system-status-counter.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/system-status-report-counters.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/system-status-report-general-info.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/tablesort.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/progress.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/contrib/stable/css/system/components/ajax-progress.module.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/modules/contrib/paragraphs/css/paragraphs.unpublished.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/epa_theme/fonts/noto-sans-arabic.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/epa_theme/fonts/noto-sans-kr.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/epa_theme/fonts/noto-sans-bn.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/epa_theme/fonts/noto-sans-gu.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/epa_theme/fonts/noto-sans-sc.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/epa_theme/fonts/noto-sans-tc.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/epa_theme/css/styles.css?tedc2q" />
+<link rel="stylesheet" media="all" href="/themes/epa_theme/css-lib/colorbox.min.css?tedc2q" />
+
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-L8ZB');</script>
+    <!-- End Google Tag Manager -->
+  </head>
+  <body class="path-node not-front node-page node-page--node-type-page" id="top">
+    
+<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
+  <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
+</div>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-L8ZB" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+    
+  <section class="usa-banner" aria-label="Official website of the United States government">
+  <div class="usa-accordion">  <header class="usa-banner__header">
+    <div class="usa-banner__inner">
+      <div class="grid-col-auto">
+        <img class="usa-banner__header-flag" aria-hidden="true" src="/themes/epa_theme/images/us_flag_small.png" alt="U.S. flag" height="11px" width="16px" />
+      </div>
+      <div class="grid-col-fill tablet:grid-col-auto" aria-hidden="true">
+        <p class="usa-banner__header-text">An official website of the United States government</p>
+              <p class="usa-banner__header-action">Here’s how you know</p></div>
+        <button type="button" class="usa-accordion__button usa-banner__button" aria-expanded="false" aria-controls="gov-banner">
+          <span class="usa-banner__button-text">Here’s how you know</span>
+        </button>
+          </div>
+  </header>
+      <div class="usa-banner__content usa-accordion__content" id="gov-banner">
+      <div class="grid-row grid-gap-lg">
+                  <div class="usa-banner__guidance tablet:grid-col-6">
+            <img class="usa-banner__icon usa-media-block__img" src="/themes/epa_theme/images/icon-dot-gov.svg" alt="Dot gov">
+            <div class="usa-media-block__body">
+              <p>
+                <strong>Official websites use .gov</strong>
+                <br> A <strong>.gov</strong> website belongs to an official government organization in the United States.
+              </p>
+            </div>
+          </div>
+                  <div class="usa-banner__guidance tablet:grid-col-6">
+            <img class="usa-banner__icon usa-media-block__img" src="/themes/epa_theme/images/icon-https.svg" alt="HTTPS">
+            <div class="usa-media-block__body">
+              <p>
+                <strong>Secure .gov websites use HTTPS</strong>
+                <br> A <strong>lock</strong> (<span class="icon-lock"><svg xmlns="http://www.w3.org/2000/svg" width="52" height="64" viewBox="0 0 52 64" class="usa-banner__lock-image" role="img" aria-labelledby="banner-lock-title banner-lock-description"><title id="banner-lock-title">Lock</title><desc id="banner-lock-description">A locked padlock</desc><path fill="#000000" fill-rule="evenodd" d="M26 0c10.493 0 19 8.507 19 19v9h3a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V32a4 4 0 0 1 4-4h3v-9C7 8.507 15.507 0 26 0zm0 8c-5.979 0-10.843 4.77-10.996 10.712L15 19v9h22v-9c0-6.075-4.925-11-11-11z"/></svg></span>) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
+              </p>
+            </div>
+          </div>
+              </div>
+    </div>
+  </div>
+  </section>
+
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+            <div class="js-view-dom-id-epa-alerts--public">
+  <noscript>
+    <div class="usa-site-alert usa-site-alert--info">
+      <div class="usa-alert">
+        <div class="usa-alert__body">
+          <div class="usa-alert__text">
+            <p>JavaScript appears to be disabled on this computer. Please <a href="/alerts">click here to see any active alerts</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </noscript>
+</div>
+
+  
+  
+  
+  
+
+
+
+<header class="l-header js-header-search usa-header usa-header--extended">
+  <div class="usa-overlay"></div>
+  <div class="l-constrain">
+    <div class="l-header__navbar">
+      <div class="l-header__branding">
+        <button
+          type="button"
+          class="l-header__search-button"
+          aria-controls="header-search-drawer"
+          aria-expanded="false"
+          aria-label="Open search drawer"
+        >
+          
+<svg class="icon l-header__search-button-icon-open" aria-hidden="true"><use href="/themes/epa_theme/images/sprite.artifact.svg#magnifying-glass"></use></svg>          
+<svg class="icon l-header__search-button-icon-close" aria-hidden="true"><use href="/themes/epa_theme/images/sprite.artifact.svg#xmark"></use></svg>        </button>
+            <a class="site-logo" href="/" aria-label="Home" title="Home" rel="home">
+  <span class="site-logo__image">
+    <svg class="site-logo__svg-main" aria-hidden="true" viewBox="0 0 454.1 154.7" xmlns="http://www.w3.org/2000/svg"><path d="m112.8 61.2c-4.8 18.6-22.9 33.3-42.9 33.3-20.1 0-38-14.7-42.9-33.4h.2s9.8 10.3-.2 0c3.1 3.1 6.2 4.4 10.7 4.4s7.7-1.3 10.7-4.4c3.1 3.1 6.3 4.5 10.9 4.4 4.5 0 7.6-1.3 10.7-4.4 3.1 3.1 6.2 4.4 10.7 4.4s7.7-1.3 10.7-4.4c3.1 3.1 6.3 4.5 10.9 4.4 4.3 0 7.4-1.2 10.5-4.3z"/><path d="m113.2 51.2c0-24-19.4-43.5-43.3-43.5-24 0-43.5 19.5-43.5 43.5h39.1c-4.8-1.8-8.1-6.3-8.1-11.6 0-7 5.7-12.5 12.5-12.5 7 0 12.7 5.5 12.7 12.5 0 5.2-3.1 9.6-7.6 11.6z"/><path d="m72.6 147c.7-36.9 29.7-68.8 66.9-70 0 37.2-30 68-66.9 70z"/><path d="m67.1 147c-.7-36.9-29.7-68.8-67.1-70 0 37.2 30.2 68 67.1 70z"/><path d="m240 10.8h-87.9v133.1h87.9v-20.4h-60.3v-36h60.3v-21h-60.3v-35h60.3z"/><path d="m272.8 66.5h27.1c9.1 0 15.2-8.6 15.1-17.7-.1-9-6.1-17.3-15.1-17.3h-25.3v112.4h-27.8v-133.1h62.3c20.2 0 35 17.8 35.2 38 .2 20.4-14.8 38.7-35.2 38.7h-36.3z"/><path d="m315.9 143.9h29.7l12.9-35h54.2l-8.1-21.9h-38.4l18.9-50.7 39.2 107.6h29.7l-53.1-133.1h-33.7z"/></svg>
+          <svg class="site-logo__svg-text" aria-hidden="true" viewBox="0 0 595.4 154.7" xmlns="http://www.w3.org/2000/svg"><path d="m9 8.5v22.4c0 1.9.2 3.3.5 4.3s.7 1.7 1 2.2c1.2 1.4 2.5 2.4 3.9 2.9 1.5.5 2.8.7 4.1.7 2.4 0 4.2-.4 5.5-1.3 1.3-.8 2.2-1.8 2.8-2.9s.9-2.3 1-3.4.1-2 .1-2.6v-22.3h4.7v22.3 1.7c0 .7-.1 1.5-.4 2.4-.3 1.8-1.2 3.6-2.5 5.4-1.8 2.1-3.8 3.5-6 4.2-2.2.6-4 .9-5.3.9-1.8 0-3.8-.3-6.2-1.1s-4.5-2.3-6.2-4.7c-.5-.8-1-1.8-1.4-3.2-.4-1.3-.6-3.3-.6-5.9v-22z"/><path d="m43.2 22.2v-2.9l4.6.1-.1 4.1c.2-.3.4-.7.8-1.2.3-.5.8-.9 1.4-1.4s1.4-.9 2.3-1.3c.9-.3 2.1-.5 3.4-.4.6 0 1.4.1 2.4.3.9.2 1.9.6 2.9 1.2s1.8 1.5 2.4 2.6c.6 1.2.9 2.8.9 4.7l-.4 17-4.6-.1.4-16c0-.9 0-1.7-.2-2.4-.1-.7-.5-1.3-1.1-1.9-1.2-1.2-2.6-1.8-4.3-1.8s-3.1.5-4.4 1.7-2 3.1-2.1 5.7l-.3 14.5-4.5-.1z"/><path d="m72.9 8.6h5.5v5.1h-5.5zm.5 10.9h4.6v25.1h-4.6z"/><path d="m83.5 19.4h4.3v-5.3l4.5-1.5v6.8h5.4v3.4h-5.4v15.1c0 .3 0 .6.1 1 0 .4.1.7.4 1.1.2.4.5.6 1 .8.4.3 1 .4 1.8.4 1 0 1.7-.1 2.2-.2v3.7c-.9.2-2.1.3-3.8.3-2.1 0-3.6-.4-4.6-1.2s-1.5-2.2-1.5-4.2v-16.8h-4.3v-3.4z"/><path d="m106.6 32.9c-.1 2.6.5 4.8 1.7 6.5 1.1 1.7 2.9 2.6 5.3 2.6 1.5 0 2.8-.4 3.9-1.3 1-.8 1.6-2.2 1.8-4h4.6c0 .6-.2 1.4-.4 2.3-.3 1-.8 2-1.7 3-.2.3-.6.6-1 1-.5.4-1 .7-1.7 1.1s-1.5.6-2.4.8c-.9.3-2 .4-3.3.4-7.6-.2-11.3-4.5-11.3-12.9 0-2.5.3-4.8 1-6.8s2-3.7 3.8-5.1c1.2-.8 2.4-1.3 3.7-1.6 1.3-.2 2.2-.3 3-.3 2.7 0 4.8.6 6.3 1.6s2.5 2.3 3.1 3.9c.6 1.5 1 3.1 1.1 4.6.1 1.6.1 2.9 0 4h-17.5m12.9-3c0-.3 0-.7 0-1.1s0-.8-.1-1.2c-.1-.9-.4-1.7-.8-2.5s-1-1.5-1.8-2c-.9-.5-2-.8-3.4-.8-.8 0-1.5.1-2.3.3s-1.5.7-2.2 1.3-1.2 1.3-1.6 2.3-.7 2.2-.8 3.6h13z"/><path d="m148.6 8.6h4.6v32.1c0 1 .1 2.3.2 4h-4.6l-.1-4c-.2.3-.4.7-.7 1.2s-.8 1-1.4 1.5c-1 .7-2 1.2-3.1 1.4-.5.1-1 .2-1.5.3s-.9.1-1.4.1c-.4 0-.8 0-1.3-.1s-1.1-.2-1.7-.3c-1.1-.3-2.3-.9-3.4-1.8s-2.1-2.2-2.9-3.8c-.8-1.7-1.2-3.9-1.2-6.6.1-4.8 1.2-8.3 3.4-10.5 2.1-2.1 4.7-3.2 7.6-3.2 1.3 0 2.4.2 3.4.5.9.3 1.6.7 2.2 1.2.6.4 1 .9 1.3 1.4s.6.8.7 1.1zm.1 23.1c0-1.9-.2-3.3-.5-4.4-.4-1.1-.8-2-1.4-2.6-.5-.7-1.2-1.3-2-1.8-.9-.5-2-.7-3.3-.7-1.7 0-2.9.5-3.8 1.3s-1.6 1.9-2 3.1-.7 2.3-.7 3.4c-.1 1.1-.2 1.9-.1 2.4 0 1.1.1 2.2.3 3.4.2 1.1.5 2.2 1 3.1.5 1 1.2 1.7 2 2.3.9.6 2 .9 3.3.9 1.8 0 3.2-.5 4.2-1.4 1-.8 1.7-1.8 2.1-3s.7-2.4.8-3.4c.1-1.4.1-2.1.1-2.6z"/><path d="m179.6 34.1c0 .6.1 1.3.3 2.1.1.8.5 1.6 1 2.3.5.8 1.4 1.4 2.5 1.9s2.7.8 4.7.8c1.8 0 3.3-.3 4.4-.8s1.9-1.1 2.5-1.8 1-1.5 1.1-2.2.2-1.2.2-1.7c0-1-.2-1.9-.5-2.6-.4-.6-.9-1.2-1.6-1.6-1.4-.8-3.4-1.4-5.9-2-4.9-1.1-8.1-2.2-9.5-3.2s-2.3-2.2-2.9-3.5c-.6-1.2-.8-2.4-.8-3.6.1-3.7 1.5-6.4 4.2-8.1 2.6-1.7 5.7-2.5 9.1-2.5 1.3 0 2.9.2 4.8.5 1.9.4 3.6 1.4 5 3 .5.5.9 1.1 1.2 1.7.3.5.5 1.1.6 1.6.2 1.1.3 2.1.3 2.9h-5c-.2-2.2-1-3.7-2.4-4.5-1.5-.7-3.1-1.1-4.9-1.1-5.1.1-7.7 2-7.8 5.8 0 1.5.5 2.7 1.6 3.5 1 .8 2.6 1.4 4.7 1.9 4 1 6.7 1.8 8.1 2.2.8.2 1.4.5 1.8.7.5.2 1 .5 1.4.9.8.5 1.4 1.1 1.9 1.8s.8 1.4 1.1 2.1c.3 1.4.5 2.5.5 3.4 0 3.3-1.2 6-3.5 8-2.3 2.1-5.8 3.2-10.3 3.3-1.4 0-3.2-.3-5.4-.8-1-.3-2-.7-3-1.2-.9-.5-1.8-1.2-2.5-2.1-.9-1.4-1.5-2.7-1.7-4.1-.3-1.3-.4-2.4-.3-3.2h5z"/><path d="m205.7 19.4h4.3v-5.3l4.5-1.5v6.8h5.4v3.4h-5.4v15.1c0 .3 0 .6.1 1 0 .4.1.7.4 1.1.2.4.5.6 1 .8.4.3 1 .4 1.8.4 1 0 1.7-.1 2.2-.2v3.7c-.9.2-2.1.3-3.8.3-2.1 0-3.6-.4-4.6-1.2s-1.5-2.2-1.5-4.2v-16.8h-4.4z"/><path d="m241 44.6c-.3-1.2-.5-2.5-.4-3.7-.5 1-1.1 1.8-1.7 2.4-.7.6-1.4 1.1-2 1.4-1.4.5-2.7.8-3.7.8-2.8 0-4.9-.8-6.4-2.2s-2.2-3.1-2.2-5.2c0-1 .2-2.3.8-3.7s1.7-2.6 3.5-3.7c1.4-.7 2.9-1.2 4.5-1.5 1.6-.1 2.9-.2 3.9-.2s2.1 0 3.3.1c.1-2.9-.2-4.8-.9-5.6-.5-.6-1.1-1.1-1.9-1.3s-1.6-.4-2.3-.4c-1.1 0-2 .2-2.6.5-.7.3-1.2.7-1.5 1.2s-.5.9-.6 1.4-.2.9-.2 1.2h-4.6c.1-.7.2-1.4.4-2.3.2-.8.6-1.6 1.3-2.5.5-.6 1-1 1.7-1.3.6-.3 1.3-.6 2-.8 1.5-.4 2.8-.6 4.2-.6 1.8 0 3.6.3 5.2.9s2.8 1.6 3.4 2.9c.4.7.6 1.4.7 2s.1 1.2.1 1.8l-.2 12c0 1 .1 3.1.4 6.3h-4.2m-.5-12.1c-.7-.1-1.6-.1-2.6-.1-.5 0-1.2 0-2.1 0-1 .1-2 .3-3 .6s-1.9.8-2.6 1.5c-.8.7-1.2 1.7-1.2 3 0 .4.1.8.2 1.3s.4 1 .8 1.5.9.8 1.6 1.1 1.5.5 2.5.5c2.3 0 4.1-.9 5.2-2.7.5-.8.8-1.7 1-2.7.1-.9.2-2.2.2-4z"/><path d="m250.2 19.4h4.3v-5.3l4.5-1.5v6.8h5.4v3.4h-5.4v15.1c0 .3 0 .6.1 1 0 .4.1.7.4 1.1.2.4.5.6 1 .8.4.3 1 .4 1.8.4 1 0 1.7-.1 2.2-.2v3.7c-.9.2-2.1.3-3.8.3-2.1 0-3.6-.4-4.6-1.2s-1.5-2.2-1.5-4.2v-16.8h-4.3v-3.4z"/><path d="m273.3 32.9c-.1 2.6.5 4.8 1.7 6.5 1.1 1.7 2.9 2.6 5.3 2.6 1.5 0 2.8-.4 3.9-1.3 1-.8 1.6-2.2 1.8-4h4.6c0 .6-.2 1.4-.4 2.3-.3 1-.8 2-1.7 3-.2.3-.6.6-1 1-.5.4-1 .7-1.7 1.1s-1.5.6-2.4.8c-.9.3-2 .4-3.3.4-7.6-.2-11.3-4.5-11.3-12.9 0-2.5.3-4.8 1-6.8s2-3.7 3.8-5.1c1.2-.8 2.4-1.3 3.7-1.6 1.3-.2 2.2-.3 3-.3 2.7 0 4.8.6 6.3 1.6s2.5 2.3 3.1 3.9c.6 1.5 1 3.1 1.1 4.6.1 1.6.1 2.9 0 4h-17.5m12.9-3c0-.3 0-.7 0-1.1s0-.8-.1-1.2c-.1-.9-.4-1.7-.8-2.5s-1-1.5-1.8-2c-.9-.5-2-.8-3.4-.8-.8 0-1.5.1-2.3.3s-1.5.7-2.2 1.3-1.2 1.3-1.6 2.3-.7 2.2-.8 3.6h13z"/><path d="m301 37.2c0 .5.1 1 .2 1.4.1.5.4 1 .8 1.5s.9.8 1.6 1.1 1.6.5 2.7.5c1 0 1.8-.1 2.5-.3s1.3-.6 1.7-1.2c.5-.7.8-1.5.8-2.4 0-1.2-.4-2-1.3-2.5s-2.2-.9-4.1-1.2c-1.3-.3-2.4-.6-3.6-1-1.1-.3-2.1-.8-3-1.3s-1.5-1.2-2-2.1c-.5-.8-.8-1.9-.8-3.2 0-2.4.9-4.2 2.6-5.6 1.7-1.3 4-2 6.8-2.1 1.6 0 3.3.3 5 .8 1.7.6 2.9 1.6 3.7 3.1.4 1.4.6 2.6.6 3.7h-4.6c0-1.8-.6-3-1.7-3.5-1.1-.4-2.1-.6-3.1-.6-.2 0-.5 0-1 0s-1.1.2-1.7.4-1.1.5-1.5 1.1c-.5.5-.7 1.2-.7 2.1 0 1.1.5 1.9 1.3 2.3.7.4 1.5.7 2.1.9 3.3.7 5.6 1.3 6.9 1.8 1.3.4 2.2 1 2.8 1.7.7.7 1.1 1.4 1.4 2.2s.4 1.6.4 2.5c0 1.4-.3 2.7-.9 3.8s-1.4 2-2.4 2.6c-1.1.6-2.2 1-3.4 1.3s-2.5.4-3.8.4c-2.5 0-4.7-.6-6.6-1.8-1.8-1.2-2.8-3.3-2.9-6.3z"/><path d="m3.4 58.5h21.9v4.2h-17.1v11.3h16.3v4.2h-16.3v12.1h17.5v4.3h-22.3z"/><path d="m34.7 72.4-.1-2.9h4.6v4.1c.2-.3.4-.8.7-1.2.3-.5.8-1 1.3-1.5.6-.5 1.4-1 2.3-1.3s2-.5 3.4-.5c.6 0 1.4.1 2.4.2.9.2 1.9.5 2.9 1.1s1.8 1.4 2.5 2.5c.6 1.2 1 2.7 1 4.7v17.1h-4.6v-16c0-.9-.1-1.7-.2-2.4-.2-.7-.5-1.3-1.1-1.9-1.2-1.1-2.6-1.7-4.3-1.7s-3.1.6-4.3 1.8c-1.3 1.2-2 3.1-2 5.7v14.5h-4.5z"/><path d="m60.3 69.5h5.1l7.7 19.9 7.6-19.9h5l-10.6 25.1h-4.6z"/><path d="m91.4 58.6h5.5v5.1h-5.5zm.5 10.9h4.6v25.1h-4.6z"/><path d="m106 74.7c0-1.8-.1-3.5-.3-5.1h4.6l.1 4.9c.5-1.8 1.4-3 2.5-3.7s2.2-1.2 3.3-1.3c1.4-.2 2.4-.2 3.1-.1v4.6c-.2-.1-.5-.2-.9-.2-.3 0-.8 0-1.3 0-1.3 0-2.4.2-3.3.5-.9.4-1.5.9-2 1.6-.9 1.4-1.4 3.2-1.3 5.4v13.3h-4.6v-19.9z"/><path d="m123.3 82.4c0-1.6.2-3.2.6-4.8s1.1-3 2-4.4c1-1.3 2.2-2.4 3.8-3.2s3.6-1.2 5.9-1.2c2.4 0 4.5.4 6.1 1.3 1.5.9 2.7 2 3.6 3.3s1.5 2.8 1.8 4.3c.2.8.3 1.5.4 2.2v2.2c0 3.7-1 6.9-3 9.5s-5.1 4-9.3 4c-4-.1-7-1.4-9-3.9-1.9-2.5-2.9-5.6-2.9-9.3m4.8-.3c0 2.7.6 5 1.8 6.9 1.2 2 3 3 5.6 3.1.9 0 1.8-.2 2.7-.5.8-.3 1.6-.9 2.3-1.7s1.3-1.9 1.8-3.2c.4-1.3.6-2.9.6-4.7-.1-6.4-2.5-9.6-7.1-9.6-.7 0-1.5.1-2.4.3-.8.3-1.7.8-2.5 1.6-.8.7-1.4 1.7-1.9 3-.6 1.1-.9 2.8-.9 4.8z"/><path d="m155.9 72.4-.1-2.9h4.6v4.1c.2-.3.4-.8.7-1.2.3-.5.8-1 1.3-1.5.6-.5 1.4-1 2.3-1.3s2-.5 3.4-.5c.6 0 1.4.1 2.4.2.9.2 1.9.5 2.9 1.1s1.8 1.4 2.5 2.5c.6 1.2 1 2.7 1 4.7v17.1h-4.6v-16c0-.9-.1-1.7-.2-2.4-.2-.7-.5-1.3-1.1-1.9-1.2-1.1-2.6-1.7-4.3-1.7s-3.1.6-4.3 1.8c-1.3 1.2-2 3.1-2 5.7v14.5h-4.6z"/><path d="m185.7 72.8-.1-3.3h4.6v3.6c1.2-1.9 2.6-3.2 4.1-3.7 1.5-.4 2.7-.6 3.8-.6 1.4 0 2.6.2 3.6.5.9.3 1.7.7 2.3 1.1 1.1 1 1.9 2 2.3 3.1.2-.4.5-.8 1-1.3.4-.5.9-1 1.5-1.6.6-.5 1.5-.9 2.5-1.3 1-.3 2.2-.5 3.5-.5.9 0 1.9.1 3 .3 1 .2 2 .7 3 1.3s1.7 1.5 2.3 2.7.9 2.7.9 4.6v16.9h-4.6v-16.2c0-1.1-.1-2-.2-2.5-.1-.6-.3-1-.6-1.3-.4-.6-1-1.2-1.8-1.6s-1.8-.6-3.1-.6c-1.5 0-2.7.4-3.6 1-.4.3-.8.5-1.1.9-.3.3-.6.6-.8.8-.5.8-.8 1.8-1 2.8-.1 1.1-.2 2-.1 2.6v14.1h-4.6v-16.7c0-1.6-.5-2.9-1.4-4-.9-1-2.3-1.5-4.2-1.5-1.6 0-2.9.4-3.8 1.1s-1.5 1.2-1.8 1.7c-.5.7-.8 1.5-.9 2.5-.1.9-.2 1.8-.2 2.6v14.3h-4.5z"/><path d="m236.2 82.9c-.1 2.6.5 4.8 1.7 6.5 1.1 1.7 2.9 2.6 5.3 2.6 1.5 0 2.8-.4 3.9-1.3 1-.8 1.6-2.2 1.8-4h4.6c0 .6-.2 1.4-.4 2.3-.3 1-.8 2-1.7 3-.2.3-.6.6-1 1-.5.4-1 .7-1.7 1.1s-1.5.6-2.4.8c-.9.3-2 .4-3.3.4-7.6-.2-11.3-4.5-11.3-12.9 0-2.5.3-4.8 1-6.8s2-3.7 3.8-5.1c1.2-.8 2.4-1.3 3.7-1.6 1.3-.2 2.2-.3 3-.3 2.7 0 4.8.6 6.3 1.6s2.5 2.3 3.1 3.9c.6 1.5 1 3.1 1.1 4.6.1 1.6.1 2.9 0 4h-17.5m12.8-3c0-.3 0-.7 0-1.1s0-.8-.1-1.2c-.1-.9-.4-1.7-.8-2.5s-1-1.5-1.8-2c-.9-.5-2-.8-3.4-.8-.8 0-1.5.1-2.3.3s-1.5.7-2.2 1.3-1.2 1.3-1.6 2.3-.7 2.2-.8 3.6z"/><path d="m261.4 72.4-.1-2.9h4.6v4.1c.2-.3.4-.8.7-1.2.3-.5.8-1 1.3-1.5.6-.5 1.4-1 2.3-1.3s2-.5 3.4-.5c.6 0 1.4.1 2.4.2.9.2 1.9.5 2.9 1.1s1.8 1.4 2.5 2.5c.6 1.2 1 2.7 1 4.7v17.1h-4.6v-16c0-.9-.1-1.7-.2-2.4-.2-.7-.5-1.3-1.1-1.9-1.2-1.1-2.6-1.7-4.3-1.7s-3.1.6-4.3 1.8c-1.3 1.2-2 3.1-2 5.7v14.5h-4.6z"/><path d="m288 69.4h4.3v-5.2l4.5-1.5v6.8h5.4v3.4h-5.4v15.1c0 .3 0 .6.1 1 0 .4.1.7.4 1.1.2.4.5.6 1 .8.4.3 1 .4 1.8.4 1 0 1.7-.1 2.2-.2v3.6c-.9.2-2.1.3-3.8.3-2.1 0-3.6-.4-4.6-1.2s-1.5-2.2-1.5-4.2v-16.8h-4.3v-3.4z"/><path d="m323.3 94.6c-.3-1.2-.5-2.5-.4-3.7-.5 1-1.1 1.8-1.7 2.4-.7.6-1.4 1.1-2 1.4-1.4.5-2.7.8-3.7.8-2.8 0-4.9-.8-6.4-2.2s-2.2-3.1-2.2-5.2c0-1 .2-2.3.8-3.7s1.7-2.6 3.5-3.7c1.4-.7 2.9-1.2 4.5-1.5 1.6-.1 2.9-.2 3.9-.2s2.1 0 3.3.1c.1-2.9-.2-4.8-.9-5.6-.5-.6-1.1-1.1-1.9-1.3s-1.6-.4-2.3-.4c-1.1 0-2 .2-2.6.5-.7.3-1.2.7-1.5 1.2s-.5.9-.6 1.4-.2.9-.2 1.2h-4.6c.1-.7.2-1.4.4-2.3.2-.8.6-1.6 1.3-2.5.5-.6 1-1 1.7-1.3.6-.3 1.3-.6 2-.8 1.5-.4 2.8-.6 4.2-.6 1.8 0 3.6.3 5.2.9s2.8 1.6 3.4 2.9c.4.7.6 1.4.7 2s.1 1.2.1 1.8l-.2 12c0 1 .1 3.1.4 6.3zm-.5-12.2c-.7-.1-1.6-.1-2.6-.1-.5 0-1.2 0-2.1 0-1 .1-2 .3-3 .6s-1.9.8-2.6 1.5c-.8.7-1.2 1.7-1.2 3 0 .4.1.8.2 1.3s.4 1 .8 1.5.9.8 1.6 1.1 1.5.5 2.5.5c2.3 0 4.1-.9 5.2-2.7.5-.8.8-1.7 1-2.7.1-.9.2-2.2.2-4z"/><path d="m336.4 58.6h4.6v36.1h-4.6z"/><path d="m364.1 58.5h11.7c2.1 0 3.9.1 5.5.4.8.2 1.5.4 2.2.9.7.4 1.3.9 1.8 1.6 1.7 1.9 2.6 4.2 2.6 7 0 2.7-.9 5.1-2.8 7.1-.8.9-2 1.7-3.6 2.2-1.6.6-3.9.9-6.9.9h-5.7v16.1h-4.8zm4.8 15.9h5.8c.8 0 1.7-.1 2.6-.2s1.8-.3 2.6-.7 1.5-1 2-1.9c.5-.8.8-2 .8-3.4s-.2-2.5-.7-3.3-1.1-1.3-1.9-1.7c-1.6-.5-3.1-.8-4.5-.7h-6.8v11.9z"/><path d="m393.8 74.7c0-1.8-.1-3.5-.3-5.1h4.6l.1 4.9c.5-1.8 1.4-3 2.5-3.7s2.2-1.2 3.3-1.3c1.4-.2 2.4-.2 3.1-.1v4.6c-.2-.1-.5-.2-.9-.2-.3 0-.8 0-1.3 0-1.3 0-2.4.2-3.3.5-.9.4-1.5.9-2 1.6-.9 1.4-1.4 3.2-1.3 5.4v13.3h-4.6v-19.9z"/><path d="m411.2 82.4c0-1.6.2-3.2.6-4.8s1.1-3 2-4.4c1-1.3 2.2-2.4 3.8-3.2s3.6-1.2 5.9-1.2c2.4 0 4.5.4 6.1 1.3 1.5.9 2.7 2 3.6 3.3s1.5 2.8 1.8 4.3c.2.8.3 1.5.4 2.2v2.2c0 3.7-1 6.9-3 9.5s-5.1 4-9.3 4c-4-.1-7-1.4-9-3.9-1.9-2.5-2.9-5.6-2.9-9.3m4.8-.3c0 2.7.6 5 1.8 6.9 1.2 2 3 3 5.6 3.1.9 0 1.8-.2 2.7-.5.8-.3 1.6-.9 2.3-1.7s1.3-1.9 1.8-3.2c.4-1.3.6-2.9.6-4.7-.1-6.4-2.5-9.6-7.1-9.6-.7 0-1.5.1-2.4.3-.8.3-1.7.8-2.5 1.6-.8.7-1.4 1.7-1.9 3-.7 1.1-.9 2.8-.9 4.8z"/><path d="m439.8 69.4h4.3v-5.2l4.5-1.5v6.8h5.4v3.4h-5.4v15.1c0 .3 0 .6.1 1 0 .4.1.7.4 1.1.2.4.5.6 1 .8.4.3 1 .4 1.8.4 1 0 1.7-.1 2.2-.2v3.6c-.9.2-2.1.3-3.8.3-2.1 0-3.6-.4-4.6-1.2s-1.5-2.2-1.5-4.2v-16.8h-4.3v-3.4z"/><path d="m462.9 82.9c-.1 2.6.5 4.8 1.7 6.5 1.1 1.7 2.9 2.6 5.3 2.6 1.5 0 2.8-.4 3.9-1.3 1-.8 1.6-2.2 1.8-4h4.6c0 .6-.2 1.4-.4 2.3-.3 1-.8 2-1.7 3-.2.3-.6.6-1 1-.5.4-1 .7-1.7 1.1s-1.5.6-2.4.8c-.9.3-2 .4-3.3.4-7.6-.2-11.3-4.5-11.3-12.9 0-2.5.3-4.8 1-6.8s2-3.7 3.8-5.1c1.2-.8 2.4-1.3 3.7-1.6 1.3-.2 2.2-.3 3-.3 2.7 0 4.8.6 6.3 1.6s2.5 2.3 3.1 3.9c.6 1.5 1 3.1 1.1 4.6.1 1.6.1 2.9 0 4h-17.5m12.9-3c0-.3 0-.7 0-1.1s0-.8-.1-1.2c-.1-.9-.4-1.7-.8-2.5s-1-1.5-1.8-2c-.9-.5-2-.8-3.4-.8-.8 0-1.5.1-2.3.3s-1.5.7-2.2 1.3-1.2 1.3-1.6 2.3-.7 2.2-.8 3.6z"/><path d="m501.8 77.5c0-.3 0-.8-.1-1.4s-.3-1.1-.6-1.8c-.2-.6-.7-1.2-1.4-1.6s-1.6-.6-2.7-.6c-1.5 0-2.7.4-3.5 1.2-.9.8-1.5 1.7-1.9 2.8s-.6 2.2-.7 3.2c-.1 1.1-.2 1.8-.1 2.4 0 1.3.1 2.5.3 3.7s.5 2.3.9 3.3c.8 2 2.4 3 4.8 3.1 1.9 0 3.3-.7 4.1-1.9.8-1.1 1.2-2.3 1.2-3.6h4.6c-.2 2.5-1.1 4.6-2.7 6.3-1.7 1.8-4.1 2.7-7.1 2.7-.9 0-2.1-.2-3.6-.6-.7-.2-1.4-.6-2.2-1s-1.5-1-2.2-1.7c-.7-.9-1.4-2.1-2-3.6s-.9-3.5-.9-6.1.4-4.8 1.1-6.6c.7-1.7 1.6-3.1 2.7-4.2 1.1-1 2.3-1.8 3.6-2.2s2.5-.6 3.7-.6h1.6c.6.1 1.3.2 1.9.4.7.2 1.4.5 2.1 1 .7.4 1.3 1 1.8 1.7.9 1.1 1.4 2.1 1.7 3.1.2 1 .3 1.8.3 2.6z"/><path d="m509.3 69.4h4.3v-5.2l4.5-1.5v6.8h5.4v3.4h-5.4v15.1c0 .3 0 .6.1 1 0 .4.1.7.4 1.1.2.4.5.6 1 .8.4.3 1 .4 1.8.4 1 0 1.7-.1 2.2-.2v3.6c-.9.2-2.1.3-3.8.3-2.1 0-3.6-.4-4.6-1.2s-1.5-2.2-1.5-4.2v-16.8h-4.3v-3.4z"/><path d="m529.2 58.6h5.5v5.1h-5.5zm.5 10.9h4.6v25.1h-4.6z"/><path d="m541.8 82.4c0-1.6.2-3.2.6-4.8s1.1-3 2-4.4c1-1.3 2.2-2.4 3.8-3.2s3.6-1.2 5.9-1.2c2.4 0 4.5.4 6.1 1.3 1.5.9 2.7 2 3.6 3.3s1.5 2.8 1.8 4.3c.2.8.3 1.5.4 2.2v2.2c0 3.7-1 6.9-3 9.5s-5.1 4-9.3 4c-4-.1-7-1.4-9-3.9-1.9-2.5-2.9-5.6-2.9-9.3m4.7-.3c0 2.7.6 5 1.8 6.9 1.2 2 3 3 5.6 3.1.9 0 1.8-.2 2.7-.5.8-.3 1.6-.9 2.3-1.7s1.3-1.9 1.8-3.2c.4-1.3.6-2.9.6-4.7-.1-6.4-2.5-9.6-7.1-9.6-.7 0-1.5.1-2.4.3-.8.3-1.7.8-2.5 1.6-.8.7-1.4 1.7-1.9 3-.6 1.1-.9 2.8-.9 4.8z"/><path d="m574.3 72.4-.1-2.9h4.6v4.1c.2-.3.4-.8.7-1.2.3-.5.8-1 1.3-1.5.6-.5 1.4-1 2.3-1.3s2-.5 3.4-.5c.6 0 1.4.1 2.4.2.9.2 1.9.5 2.9 1.1s1.8 1.4 2.5 2.5c.6 1.2 1 2.7 1 4.7v17.1h-4.6v-16c0-.9-.1-1.7-.2-2.4-.2-.7-.5-1.3-1.1-1.9-1.2-1.1-2.6-1.7-4.3-1.7s-3.1.6-4.3 1.8c-1.3 1.2-2 3.1-2 5.7v14.5h-4.6z"/><path d="m14.8 108.5h5.2l14.1 36.1h-5.3l-3.8-9.4h-16.2l-3.8 9.4h-5zm-4.4 22.7h13.3l-6.5-17.8z"/><path d="m44.4 146.5c.1.7.2 1.4.4 1.9.2.6.5 1.1.9 1.6.8.9 2.3 1.4 4.4 1.5 1.6 0 2.8-.3 3.7-.9s1.5-1.4 1.9-2.4c.4-1.1.6-2.3.7-3.7s.1-2.9.1-4.6c-.5.9-1.1 1.7-1.8 2.3s-1.5 1-2.3 1.3c-1.7.4-3 .6-3.9.6-1.2 0-2.4-.2-3.8-.6s-2.6-1.2-3.7-2.5c-1-1.3-1.7-2.8-2.1-4.4s-.6-3.2-.6-4.8c0-4.3 1.1-7.4 3.2-9.5 2-2.1 4.6-3.1 7.6-3.1 1.3 0 2.3.1 3.2.4s1.6.6 2.1 1c.6.4 1.1.8 1.5 1.2.3.4.6.8.9 1.2v-3.4h4.4l-.1 4.5v15.7c0 2.9-.1 5.2-.2 6.7-.2 1.6-.5 2.8-1 3.7-1.1 1.9-2.6 3.2-4.6 3.7-1.9.6-3.8.8-5.6.8-2.4 0-4.3-.3-5.6-.8-1.4-.5-2.4-1.2-3-2s-1-1.7-1.2-2.7c-.2-.9-.3-1.8-.4-2.7zm5.3-5.8c1.4 0 2.5-.2 3.3-.7s1.5-1.1 2-1.8c.5-.6.9-1.4 1.2-2.5.3-1 .4-2.6.4-4.8 0-1.6-.2-2.9-.4-3.9-.3-1-.8-1.8-1.4-2.4-1.3-1.4-3-2.2-5.2-2.2-1.4 0-2.5.3-3.4 1s-1.6 1.5-2 2.4c-.4 1-.7 2-.9 3s-.2 2-.2 2.8c0 1 .1 1.9.3 2.9.2 1.1.5 2.1 1 3s1.2 1.6 2 2.2c.8.7 1.9 1 3.3 1z"/><path d="m73.3 132.9c-.1 2.6.5 4.8 1.7 6.5 1.1 1.7 2.9 2.6 5.3 2.6 1.5 0 2.8-.4 3.9-1.3 1-.8 1.6-2.2 1.8-4h4.6c0 .6-.2 1.4-.4 2.3-.3 1-.8 2-1.7 3-.2.3-.6.6-1 1-.5.4-1 .7-1.7 1.1s-1.5.6-2.4.8c-.9.3-2 .4-3.3.4-7.6-.2-11.3-4.5-11.3-12.9 0-2.5.3-4.8 1-6.8s2-3.7 3.8-5.1c1.2-.8 2.4-1.3 3.7-1.6 1.3-.2 2.2-.3 3-.3 2.7 0 4.8.6 6.3 1.6s2.5 2.3 3.1 3.9c.6 1.5 1 3.1 1.1 4.6.1 1.6.1 2.9 0 4h-17.5m12.9-3c0-.3 0-.7 0-1.1s0-.8-.1-1.2c-.1-.9-.4-1.7-.8-2.5s-1-1.5-1.8-2.1c-.9-.5-2-.8-3.4-.8-.8 0-1.5.1-2.3.3s-1.5.7-2.2 1.3-1.2 1.3-1.6 2.3-.7 2.2-.8 3.7z"/><path d="m98.6 122.4-.1-2.9h4.6v4.1c.2-.3.4-.8.7-1.2.3-.5.8-1 1.3-1.5.6-.5 1.4-1 2.3-1.3s2-.5 3.4-.5c.6 0 1.4.1 2.4.2.9.2 1.9.5 2.9 1.1s1.8 1.4 2.5 2.5c.6 1.2 1 2.7 1 4.7v17.1h-4.6v-16c0-.9-.1-1.7-.2-2.4-.2-.7-.5-1.3-1.1-1.9-1.2-1.1-2.6-1.7-4.3-1.7s-3.1.6-4.3 1.8c-1.3 1.2-2 3.1-2 5.7v14.5h-4.6z"/><path d="m142.7 127.5c0-.3 0-.8-.1-1.4s-.3-1.1-.6-1.8c-.2-.6-.7-1.2-1.4-1.6s-1.6-.6-2.7-.6c-1.5 0-2.7.4-3.5 1.2-.9.8-1.5 1.7-1.9 2.8s-.6 2.2-.7 3.2c-.1 1.1-.2 1.8-.1 2.4 0 1.3.1 2.5.3 3.7s.5 2.3.9 3.3c.8 2 2.4 3 4.8 3.1 1.9 0 3.3-.7 4.1-1.9.8-1.1 1.2-2.3 1.2-3.6h4.6c-.2 2.5-1.1 4.6-2.7 6.3-1.7 1.8-4.1 2.7-7.1 2.7-.9 0-2.1-.2-3.6-.6-.7-.2-1.4-.6-2.2-1s-1.5-1-2.2-1.7c-.7-.9-1.4-2.1-2-3.6s-.9-3.5-.9-6.1.4-4.8 1.1-6.6c.7-1.7 1.6-3.1 2.7-4.2 1.1-1 2.3-1.8 3.6-2.2s2.5-.6 3.7-.6h1.6c.6.1 1.3.2 1.9.4.7.2 1.4.5 2.1 1 .7.4 1.3 1 1.8 1.7.9 1.1 1.4 2.1 1.7 3.1.2 1 .3 1.8.3 2.6z"/><path d="m164.8 144.8-3.4 9.3h-4.7l3.8-9.6-10.3-25h5.2l7.6 19.8 7.7-19.8h5z"/></svg>
+      </span>
+</a>
+          <button type="button" class="usa-menu-btn usa-button--outline usa-button--inverse l-header__menu-button">Menu</button>
+      </div>
+      <div class="l-header__search" id="header-search-drawer">
+            
+<form class="usa-search usa-search--small usa-search--epa" method="get" action="https://search.epa.gov/epasearch">
+  <div role="search">
+    <label class="usa-search__label usa-sr-only" for="search-box">Search</label>
+    <input class="usa-input" id="search-box" type="search" name="querytext" placeholder="Search EPA.gov">
+    <button class="button" type="submit" aria-label="Search">
+      
+<svg class="icon usa-search__submit-icon" aria-hidden="true"><use href="/themes/epa_theme/images/sprite.artifact.svg#magnifying-glass"></use></svg>      <span class="usa-search__submit-text">Search</span>
+    </button>
+    <input type="hidden" name="areaname" value="">
+    <input type="hidden" name="areacontacts" value="">
+    <input type="hidden" name="areasearchurl" value="">
+    <input type="hidden" name="typeofsearch" value="epa">
+    <input type="hidden" name="result_template" value="">
+
+      </div>
+</form>
+            </div>
+    </div>
+
+  </div>
+  <div class="l-header__nav">
+        <nav class="usa-nav usa-nav--epa" role="navigation" aria-label="Primary navigation">
+  <div class="usa-nav__inner">
+    <button type="button" class="usa-nav__close" aria-label="Close">
+      
+<svg class="icon icon--nav-close" aria-hidden="true" role="img"><title>Primary navigation</title><use href="/themes/epa_theme/images/sprite.artifact.svg#xmark"></use></svg>    </button>
+    <div class="usa-nav__menu">
+              
+
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+            
+
+                                      <ul  class="menu menu--main menu--accordion usa-accordion">
+        
+                        
+                                                                          
+      
+      
+      
+      <li  class="menu__item has-subnav is-expanded"><button  class="menu__link has-subnav is-expanded usa-nav__link usa-accordion__button" aria-expanded="false" type="button">
+              Environmental Topics
+              
+<svg class="icon menu__link-icon" aria-hidden="true"><use href="/themes/epa_theme/images/sprite.artifact.svg#angle"></use></svg></button><ul class="menu menu__subnav usa-nav__submenu usa-megamenu "><li  class="menu__item"><a href="/environmental-topics" class="menu__link" data-drupal-link-system-path="node/164839">Environmental Topics</a></li><li  class="menu__item"><a href="/environmental-topics/air-topics" class="menu__link" data-drupal-link-system-path="node/165225">Air</a></li><li  class="menu__item"><a href="/bedbugs" class="menu__link" data-drupal-link-system-path="node/17591">Bed Bugs</a></li><li  class="menu__item"><a href="/environmental-topics/chemicals-pesticides-and-toxics-topics" class="menu__link" data-drupal-link-system-path="node/165371">Chemicals, Toxics, and Pesticide </a></li><li  class="menu__item"><a href="/emergency-response" class="menu__link" data-drupal-link-system-path="node/18839">Emergency Response</a></li><li  class="menu__item"><a href="/environmental-topics/environmental-information-by-location" class="menu__link" data-drupal-link-system-path="node/165443">Environmental Information by Location </a></li><li  class="menu__item"><a href="/environmental-topics/health-topics" class="menu__link" data-drupal-link-system-path="node/165317">Health</a></li><li  class="menu__item"><a href="/environmental-topics/land-waste-and-cleanup-topics" class="menu__link" data-drupal-link-system-path="node/165171">Land, Waste, and Cleanup</a></li><li  class="menu__item"><a href="/lead" class="menu__link" data-drupal-link-system-path="node/3085">Lead</a></li><li  class="menu__item"><a href="/mold" class="menu__link" data-drupal-link-system-path="node/37083">Mold</a></li><li  class="menu__item"><a href="/radon" class="menu__link" data-drupal-link-system-path="node/38609">Radon</a></li><li  class="menu__item"><a href="/research" class="menu__link" data-drupal-link-system-path="node/35507">Research</a></li><li  class="menu__item"><a href="/environmental-topics/science-topics" class="menu__link" data-drupal-link-system-path="node/172685">Science Topics</a></li><li  class="menu__item"><a href="/environmental-topics/water-topics" class="menu__link" data-drupal-link-system-path="node/164827">Water Topics</a></li><li  class="menu__item"><a href="/topics-epa-web" class="menu__link" data-drupal-link-system-path="topics-epa-web">A-Z Topic Index</a></li></ul></li>    
+                        
+                                                                          
+      
+      
+      
+      <li  class="menu__item has-subnav is-expanded"><button  class="menu__link has-subnav is-expanded usa-nav__link usa-accordion__button" aria-expanded="false" type="button">
+              Laws &amp; Regulations
+              
+<svg class="icon menu__link-icon" aria-hidden="true"><use href="/themes/epa_theme/images/sprite.artifact.svg#angle"></use></svg></button><ul class="menu menu__subnav usa-nav__submenu usa-megamenu "><li  class="menu__item"><a href="/laws-regulations" title="View links to regulatory information by topic and sector, and to top pages about environmental laws, regulations, policies, compliance, and enforcement" class="menu__link" data-drupal-link-system-path="node/3157">Laws &amp; Regulations</a></li><li  class="menu__item"><a href="/regulatory-information-sector" class="menu__link" data-drupal-link-system-path="node/3173">By Business Sector</a></li><li  class="menu__item"><a href="/regulatory-information-topic" class="menu__link" data-drupal-link-system-path="node/66677">By Topic</a></li><li  class="menu__item"><a href="/compliance" class="menu__link" data-drupal-link-system-path="node/19411">Compliance</a></li><li  class="menu__item"><a href="/enforcement" class="menu__link" data-drupal-link-system-path="node/10885">Enforcement</a></li><li  class="menu__item"><a href="/guidance" class="menu__link" data-drupal-link-system-path="node/237295">Guidance</a></li><li  class="menu__item"><a href="/laws-regulations/laws-and-executive-orders" class="menu__link" data-drupal-link-system-path="node/66719">Laws and Executive Orders</a></li><li  class="menu__item"><a href="/laws-regulations/regulations" class="menu__link" data-drupal-link-system-path="node/11249">Regulations</a></li></ul></li>    
+                        
+                                                                          
+      
+      
+      
+      <li  class="menu__item has-subnav is-expanded"><button  class="menu__link has-subnav is-expanded usa-nav__link usa-accordion__button" aria-expanded="false" type="button">
+              Report a Violation
+              
+<svg class="icon menu__link-icon" aria-hidden="true"><use href="/themes/epa_theme/images/sprite.artifact.svg#angle"></use></svg></button><ul class="menu menu__subnav usa-nav__submenu usa-megamenu "><li  class="menu__item"><a href="/report-violation" class="menu__link" data-drupal-link-system-path="node/271510">Report a Violation</a></li><li  class="menu__item"><a href="https://echo.epa.gov/report-environmental-violations" class="menu__link">Environmental Violations</a></li><li  class="menu__item"><a href="/office-inspector-general/forms/epa-oig-hotline-complaint-form" class="menu__link" data-drupal-link-system-path="node/297651">Fraud, Waste or Abuse</a></li></ul></li>    
+                        
+                                                                          
+      
+      
+      
+      <li  class="menu__item has-subnav is-expanded"><button  class="menu__link has-subnav is-expanded usa-nav__link usa-accordion__button" aria-expanded="false" type="button">
+              About EPA
+              
+<svg class="icon menu__link-icon" aria-hidden="true"><use href="/themes/epa_theme/images/sprite.artifact.svg#angle"></use></svg></button><ul class="menu menu__subnav usa-nav__submenu usa-megamenu "><li  class="menu__item"><a href="/aboutepa" class="menu__link" data-drupal-link-system-path="node/851">About EPA</a></li><li  class="menu__item"><a href="/aboutepa/our-mission-and-what-we-do" class="menu__link" data-drupal-link-system-path="node/2099">Our Mission and What We Do</a></li><li  class="menu__item"><a href="/aboutepa#hq" class="menu__link" data-drupal-link-system-path="node/851">Headquarters Offices</a></li><li  class="menu__item"><a href="/aboutepa/regional-and-geographic-offices" class="menu__link" data-drupal-link-system-path="node/254965">Regional Offices</a></li><li  class="menu__item"><a href="/aboutepa/epa-laboratories-and-science-advisory-organizations" class="menu__link" data-drupal-link-system-path="node/254969">Labs and Research Centers</a></li><li  class="menu__item"><a href="/planandbudget" class="menu__link" data-drupal-link-system-path="node/863">Planning, Budget, and Results</a></li><li  class="menu__item"><a href="/aboutepa/epa-organization-chart" class="menu__link" data-drupal-link-system-path="node/2481">Organization Chart</a></li><li  class="menu__item"><a href="/history" class="menu__link" data-drupal-link-system-path="node/162637">EPA History</a></li></ul></li>        </ul>
+  
+
+
+  
+  
+  
+  
+
+
+          </div>
+  </div>
+</nav>
+    </div>
+</header>
+
+<main id="main" class="main" role="main" tabindex="-1">
+        
+
+
+
+
+  
+
+
+
+
+  
+
+
+  
+
+    
+  
+
+
+
+<div class="l-page page-has-sidebar has-footer">
+  <div class="l-constrain">
+
+          <div class="l-page__header">
+        <div class="l-page__header-first">
+                    
+    
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+            
+
+
+
+<nav  aria-labelledby="breadcrumb-label" class="breadcrumb" role="navigation">
+  <h4
+     id="breadcrumb-label" class="breadcrumb__title  u-visually-hidden">Breadcrumb</h4>
+
+  <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+                  <a class="breadcrumb__link" href="/">Home</a>
+              </li>
+          <li class="breadcrumb__item">
+                  <a class="breadcrumb__link" href="/ingredients-used-pesticide-products">Ingredients Used in Pesticide Products</a>
+              </li>
+      </ol>
+</nav>
+
+  
+  
+  
+  
+
+  
+          </div>
+      </div>
+    
+    
+          
+<div class="l-sidebar l-sidebar--reversed">
+  <div class="l-sidebar__main">
+          
+
+<article  class="article" lang="en">
+      
+<h1 class="page-title">
+  Glyphosate
+</h1>
+  
+
+      <div class="u-hide-for-print js-toggle-admin-content">
+                  <div data-drupal-messages-fallback class="hidden"></div>
+
+  
+
+            </div>
+  
+        
+            
+<div>
+      <div>
+      
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+            
+  
+
+  <div class="box box--related-info u-align-right">
+<div class="box__title">Related Information</div>
+
+<div class="box__content">
+<ul>
+	<li><a data-once="external-links protected-links" href="/ingredients-used-pesticide-products/letter-californias-office-environmental-health-hazard">WITHDRAWN: EPA’s response to California’s Office of Environmental Health Hazard Assessment on California’s Proposition 65&nbsp;</a></li>
+	<li><ins data-date="2017,12,18"><a href="/pesticides/epa-releases-draft-risk-assessments-glyphosate">EPA Releases Draft Risk Assessments for Glyphosate</a></ins></li>
+	<li><ins data-date="2017,12,18"><a href="/ingredients-used-pesticide-products/draft-human-health-and-ecological-risk-assessments-glyphosate">Draft Human Health and Ecological Risk Assessments for Glyphosate</a></ins></li>
+	<li><a href="/ingredients-used-pesticide-products/registration-enlist-duo">Registration of Enlist Duo</a></li>
+</ul>
+</div>
+</div>
+
+<p>Glyphosate is a widely used herbicide that controls broadleaf weeds and grasses. It has been registered as a pesticide in the U.S. since 1974. Since glyphosate’s first registration, EPA has reviewed and reassessed its safety and uses, including undergoing&nbsp;<a href="/pesticide-reevaluation/registration-review-process">registration review</a>, a program that re-evaluates each registered pesticide on a 15-year cycle.</p>
+
+<p>In February 2020, after receiving and considering public comments on the glyphosate proposed interim decision, EPA published the interim decision registration review decision (ID) for glyphosate. As part of this action, EPA found&nbsp;that there are no risks of concern to human health when glyphosate is used in accordance with its current label. EPA also found that glyphosate is unlikely to be a human carcinogen. The ID also identified potential ecological risks to non-target organisms, primarily non-target plants through spray drift. The ID identified interim risk mitigation measures in the form of label changes, including spray drift management language, herbicide resistance management language, a non-target organism advisory, and certain label consistency measures. It concluded that the benefits of glyphosate outweigh the potential ecological risks when glyphosate is used in accordance with labels.</p>
+
+<p>On March 20, 2020, the glyphosate ID was challenged in the U.S. Court of Appeals for the Ninth Circuit. Petitioners challenged EPA’s analysis of human health and ecological risk, the weighing of such risks against the benefits of glyphosate and the interim risk mitigation measures, and alleged that EPA violated the Endangered Species Act (ESA). On May 18, 2021, EPA sought partial voluntary remand without vacatur of the ecological portion of the ID so the Agency could revisit aspects of its analysis in light of EPA’s November 2020 draft biological evaluation for glyphosate and recent court decisions for other herbicides, among other reasons.</p>
+
+<p>On June 17, 2022, the U.S. Court of Appeals for the Ninth Circuit vacated the human health portion of the glyphosate ID and held that EPA’s registration review decision under FIFRA was an ‘action’ that triggered ESA obligations. The court also granted EPA’s request for voluntary remand, without vacatur, of the ecological portion of the ID but imposed an Oct. 1, 2022 deadline for EPA to issue a new ecological portion. EPA sought relief from this deadline, which the court denied on Aug. 5, 2022.</p>
+
+<p>EPA determined that withdrawal of the glyphosate ID was appropriate in consideration of the Ninth Circuit’s June 17, 2022 decision. The Agency was unable to finalize a new ecological portion in a registration review decision for glyphosate by the court-imposed Oct. 1, 2022, deadline because of the time needed to address the issues for which EPA sought remand of the ecological portion and satisfy ESA requirements. EPA initiated formal ESA consultation with the U.S. Fish and Wildlife Service and the National Marine Fisheries Service (the Services) for glyphosate in November 2021, and consultation is ongoing. Moreover, before issuing any decision, EPA must first prepare a proposed decision, publish for a 60-day public comment period, and consider any comments received. EPA could not complete these processes by the court-imposed deadline.</p>
+
+<p>In accordance with the court’s decision related to human health, the Agency is currently updating its evaluation of the carcinogenic potential of glyphosate to better explain its findings and include the current relevant scientific information. For the ecological portion, EPA intends to address the issues for which it sought remand, including: to consider whether additional or different risk mitigation may be necessary based on the outcome of ESA consultation for glyphosate, prepare an analysis of in-field effects of glyphosate on monarch butterfly habitat, consider whether there are other aspects of its analysis of ecological risks and costs to revisit, and consider what risk mitigation measures may be necessary to reduce potential risk following completion of analyses left outstanding in the ID. EPA also intends to complete ESA consultation with the Services, communicate its determination under the&nbsp;<a href="/endocrine-disruption/first-list-chemicals-tier-1-screening">Endocrine Disruptor Screening Program</a>, and respond to an administrative petition regarding glyphosate before issuing a final registration review decision. EPA is currently working to complete the analysis above as we continue registration review of glyphosate. Although the glyphosate ID has been withdrawn, that does not automatically mean that EPA’s current scientific findings regarding glyphosate, including its longstanding finding that glyphosate is not likely to be carcinogenic to humans, is incorrect or cannot be used as support for a future decision.</p>
+
+<ul>
+	<li><a href="/ingredients-used-pesticide-products/interim-registration-review-decision-and-responses-public">Read the&nbsp;glyphosate&nbsp;interim decision</a>.&nbsp;</li>
+	<li><a href="https://www.regulations.gov/document/EPA-HQ-OPP-2009-0361-14447">Read the Withdrawal of the Glyphosate Interim Registration Review Decision</a>.</li>
+</ul>
+
+<div><strong>Learn more about glyphosate:</strong></div>
+
+<ul>
+	<li>
+	<div><a href="#basic">Basic information on uses</a></div>
+	</li>
+	<li>
+	<div><a href="#human-health">Human health</a></div>
+	</li>
+	<li>
+	<div><a href="#food">Food safety</a></div>
+	</li>
+	<li>
+	<div><a href="#ecological">Ecological health</a></div>
+	</li>
+	<li>
+	<div><a href="#actions">EPA actions and regulatory history</a></div>
+	</li>
+	<li>
+	<div><a href="#additional">Additional information</a></div>
+	</li>
+</ul>
+
+<hr>
+<h2><strong><a id="basic" name="basic"></a>Basic Information on Uses&nbsp;</strong></h2>
+
+<p>Glyphosate targets a broad range of weeds and is important in the production of fruits, vegetables, nuts, and glyphosate-resistant field crops such as corn and soybean. It is effective at managing invasive and noxious weeds. In addition, glyphosate breaks down in the environment, can be used for no-till and low-till farming which can reduce soil erosion, and facilitates integrated pest management.&nbsp;</p>
+
+<p>Products containing glyphosate are sold in various formulations, including as liquid concentrate, solid, and ready-to-use liquid. Glyphosate is used in products such as Roundup® to control weeds in both agricultural and non-agricultural settings. Glyphosate can be applied in agricultural, residential and commercial settings using a wide range of application methods, including aerial sprays, ground broadcast sprayers of various types, shielded and hooded sprayers, wiper applicators, sponge bars, injection systems, and controlled droplet applicators.&nbsp;</p>
+
+<p>Agricultural uses include corn, cotton, canola, soybean, sugar beet, alfalfa, berry crops, Brassica vegetables, bulb vegetables, fruiting vegetables, leafy vegetables, legume vegetables, cucurbit vegetables, root tuber vegetables, cereal grains, grain sorghum, citrus crops, fallow, herbs and spices, orchards, tropical and subtropical fruits, stone fruits, pome fruits, nuts, vine crops, oilseed crops, and sugarcane.&nbsp;</p>
+
+<p>Nonagricultural uses include conservation land, pastures, rangeland, aquatic areas, forests, turf grass, residential areas, non-food tree crops (e.g., pine, poplar, christmas trees), rights of way, commercial areas, paved areas, spot treatments, ornamentals, parks, and wildlife management areas.</p>
+
+<h2><a id="human-health" name="human-health"></a>Human Health</h2>
+
+<p>As noted above, in a June 17, 2022 decision, the U.S. Court of Appeals for the Ninth Circuit vacated the human health portion of the glyphosate ID and remanded it to EPA for further analysis and explanation. EPA’s underlying scientific findings regarding human health are summarized below, pending reconsideration as described above, in accordance with the court’s decision.&nbsp;</p>
+
+<p>EPA scientists performed an independent evaluation of available data for glyphosate and found:</p>
+
+<ul>
+	<li><strong>No risks of concern to human health from current uses of glyphosate.</strong> Glyphosate products&nbsp;used&nbsp;according to label directions do not result in&nbsp;risks to children or adults.<br>
+	&nbsp;</li>
+	<li><strong>No indication that children are more sensitive to glyphosate.</strong> After evaluating numerous studies from a variety of sources, the Agency found no indication that children are more sensitive to glyphosate from <em>in utero</em> or post-natal exposure. As part of the human health risk assessment, the Agency evaluated all populations, including infants, children and women of child-bearing age, and found no risks of concern from ingesting food with glyphosate residues. EPA also found no risks of concern for children entering or playing on residential areas treated with glyphosate.<br>
+	&nbsp;</li>
+	<li><strong>No evidence that glyphosate causes cancer in humans.</strong>&nbsp;The Agency concluded that glyphosate is not likely to be carcinogenic to humans. EPA considered a significantly more extensive and relevant dataset than the International Agency on the Research for Cancer (IARC). EPA’s database includes studies submitted to support registration of glyphosate and studies EPA identified in the open literature.&nbsp;<br>
+	<br>
+	EPA did not agree with the International Agency for Research on Cancer (IARC) conclusion that glyphosate is “probably carcinogenic to humans.” EPA considered a significantly more extensive and relevant dataset than the International Agency on the Research for Cancer (IARC). EPA’s database includes studies submitted to support registration of glyphosate and studies EPA identified in the open literature.&nbsp;For instance, IARC only considered eight animal carcinogenicity studies while EPA used 15 acceptable carcinogenicity studies. EPA does not agree with IARC’s conclusion that glyphosate is “probably carcinogenic to humans.”<br>
+	<br>
+	EPA’s cancer classification is consistent with other international expert panels and regulatory authorities, including the Canadian Pest Management Regulatory Agency, Australian Pesticide and Veterinary Medicines Authority, European Food Safety Authority, European Chemicals Agency, German Federal Institute for Occupational Safety and Health, New Zealand Environmental Protection Authority, and the Food Safety Commission of Japan&nbsp;and the Joint Food and Agriculture Organization/World Health Organization (FAO/WHO) Meeting on Pesticide Residues (JMPR).<br>
+	<br>
+	For more information, read the&nbsp;<a href="https://www.regulations.gov/document?D=EPA-HQ-OPP-2009-0361-0073">Revised Glyphosate Issue Paper: Evaluation of Carcinogenic Potential</a>.</li>
+</ul>
+
+<ul>
+	<li><strong>No indication that glyphosate is an endocrine disruptor.</strong> Glyphosate has undergone <a href="https://www.regulations.gov/document?D=EPA-HQ-OPP-2009-0361-0047">Tier I screening</a> under EPA’s <a href="/endocrine-disruption">Endocrine Disruptor Screening Program</a>. Based on all available information, EPA concluded, using a weight-of-evidence approach, that the existing data do not indicate that glyphosate has the potential to interact with the estrogen, androgen or thyroid signaling pathways. The endocrine disruptor screening program did not indicate the need for additional testing for glyphosate.</li>
+</ul>
+
+<h2><a id="food" name="food"></a>Food Safety</h2>
+
+<p>Residues of glyphosate on any food or feed item are safe for consumers up to the established tolerances. Before allowing the use of a pesticide on food crops, EPA sets a tolerance or limit on how much pesticide residue can legally remain on food and feed products, or commodities. The complete listing of tolerances for glyphosate can be found in <a href="https://www.govinfo.gov/app/details/CFR-2010-title40-vol23/CFR-2010-title40-vol23-sec180-364">40 CFR § 180.364</a>. If residues are found above the established tolerance level, the commodity will be subject to seizure by the government. The presence of a detectible pesticide residue does not mean the residue is at an unsafe level.</p>
+
+<p>Due to its widespread use, trace amounts of glyphosate residues may be found in various fresh fruits, vegetables, cereals, and other food and beverage commodities. However, these trace amounts are not of concern for the consumer.</p>
+
+<p>EPA conducted a highly conservative dietary risk assessment for glyphosate that evaluated all populations, including infants, children, and women of child-bearing age. EPA assumed that 100 percent of all registered crops were treated with glyphosate, that residues were at the tolerance level for each crop, and that residues in drinking water were from direct application of glyphosate to water. These assumptions would lead to much higher estimated levels of exposure than would be expected to occur with actual use. The resulting conservative estimates of dietary exposure were not of concern.</p>
+
+<h2><a id="ecological" name="ecological"></a>Ecological Health</h2>
+
+<p>The ecological risks identified in EPA’s ecological risk assessment included potential risk to terrestrial and aquatic plants, mammals, and birds, and low toxicity to honeybees for most uses. Risks to bees are uncertain for uses with application rates above 5.7 pounds acid equivalent per acre, such as pasture, non-crop sites, and tree crops. The Agency may require additional bee data to address this uncertainty.</p>
+
+<p>EPA is committed to protecting pollinators, including the monarch butterfly, from pesticide exposure. EPA’s strategy to protect the monarch butterfly includes collaborating with federal, state, and other stakeholders on conservation efforts, educating users on how to manage off-target movement and protect off-field habitat, and promoting best management and integrated pest management practices to reduce spray drift and help preserve pollinator habitat.&nbsp;<a href="/pollinator-protection/protecting-monarch-butterflies-pesticides">Read more about what EPA is doing to protect the monarch butterfly</a>.&nbsp;</p>
+
+<h2><a id="actions" name="actions"></a>EPA Actions and Regulatory History&nbsp;</h2>
+
+<p>Glyphosate was first registered in 1974.</p>
+
+<p>EPA initiated registration review for glyphosate in 2009. In 2010, the Agency required registrants of glyphosate products to conduct additional studies to support updated human health and ecological risk assessments. EPA collaborated with Canada’s Pest Management Regulatory Agency to share information for risk assessment.</p>
+
+<p>EPA required a substantial amount of data to be collected and submitted for pesticide registration and registration review, including studies that address product chemistry, product performance, hazard to humans and domestic animals, hazard to non-target plants and wildlife, post-application exposure, applicator exposure, pesticide spray drifts, environmental fate, and residue chemistry. The studies submitted by pesticide producers were required to follow <a href="/test-guidelines-pesticides-and-toxic-substances/master-list-test-guidelines-pesticides-and-toxic">rigorous guidelines</a>. EPA also reviewed numerous glyphosate studies published in the open literature.</p>
+
+<p>In 2015, EPA reexamined the carcinogenic potential of glyphosate. The Agency performed an in-depth review of the glyphosate cancer database, including data from epidemiological, animal carcinogenicity, and genotoxicity studies. In December 2016, as part of registration review, EPA consulted <a href="/sap/fifra-scientific-advisory-panel-sap-basic-information">the Federal Insecticide, Fungicide and Rodenticide Act (FIFRA)&nbsp;Scientific Advisory Panel (SAP)</a>.</p>
+
+<ul>
+	<li><a href="/sap/meeting-materials-december-13-16-2016-scientific-advisory-panel">Meeting Materials and Final Report of the 2016 Glyphosate FIFRA SAP</a></li>
+	<li><a href="https://www.regulations.gov/document?D=EPA-HQ-OPP-2009-0361-0072">EPA’s Response to the Final Report of FIFRA SAP</a></li>
+	<li><a href="https://www.regulations.gov/document?D=EPA-HQ-OPP-2009-0361-0073">Revised Glyphosate Issue Paper: Evaluation of Carcinogenic Potential</a></li>
+</ul>
+
+<p>In December 2017, EPA published the&nbsp;glyphosate human health and ecological risk assessments for public comment.</p>
+
+<ul>
+	<li><a href="https://www.regulations.gov/document?D=EPA-HQ-OPP-2009-0361-0068">Glyphosate Human Health Risk Assessment</a></li>
+	<li><a href="https://www.regulations.gov/document?D=EPA-HQ-OPP-2009-0361-0077">Glyphosate Ecological Risk Assessment</a></li>
+	<li><a href="/ingredients-used-pesticide-products/draft-human-health-and-ecological-risk-assessments-glyphosate">Systematic review of the Open Literature, Drinking Water Assessment, Dietary Exposure Analysis and other supporting documents</a></li>
+</ul>
+
+<p>In May 2019, EPA published the proposed interim registration review decision for glyphosate. After reviewing public comments on the proposed interim decision, EPA published the interim registration review decision for glyphosate in February 2020, which as stated above has been vacated in part and the remainder withdrawn by the Agency. EPA is currently working toward issuing a final registration review decision for glyphosate.</p>
+
+<ul>
+	<li><a href="https://www.regulations.gov/document/EPA-HQ-OPP-2009-0361-14447">Glyphosate interim decision withdrawal</a></li>
+	<li><a href="/ingredients-used-pesticide-products/interim-registration-review-decision-and-responses-public">Glyphosate interim decision</a></li>
+	<li><a href="/ingredients-used-pesticide-products/proposed-interim-registration-review-decision-and-responses-0">Glyphosate proposed interim decision</a></li>
+	<li><a href="/ingredients-used-pesticide-products/proposed-interim-registration-review-decision-and-responses-0">Glyphosate response to proposed interim decision public comments</a></li>
+</ul>
+
+<p>EPA issued a draft biological evaluation for glyphosate in November 2020 for public comment. The <a data-entity-substitution="canonical" data-entity-type="node" data-entity-uuid="6c0d00ba-8b78-46c1-a06d-50849b654e08" href="/endangered-species/final-national-level-listed-species-biological-evaluation-glyphosate">final biological evaluation</a> was released in November 2021.&nbsp;</p>
+
+<h2><a id="additional" name="additional"></a>Additional Information<strong>&nbsp;</strong></h2>
+
+<ul>
+	<li><a href="https://iaspub.epa.gov/apex/pesticides/f?p=CHEMICALSEARCH:3:0::NO:21,3,31,7,12,25:P3_XCHEMICAL_ID:2477">Chemical Search</a> (EPA risk assessments, decisions, and other documents)</li>
+	<li><a href="http://npic.orst.edu/factsheets/glyphogen.html">Glyphosate General NPIC Fact Sheet</a>&nbsp;</li>
+	<li>Glyphosate Registration Review Docket # <a href="https://www.regulations.gov/docket?D=EPA-HQ-OPP-2009-0361">EPA-HQ-OPP-2009-0361</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+    </div>
+    </div>
+
+  
+  </article>
+      </div>
+
+      <div class="l-sidebar__sidebar">
+            
+
+
+
+
+
+<div class="menu-sidenav__overlay"></div>
+
+  
+  
+  
+
+  <div  id="block-webareamenu" class="block--web-area-menu block">
+
+  
+  
+
+      <h2  class="block__title"><a href="/ingredients-used-pesticide-products" hreflang="en">Ingredients Used in Pesticide Products</a></h2>
+  
+  
+
+      <div  class="block__content">
+  
+            
+  <button type="button" class="usa-button usa-button--outline web-area-menu__button" id="web-area-menu__button" aria-label="toggle the side navigation menu">
+    
+<svg class="usa-icon menu-button--open" aria-hidden="true" role="img"><title>Open Sidenav Menu</title><use href="/themes/epa_theme/images/sprite.svg#menu"></use></svg>    
+<svg class="usa-icon menu-button--close" aria-hidden="true" role="img"><title>Close Sidenav Menu</title><use href="/themes/epa_theme/images/sprite.svg#close"></use></svg>  </button>
+
+  <nav class="menu--sidenav-nav">
+
+
+                                      <ul  class="menu--sidenav menu menu--group_menu_link_content-121">
+            	                        
+                        
+      
+      
+      
+      
+      <li  class="menu__item"><a href="/ingredients-used-pesticide-products/basic-information-about-pesticide-ingredients" title="Basic Information About Pesticide Ingredients" class="menu__link" data-drupal-link-system-path="node/41667">Basic Information About Pesticide Ingredients</a></li>        	                        
+                        
+      
+      
+      
+      
+      <li  class="menu__item"><a href="/ingredients-used-pesticide-products/chemically-related-groups-active-ingredients" title="Pesticide Groups" class="menu__link" data-drupal-link-system-path="node/41675">Pesticide Groups</a></li>        	                        
+                        
+      
+      
+      
+      
+      <li  class="menu__item"><a href="/ingredients-used-pesticide-products/pesticide-product-information-system-ppis" title="Pesticide Product Information System" class="menu__link" data-drupal-link-system-path="node/54715">Pesticide Product Information System</a></li>        	                        
+                        
+      
+      
+      
+      
+      <li  class="menu__item"><a href="/ingredients-used-pesticide-products/what-are-biopesticides" title="About Biopesticides" class="menu__link" data-drupal-link-system-path="node/109747">About Biopesticides</a></li>        </ul>
+  
+
+
+  </nav>
+
+  
+  
+      </div>
+  
+  
+  </div>
+
+
+      <div class="menu-sidenav__contact" id="menu-sidenav__contact">
+          <a href="/ingredients-used-pesticide-products/forms/contact-us-about-ingredients-used-pesticide-products" hreflang="en">Contact Us about Ingredients Used in Pesticide Products </a>
+
+      </div>
+        </div>
+  </div>
+
+
+  
+    
+  </div>
+
+      <div class="l-page__footer">
+      <div class="l-constrain">
+              
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+            
+  <div class="l-page__footer-contact"><a href="/ingredients-used-pesticide-products/forms/contact-us-about-ingredients-used-pesticide-products">Contact Us about Ingredients Used in Pesticide Products </a> to ask a question, provide feedback, or report a problem.</div> 
+<div class="l-page__footer-last-updated">Last updated on May 5, 2026</div>
+
+  
+  
+  
+  
+
+
+        </div>
+    </div>
+  </div>
+
+
+  </main>
+
+
+<footer class="footer" role="contentinfo">
+  <div class="l-constrain">
+    <div class="footer__pre-footer">
+        
+
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+            
+  <ul class="list list--footer-language-bar">
+    <li><a href="/lep/assistance">Assistance</a></li>
+    <li><a href="https://espanol.epa.gov/">Spanish</a></li>
+    <li><a href="/lep/arabic">Arabic</a></li>
+    <li><a href="/lep/simplified-chinese">Chinese (simplified)</a></li>
+    <li><a href="/lep/traditional-chinese">Chinese (traditional)</a></li>
+    <li><a href="/lep/french">French</a></li>
+    <li><a href="/lep/sante-ak-anviwonman-enfomasyon-kreyol-ayisyen">Haitian Creole</a></li>
+    <li><a href="/lep/korean">Korean</a></li>
+    <li><a href="/lep/saude-e-informacoes-ambientais-em-portugues">Portuguese</a></li>
+    <li><a href="/lep/russian">Russian</a></li>
+    <li><a href="/lep/tagalog">Tagalog</a></li>
+    <li><a href="/lep/vietnamese">Vietnamese</a></li>
+</ul>
+
+  
+  
+  
+  
+
+
+      </div>
+    <img class="footer__epa-seal" src="/themes/epa_theme/images/epa-seal.svg" alt="United States Environmental Protection Agency" height="100" width="100">
+    <div class="footer__content contextual-region">
+          
+
+
+        <div class="footer__column">
+        <h2>Discover.</h2>
+        <ul class="menu menu--footer">
+          <li class="menu__item">
+            <a href="/accessibility/epa-accessibility-statement" class="menu__link">Accessibility Statement</a>
+          </li>
+          <!--li class="menu__item">
+            <a href="#" class="menu__link">EPA Administrator</a>
+          </li-->
+          <li class="menu__item">
+            <a href="/planandbudget" class="menu__link">Budget &amp; Performance</a>
+          </li>
+          <li class="menu__item">
+            <a href="/contracts" class="menu__link">Contracting</a>
+          </li>
+          <li class="menu__item">
+            <a href="/utilities/wwwepagov-snapshots" class="menu__link">EPA www Web Snapshot</a>
+          </li>
+          <li class="menu__item">
+            <a href="/grants" class="menu__link">Grants</a>
+          </li>
+          <li class="menu__item">
+            <a href="/ocr/no-fear-act-data" class="menu__link">No FEAR Act Data</a>
+          </li>
+          <li class="menu__item">
+            <a href="/web-policies-and-procedures/plain-writing" class="menu__link">Plain Writing</a>
+          </li>
+          <li class="menu__item">
+            <a href="/privacy/privacy-and-security-notice" class="menu__link">Privacy and Security Notice</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__column">
+        <h2>Connect.</h2>
+        <ul class="menu menu--footer">
+          <li class="menu__item">
+            <a href="/data" class="menu__link">Data</a>
+          </li>
+          <li class="menu__item">
+            <a href="/office-inspector-general" class="menu__link">Inspector General</a>
+          </li>
+          <li class="menu__item">
+            <a href="/careers" class="menu__link">Jobs</a>
+          </li>
+          <li class="menu__item">
+            <a href="/newsroom" class="menu__link">Newsroom</a>
+          </li>
+          <li class="menu__item">
+            <a href="https://www.regulations.gov/" class="menu__link">Regulations.gov</a>
+          </li>
+          <li class="menu__item">
+            <a href="/newsroom/email-subscriptions-epa-news-releases" class="menu__link">Subscribe</a>
+          </li>
+          <li class="menu__item">
+            <a href="https://www.usa.gov/" class="menu__link">USA.gov</a>
+          </li>
+          <li class="menu__item">
+            <a href="https://www.whitehouse.gov/" class="menu__link">White House</a>
+          </li>
+        </ul>
+      </div>
+      <div class="footer__column">
+        <h2>Ask.</h2>
+        <ul class="menu menu--footer">
+          <li class="menu__item">
+            <a href="/home/forms/contact-epa" class="menu__link">Contact EPA</a>
+          </li>
+          <li class="menu__item">
+            <a href="/web-policies-and-procedures/epa-disclaimers" class="menu__link">EPA Disclaimers</a>
+          </li>
+          <li class="menu__item">
+            <a href="/aboutepa/epa-hotlines" class="menu__link">Hotlines</a>
+          </li>
+          <li class="menu__item">
+            <a href="/foia" class="menu__link">FOIA Requests</a>
+          </li>
+          <li class="menu__item">
+            <a href="/home/frequent-questions-specific-epa-programstopics" class="menu__link">Frequent Questions</a>
+          </li>
+          <li class="menu__item">
+            <a id="epa-touchpoint" class="menu__link" href="#">Site Feedback</a>
+          </li>
+        </ul>
+        <h2>Follow.</h2>
+        <ul class="menu menu--social">
+          <li class="menu__item">
+            <a class="menu__link" aria-label="EPA’s Facebook" href="https://www.facebook.com/EPA">
+              <svg class="icon icon--social" aria-hidden="true">
+                <use xlink:href="/themes/epa_theme/images/sprite.artifact.svg#facebook-square" xmlns:xlink="http://www.w3.org/1999/xlink" />
+              </svg> </a>
+          </li>
+          <li class="menu__item">
+            <a class="menu__link" aria-label="EPA’s Twitter / X" href="https://x.com/epa">
+              <svg class="icon icon--social" aria-hidden="true">
+                <use xlink:href="/themes/epa_theme/images/sprite.artifact.svg#twitter-square" xmlns:xlink="http://www.w3.org/1999/xlink" />
+              </svg> </a>
+          </li>
+          <li class="menu__item">
+            <a class="menu__link" aria-label="EPA’s Youtube" href="https://www.youtube.com/user/USEPAgov">
+              <svg class="icon icon--social" aria-hidden="true">
+                <use xlink:href="/themes/epa_theme/images/sprite.artifact.svg#youtube-square" xmlns:xlink="http://www.w3.org/1999/xlink" />
+              </svg> </a>
+          </li>
+          <!--li class="menu__item">
+            <a class="menu__link" aria-label="EPA’s Flickr" href="https://www.flickr.com/photos/usepagov">
+              <svg class="icon icon--social" aria-hidden="true">
+                <use xlink:href="/themes/epa_theme/images/sprite.artifact.svg#flickr-square"></use>
+              </svg> </a>
+          </li-->
+          <li class="menu__item">
+            <a class="menu__link" aria-label="EPA’s Instagram" href="https://www.instagram.com/epagov">
+              <svg class="icon icon--social" aria-hidden="true">
+                <use xlink:href="/themes/epa_theme/images/sprite.artifact.svg#instagram-square" xmlns:xlink="http://www.w3.org/1999/xlink" />
+              </svg> </a>
+          </li>
+        </ul>
+      </div>
+<script src="https://touchpoints.app.cloud.gov/touchpoints/f276bd95.js" async></script>
+<style>a#epa-touchpoint{color:#dfe1e2;cursor:pointer;}a#epa-touchpoint:hover{color:#fff;}</style>
+
+
+
+      </div>
+  </div>
+</footer>
+
+  </div>
+
+    
+    
+<a href="#top" class="back-to-top" title="Back to top">
+  <svg class="back-to-top__icon" role="img" aria-label="Back to top">
+    <use href="/themes/epa_theme/images/sprite.artifact.svg#angle"></use>
+  </svg>
+</a>
+    <script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"","currentPath":"node\/63261","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"eJxFyFEKgCAQBcALmXskWfGhgtriauLtiz7qbxgIu5FQQbGcnovBF5oDGl-uos2319a8dqTHR8Mywp1jZ0lKoU_hYv-xs8n0JWtCMLp1oJJnxQ2lpyvZ","theme":"epa_theme","theme_token":null},"ajaxTrustedUrl":[],"epaAlerts":{"tomeEnabled":false,"context":"public"},"viewsAjaxGet":{"public_alerts":"public_alerts"},"mediaelement":{"attachSitewide":0},"user":{"uid":0,"permissionsHash":"d5adb3db24a1974cb6d9d66f2ec46898755a5acc1e89c32935539c73d1bbca41"}}</script>
+<script src="/core/assets/vendor/jquery/jquery.min.js?v=3.7.1"></script>
+<script src="/core/assets/vendor/once/once.min.js?v=1.0.1"></script>
+<script src="/core/misc/drupalSettingsLoader.js?v=10.3.14"></script>
+<script src="/core/misc/drupal.js?v=10.3.14"></script>
+<script src="/core/misc/drupal.init.js?v=10.3.14"></script>
+<script src="/core/assets/vendor/tabbable/index.umd.min.js?v=6.2.0"></script>
+<script src="/modules/custom/epa_wysiwyg/js/plugins/epaNew/epaNew.js?tedc2q"></script>
+<script src="/core/misc/progress.js?v=10.3.14"></script>
+<script src="/core/assets/vendor/loadjs/loadjs.min.js?v=4.3.0"></script>
+<script src="/core/misc/debounce.js?v=10.3.14"></script>
+<script src="/core/misc/announce.js?v=10.3.14"></script>
+<script src="/core/misc/message.js?v=10.3.14"></script>
+<script src="/core/misc/ajax.js?v=10.3.14"></script>
+<script src="/themes/contrib/stable/js/ajax.js?v=10.3.14"></script>
+<script src="/themes/epa_theme/js/dist/common.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/scripts.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/header-search.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/epa-alerts.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/sitewide-alert.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/private-sitewide-alert.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/definition.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/external-links.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/protected-links.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/vid-copy.min.js?v=20251211"></script>
+<script src="/themes/epa_theme/js/dist/sidenav-menu.min.js?v=20251211"></script>
+
+    
+  </body>
+</html>
+
+
+WARC/1.0
+WARC-Date: 2026-07-20T14:51:48Z
+WARC-Type: request
+WARC-Record-ID: <urn:uuid:d80d7e4e-4af4-476d-9d82-0df41f82e3cb>
+WARC-Target-URI: https://www.epa.gov/ingredients-used-pesticide-products/glyphosate
+WARC-Payload-Digest: sha1:3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ
+WARC-Block-Digest: sha1:ZB7WIM3HGK5LOQB6IRQNPPQD3BFODVNY
+Content-Type: application/http; msgtype=request
+Content-Length: 185
+
+GET /ingredients-used-pesticide-products/glyphosate HTTP/1.1
+Host: www.epa.gov
+User-Agent: VerdererWatchdog/0.0 (+https://github.com/satchmakua/verderer) polite-archival-collector
+
+
+

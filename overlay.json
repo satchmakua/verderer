@@ -1,0 +1,87 @@
+{
+  "schema": "druid.overlay/v1",
+  "sources": [
+    "wayback"
+  ],
+  "attested_count": 2,
+  "resource_count": 3,
+  "resources": [
+    {
+      "url": "https://www.epa.gov/climate-indicators",
+      "attested": true,
+      "badge": "druid-attested",
+      "druid": {
+        "target_id": "epa-climate-indicators",
+        "index": 1,
+        "observations": 1,
+        "content_hash": "122082a56bb6e6968563b84578328982f99a55039ed6fd62d81328495f57a8d9a0d4",
+        "fetched_at": "2026-07-11T19:44:47Z",
+        "bundle": "bundles/1.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "captures": [
+            {
+              "timestamp": "20240701120000",
+              "archive_url": "http://web.archive.org/web/20240701120000/https://www.epa.gov/climate-indicators",
+              "mime": "text/html",
+              "status": "200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.epa.gov/ghgreporting",
+      "attested": true,
+      "badge": "druid-attested",
+      "druid": {
+        "target_id": "epa-ghgrp",
+        "index": 0,
+        "observations": 1,
+        "content_hash": "1220e35077d965869c5143c167b6ef937aff9a8990ca01e387b24c5207be5ab9a2f1",
+        "fetched_at": "2026-07-11T19:44:47Z",
+        "bundle": "bundles/0.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "captures": [
+            {
+              "timestamp": "20121002071523",
+              "archive_url": "http://web.archive.org/web/20121002071523/http://www.epa.gov/ghgreporting/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250115090000",
+              "archive_url": "http://web.archive.org/web/20250115090000/http://www.epa.gov/ghgreporting/",
+              "mime": "text/html",
+              "status": "200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.epa.gov/climate-indicators/weather-climate",
+      "attested": false,
+      "badge": null,
+      "druid": null,
+      "external": [
+        {
+          "source": "wayback",
+          "captures": [
+            {
+              "timestamp": "20240702000000",
+              "archive_url": "http://web.archive.org/web/20240702000000/https://www.epa.gov/climate-indicators/weather-climate",
+              "mime": "text/html",
+              "status": "200"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
