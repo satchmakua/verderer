@@ -1,8 +1,8 @@
 {
   "validators": {
     "https://www.climatehubs.usda.gov/": {
-      "etag": "\"1794114384-gzip\"",
-      "last_modified": "Sun, 08 Nov 2026 05:06:24 GMT"
+      "etag": "\"1794204411-gzip\"",
+      "last_modified": "Mon, 09 Nov 2026 06:06:51 GMT"
     },
     "https://www.epa.gov/climate-indicators": {
       "etag": "W/\"6ad8f943-1976\""
@@ -16,8 +16,8 @@
       "last_modified": "Sun, 08 Nov 2026 14:11:43 GMT"
     },
     "https://www.epa.gov/ingredients-used-pesticide-products/glyphosate": {
-      "etag": "W/\"1794058894\"",
-      "last_modified": "Sat, 07 Nov 2026 13:41:34 GMT"
+      "etag": "W/\"1794145948\"",
+      "last_modified": "Sun, 08 Nov 2026 13:52:28 GMT"
     },
     "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip": {
       "last_modified": "Tue, 15 Oct 2024 14:42:16 GMT"
