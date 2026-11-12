@@ -2,7 +2,7 @@
 
 Verderer observes a *curated* set; the volunteer rescue ecosystem (Wayback, OSF, Dataverse,
 Perma.cc, PEDP) has already archived far more. This overlay cross-references those
-third-party archives against Verderer' own attested record and produces one queryable index
+third-party archives against Verderer's own attested record and produces one queryable index
 where each resource is badged by its strongest guarantee:
 
   * **verderer-attested** — Verderer observed this URL, so there is a self-verifying proof
@@ -10,7 +10,7 @@ where each resource is badged by its strongest guarantee:
   * **unverified** — a third-party copy exists (a real, valuable archive) but Verderer never
     observed it, so there is nothing to *prove* about its bytes. No badge.
 
-That badge distinction is the whole point (DESIGN §1): verifiability is Verderer'
+That badge distinction is the whole point (DESIGN §1): verifiability is Verderer's
 differentiator over an ordinary archive index. Each `ArchiveSource` is injected behind a
 narrow port so the harvest is testable offline; the default `WaybackSource` queries the
 Internet Archive CDX API politely (identifiable UA, bounded timeout, read-only). OSF /
@@ -22,6 +22,7 @@ from __future__ import annotations
 import json
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from typing import Any, Protocol
 from urllib.parse import urlsplit
 
@@ -60,13 +61,16 @@ CdxFetcher = Callable[[str, bool, int], list[list[str]]]
 
 
 def wayback_cdx_fetch(url: str, match_prefix: bool = False, limit: int = 20) -> list[list[str]]:
-    """Query the Wayback CDX API. Returns the raw CDX rows (row 0 is the field header).
+    """Query the Wayback CDX API. Returns the raw CDX rows (row 0 is the field header) for
+    the **most recent** ``limit`` distinct captures, oldest of them first.
 
     Read-only, polite: one GET with an identifiable UA and a bounded timeout.
     """
     import httpx  # imported lazily so offline tests never need the dependency
 
-    params = {"url": url, "output": "json", "limit": str(limit), "collapse": "digest"}
+    # A negative limit asks CDX for the last N rows: a reader wants the latest captures,
+    # not the first twenty from years ago.
+    params = {"url": url, "output": "json", "limit": str(-abs(limit)), "collapse": "digest"}
     if match_prefix:
         params["matchType"] = "prefix"
     with httpx.Client(timeout=30.0, headers={"User-Agent": USER_AGENT}, follow_redirects=True) as client:
@@ -150,7 +154,7 @@ def _attested_resources(verderer: Verderer) -> dict[str, dict[str, Any]]:
 def build_overlay(
     verderer: Verderer, sources: list[ArchiveSource], *, query_urls: list[str] | None = None
 ) -> dict[str, Any]:
-    """Cross-reference third-party archive captures with Verderer' attested observations into
+    """Cross-reference third-party archive captures with Verderer's attested observations into
     a single `verderer.overlay/v1` index. Each resource is badged verderer-attested (with a proof
     bundle reference) or left unverified.
 
@@ -162,9 +166,17 @@ def build_overlay(
         query_urls = [t.url for t in verderer.targets.values()]
 
     resources: dict[str, dict[str, Any]] = {}
+    errors: list[dict[str, str]] = []
     for query in query_urls:
         for source in sources:
-            for capture in source.captures(query):
+            try:
+                captures = source.captures(query)
+            except Exception as error:
+                # One archive lookup failing (a timeout, a rate limit) must not cost the whole
+                # index: record it, keep going. The attested rows never depend on a third party.
+                errors.append({"source": source.name, "url": query, "error": " ".join(str(error).split())[:200]})
+                continue
+            for capture in captures:
                 key = _norm(capture.url)
                 res = resources.setdefault(key, {"url": capture.url, "external": {}})
                 res["external"].setdefault(capture.source, []).append(capture)
@@ -203,7 +215,9 @@ def build_overlay(
     records.sort(key=lambda r: (not r["attested"], r["url"]))
     return {
         "schema": OVERLAY_SCHEMA,
+        "generated_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "sources": [s.name for s in sources],
+        "errors": errors,
         "attested_count": sum(1 for r in records if r["attested"]),
         "resource_count": len(records),
         "resources": records,

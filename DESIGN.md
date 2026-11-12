@@ -23,7 +23,7 @@ A volunteer rescue ecosystem already does real work — **EDGI**, **PEDP** (Publ
 
 ### Engineering pillars (the 1–3 things that make or break this)
 
-1. **A trust kernel that resists Verderer' own operators.** The ledger must be tamper-evident even against a malicious insider or future maintainer (Adversary B, §4.1). This is a tile-based Merkle transparency log with signed checkpoints, externally anchored, with an independent offline verifier. **Correctness here is non-negotiable** — a bug voids the entire value proposition. This is the portfolio centerpiece.
+1. **A trust kernel that resists Verderer's own operators.** The ledger must be tamper-evident even against a malicious insider or future maintainer (Adversary B, §4.1). This is a tile-based Merkle transparency log with signed checkpoints, externally anchored, with an independent offline verifier. **Correctness here is non-negotiable** — a bug voids the entire value proposition. This is the portfolio centerpiece.
 2. **Semantic diffing that finds *meaningful* change, not byte noise.** Every page changes constantly (timestamps, tokens, banners). The product value is a layered differ that surfaces the specific, classified, alertable change — and keeps its heuristic interpretation rigorously *outside* the verifiable core.
 3. **Heterogeneous, polite, faithful collection.** HTML, JS-rendered tools, tabular datasets, NetCDF, APIs — each captured faithfully (WARC, content-addressed) without becoming a load problem for the source.
 
@@ -224,7 +224,7 @@ Layered; each layer feeds the typed taxonomy above, which is the alertable unit.
 
 ### 6.3 External anchoring
 
-The ledger head is committed where Verderer' operators cannot silently rewrite it, so even Adversary B's tampering is detectable. **Decision: run three simultaneously from the anchoring milestone** so no single anchor is a trust/availability chokepoint:
+The ledger head is committed where Verderer's operators cannot silently rewrite it, so even Adversary B's tampering is detectable. **Decision: run three simultaneously from the anchoring milestone** so no single anchor is a trust/availability chokepoint:
 
 1. **OpenTimestamps** (→ Bitcoin) — maximally adversary-resistant "existed no later than" proof; `pending` immediately, upgraded to `bitcoin-confirmed` later. Free.
 2. **RFC 3161 TSA** — instant signed timestamp token (FreeTSA / DigiCert / `timestamp.sigstore.dev`). Cheap, well-supported.
@@ -256,7 +256,7 @@ For any observation or diff, a user downloads a single self-verifying bundle. Th
 }
 ```
 
-**Verifier checks (all offline):** (1) each artifact's bytes hash to the observation's hashes; (2) `leaf_hash == H_leaf(observation)`; (3) the inclusion proof binds `leaf_index/leaf_hash` to the checkpoint root; (4) the checkpoint signature is valid under Verderer' published log key (pinned in the verifier); (5) each anchor proves the checkpoint root existed no later than `T_anchor`; (6) optionally, the consistency proof binds an older trusted checkpoint to this one. **Trust is transferable and never routes through Verderer' live service.**
+**Verifier checks (all offline):** (1) each artifact's bytes hash to the observation's hashes; (2) `leaf_hash == H_leaf(observation)`; (3) the inclusion proof binds `leaf_index/leaf_hash` to the checkpoint root; (4) the checkpoint signature is valid under Verderer's published log key (pinned in the verifier); (5) each anchor proves the checkpoint root existed no later than `T_anchor`; (6) optionally, the consistency proof binds an older trusted checkpoint to this one. **Trust is transferable and never routes through Verderer's live service.**
 
 ### 6.5 Public record, API & alerts
 
@@ -304,7 +304,7 @@ Independently-runnable slices, built top-down. **M0 is the walking skeleton.** M
 - **Bespoke-crypto risk in the trust kernel** (the whole value prop). → Build on the published **C2SP tlog-tiles/checkpoint** specs and the audited `tlog_tiles` crate; keep the kernel tiny and dependency-light; ship an independent verifier with a property-test + tamper-test suite from M1.
 - **`tlog_tiles` license & maturity.** It is v0.2 (Cloudflare Research, `cloudflare/azul`). → Before depending: confirm the license is permissive (Apache/MIT/BSD) and vendor/pin the version; the specs are stable even if the crate churns, so a from-spec reimplementation is a fallback.
 - **Decided fork — Rust kernel vs all-Python.** *Decision: Rust `ledger-core` from M1* (a real tile-log crate now exists, and the auditable trust kernel is the portfolio centerpiece). M0 stays Python-only so the walking skeleton ships fast. The live alternative — Python ledger now, rewrite later — trades portfolio value and a WASM verifier for marginally faster early velocity; rejected, but revisit if M1 integration stalls.
-- **Cloaking against a known crawler.** A publisher can serve clean content to Verderer' IP. → Distributed collectors + recorded TLS cert chain + cross-check vs independent archives; *mitigated, not eliminated*; Verderer honestly attests *what it was served*.
+- **Cloaking against a known crawler.** A publisher can serve clean content to Verderer's IP. → Distributed collectors + recorded TLS cert chain + cross-check vs independent archives; *mitigated, not eliminated*; Verderer honestly attests *what it was served*.
 - **Coverage gaps.** If Verderer never observed a resource before it changed, it cannot attest the prior state. → The curated list is a published judgment call; the overlay (M7) cross-references third-party archives to narrow gaps.
 - **Semantic-diff error** (false +/−). → L1/L2 are high-precision; embeddings are triage-only; human review on High-severity classes. The verifiable core is unaffected by differ errors.
 - **Anchor availability/deprecation** (TSA/OTS down or sunset). → Three simultaneous anchors; the design is anchor-pluggable.

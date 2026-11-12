@@ -6,7 +6,7 @@
 //!   verderer-verify consistency            (JSON on stdin) prove one checkpoint extends another (M13)
 //!
 //! The `inclusion` mode takes no directory and contacts no service: it is the offline,
-//! transferable check at the heart of Verderer' value (DESIGN §6.4). stdin JSON:
+//! transferable check at the heart of Verderer's value (DESIGN §6.4). stdin JSON:
 //!   {"record_b64": "...", "index": N, "proof": ["<hex>", ...],
 //!    "checkpoint": "<signed note>", "pubkey_hex": "<hex>"}
 //!

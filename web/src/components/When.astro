@@ -1,0 +1,18 @@
+---
+// A moment in time: printed as an absolute UTC date (the build can't know the reader's
+// clock), upgraded in the browser to "3 hours ago" when recent, with local time on hover.
+import { fmtDate, fmtDateTime } from '../lib/record';
+
+interface Props {
+  iso?: string | null;
+  rel?: 'recent' | 'always' | 'never';
+  time?: boolean;
+}
+const { iso, rel = 'recent', time = false } = Astro.props;
+---
+
+{iso ? (
+  <time datetime={iso} data-rel={rel === 'never' ? undefined : rel}>{time ? fmtDateTime(iso) : fmtDate(iso)}</time>
+) : (
+  <span class="muted">—</span>
+)}

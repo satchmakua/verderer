@@ -20,14 +20,17 @@ def export_site(verderer: Verderer, out_dir: Path, *, base_url: str = "https://v
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     record = build_record(verderer)
+    titles = {target["id"]: target["title"] for target in record["targets"]}
 
     (out / "record.json").write_text(json.dumps(record, indent=2), encoding="utf-8")
     (out / "feed.xml").write_text(
         render_rss(
-            record["events"],
+            record["changes"],
             title=SITE_TITLE,
             link=base_url,
             description="All classified changes across curated targets.",
+            site_url=base_url,
+            titles=titles,
         ),
         encoding="utf-8",
     )
@@ -37,10 +40,12 @@ def export_site(verderer: Verderer, out_dir: Path, *, base_url: str = "https://v
     for target in record["targets"]:
         (feeds / f"{target['id']}.xml").write_text(
             render_rss(
-                target["events"],
+                [change for change in record["changes"] if change["target_id"] == target["id"]],
                 title=f"{SITE_TITLE}: {target['title']}",
                 link=f"{base_url}/target/{target['id']}",
                 description=f"Classified changes for {target['title']}.",
+                site_url=base_url,
+                titles=titles,
             ),
             encoding="utf-8",
         )

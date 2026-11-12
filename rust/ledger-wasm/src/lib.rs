@@ -1,8 +1,8 @@
-//! WASM bindings for Verderer' offline proof-bundle verifier (M5b).
+//! WASM bindings for Verderer's offline proof-bundle verifier (M5b).
 //!
 //! Compiles [`ledger_core::verify_bundle`] to WebAssembly so the public site can verify a
 //! downloaded `verderer.proofbundle/v1` **in the browser**, trusting neither the government
-//! nor Verderer' servers. Ships the same pinned DigiCert + FreeTSA roots as the native
+//! nor Verderer's servers. Ships the same pinned DigiCert + FreeTSA roots as the native
 //! `verderer-verify`, so real-TSA-anchored bundles verify with nothing extra.
 
 use wasm_bindgen::prelude::*;

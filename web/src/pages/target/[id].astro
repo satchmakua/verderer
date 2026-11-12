@@ -1,39 +1,200 @@
 ---
 import Base from '../../layouts/Base.astro';
-import record from '../../data/record.json';
-import { sevClass } from '../../lib/format';
+import ChangeCard from '../../components/ChangeCard.astro';
+import HistoryStrip from '../../components/HistoryStrip.astro';
+import When from '../../components/When.astro';
+import type { Target } from '../../lib/record';
+import {
+  cadence,
+  changes,
+  fmtDate,
+  fmtDateTime,
+  lastCheckNote,
+  plural,
+  record,
+  shortHash,
+  targets,
+} from '../../lib/record';
+import { hasBundle } from '../../lib/site';
 
 export function getStaticPaths() {
-  return (record.targets ?? []).map((t: any) => ({ params: { id: t.id }, props: { target: t } }));
+  return targets.map((t) => ({ params: { id: t.id }, props: { target: t } }));
 }
-const { target } = Astro.props as { target: any };
-
-type Item = { kind: 'obs' | 'event'; at: string; obs?: any; ev?: any };
-const items: Item[] = [
-  ...target.observations.map((o: any) => ({ kind: 'obs' as const, at: o.fetched_at ?? '', obs: o })),
-  ...target.events.map((e: any) => ({ kind: 'event' as const, at: e.detected_at ?? '', ev: e })),
-].sort((a, b) => (b.at || '').localeCompare(a.at || ''));
+const { target } = Astro.props as { target: Target };
+const state = target.state;
+const monitor = target.monitor;
+const own = changes.filter((c) => c.target_id === target.id);
+const meaningful = own.filter((c) => c.category !== 'churn');
+const churn = own.filter((c) => c.category === 'churn');
+const observations = [...target.observations].reverse(); // newest first
+const latest = observations[0];
+const LOG_LIMIT = 300;
+const bundle = hasBundle(target.id);
+const tone = { blocked: 'warn', error: 'warn', gone: 'bad', failing: 'bad', unreachable: '', excluded: '', pending: '' }[state.code];
+const tags = target.tags.map((tag) => ({ tag, meaning: record.criteriaTags[tag] ?? '' }));
 ---
 
-<Base title={`Verderer — ${target.title}`}>
-  <p><a href="/">← all targets</a></p>
+<Base title={`Verderer — ${target.title}`} description={`${target.title}: ${state.detail}`}>
+  <div class="crumbs"><a href="/">Overview</a> / Source</div>
   <h1>{target.title}</h1>
-  <p class="url"><a href={target.url}>{target.url}</a></p>
-  {target.criteria && <p class="muted">{target.criteria}</p>}
-  <p><a href={`/feeds/${target.id}.xml`}>RSS for this target →</a></p>
+  <p>
+    <span class={`chip ${state.code}`}>
+      {state.label}{state.http_status && state.code !== 'live' ? ` · HTTP ${state.http_status}` : ''}
+    </span>
+    &nbsp; <a href={target.url} rel="noopener">{target.url}</a>
+  </p>
 
-  <h2>Timeline</h2>
-  <ol class="timeline">
-    {items.map((it) => it.kind === 'event' ? (
-      <li>
-        <span class={`badge ${sevClass(it.ev.severity)}`}>{it.ev.severity}</span>
-        {' '}<a href={`/event/${it.ev.id}`}><strong>{it.ev.diff_type}</strong></a> <time>{it.at}</time>
-        <pre>{JSON.stringify(it.ev.evidence, null, 1)}</pre>
-      </li>
-    ) : (
-      <li class="obs">
-        observed <time>{it.at}</time> — HTTP {it.obs.http_status} — <code>{(it.obs.content_hash || '').slice(0, 20)}…</code>
-      </li>
-    ))}
-  </ol>
+  {state.code === 'live' ? (
+    <p class="section-note">{state.detail}</p>
+  ) : (
+    <div class:list={['callout', tone]}>
+      <p><strong>{state.label}.</strong> {state.detail}</p>
+      {(state.code === 'unreachable' || state.code === 'failing') && (
+        <p class="small muted">
+          A check that gets no response leaves nothing to sign, so this status comes from the watchdog’s own
+          report of its attempts{monitor?.last_error ? <> — last error: <code>{monitor.last_error}</code></> : ''}.
+        </p>
+      )}
+    </div>
+  )}
+
+  <div class="card">
+    <dl class="facts">
+      <div>
+        <dt>Last checked</dt>
+        <dd>
+          <When iso={monitor?.last_checked} rel="always" time />
+          <span class="sub">{lastCheckNote(target)} · watchdog’s report</span>
+        </dd>
+      </div>
+      <div>
+        <dt>Last change found</dt>
+        <dd>
+          {target.last_change_at ? <When iso={target.last_change_at} /> : 'None so far'}
+          <span class="sub">{plural(meaningful.length, 'change')} on record</span>
+        </dd>
+      </div>
+      <div>
+        <dt>Latest recorded response</dt>
+        <dd>
+          {latest ? <When iso={latest.fetched_at} time /> : 'None'}
+          {latest && <span class="sub">HTTP {latest.http_status} · {plural(target.observations.length, 'response')} recorded</span>}
+        </dd>
+      </div>
+      <div>
+        <dt>First observed</dt>
+        <dd>{fmtDate(target.observations[0]?.fetched_at)}</dd>
+      </div>
+      <div>
+        <dt>Checked</dt>
+        <dd>
+          {cadence(target.interval_seconds)}
+          <span class="sub">{target.kind === 'dataset' ? 'compared as a dataset' : 'compared as a page'}</span>
+        </dd>
+      </div>
+    </dl>
+    <div class="actions">
+      {bundle && <a class="btn primary" href={`/verify?bundle=${target.id}`}>Verify the latest proof</a>}
+      {bundle && <a class="btn" href={`/bundles/${target.id}.json`} download>Download proof bundle</a>}
+      {latest?.warc && <a class="btn" href={`/${latest.warc}`} download>Latest capture (WARC)</a>}
+      <a class="btn" href={`https://web.archive.org/web/*/${target.url}`} rel="noopener">Wayback Machine</a>
+      <a class="btn" href={`/feeds/${target.id}.xml`}>RSS for this source</a>
+    </div>
+  </div>
+
+  <h2>Why it is watched</h2>
+  <p class="section-note">{target.criteria_text || 'No curation note recorded.'}</p>
+  {tags.length > 0 && (
+    <p>
+      {tags.map(({ tag, meaning }) => (
+        <span class="tag" title={meaning} style="margin-right:6px">{meaning || tag}</span>
+      ))}
+    </p>
+  )}
+
+  {target.observations.length > 0 && (
+    <>
+      <h2>History</h2>
+      <p class="section-note">
+        Each tick is a recorded response — green when the source was served, amber when the collector was
+        refused, red when it was missing. Each dot is a change; select one to open it.
+      </p>
+      <div class="card">
+        <HistoryStrip observations={target.observations} changes={own} until={record.generatedAt} />
+      </div>
+    </>
+  )}
+
+  <h2>Changes</h2>
+  {meaningful.length === 0 && (
+    <p class="section-note">
+      {state.code === 'live'
+        ? 'No change has been detected since this source was first observed.'
+        : 'No change to the source’s content has been recorded.'}
+    </p>
+  )}
+  <div class="grid">
+    {meaningful.map((change) => <ChangeCard change={change} showSource={false} />)}
+  </div>
+  {churn.length > 0 && (
+    <details style="margin-top:16px">
+      <summary>{plural(churn.length, 'error-page change')} set aside</summary>
+      <p class="small muted" style="margin-top:8px">
+        On these dates the server’s error page was worded differently than the time before. The source itself
+        was not served either time, so these say nothing about its content.
+      </p>
+      <div class="scroll">
+        <table class="data">
+          <thead><tr><th>Detected</th><th>Response</th><th></th></tr></thead>
+          <tbody>
+            {churn.slice(0, LOG_LIMIT).map((change) => (
+              <tr>
+                <td class="nowrap">{fmtDateTime(change.detected_at)}</td>
+                <td>HTTP {change.to?.http_status ?? '—'} error page changed</td>
+                <td><a href={`/change/${change.id}`}>details</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  )}
+
+  <h2>Recorded responses</h2>
+  <p class="section-note">
+    Every distinct response the collector received, each signed into the log. A re-check that returns the same
+    bytes adds no entry, so gaps here mean “unchanged”, not “unchecked”.
+  </p>
+  {observations.length === 0 ? (
+    <p class="muted">Nothing has been recorded for this source.</p>
+  ) : (
+    <details open={observations.length <= 12}>
+      <summary>{plural(observations.length, 'recorded response')}</summary>
+      <div class="scroll">
+        <table class="data" style="margin-top:8px">
+          <thead>
+            <tr><th>Fetched</th><th>Status</th><th>Content hash</th><th>Capture</th></tr>
+          </thead>
+          <tbody>
+            {observations.slice(0, LOG_LIMIT).map((obs) => (
+              <tr>
+                <td class="nowrap">{fmtDateTime(obs.fetched_at)}</td>
+                <td class="nowrap">HTTP {obs.http_status}</td>
+                <td>
+                  <code title={obs.content_hash}>{shortHash(obs.content_hash, 16)}</code>
+                  <button class="copy" type="button" data-copy={obs.content_hash}>copy</button>
+                </td>
+                <td>{obs.warc ? <a href={`/${obs.warc}`} download>WARC</a> : <span class="muted">—</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {observations.length > LOG_LIMIT && (
+        <p class="small muted">
+          Showing the latest {LOG_LIMIT}. The full list is in <a href="/record.json">record.json</a>.
+        </p>
+      )}
+    </details>
+  )}
 </Base>

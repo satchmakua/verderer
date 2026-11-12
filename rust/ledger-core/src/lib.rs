@@ -1,4 +1,4 @@
-//! Verderer' trust core (M1).
+//! Verderer's trust core (M1).
 //!
 //! A tamper-evident append-only Merkle log built on the [`tlog_tiles`] crate's
 //! implementation of the C2SP tlog algorithms, with C2SP signed checkpoints (Ed25519

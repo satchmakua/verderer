@@ -448,9 +448,9 @@ def cmd_consistency(args: argparse.Namespace) -> int:
 def cmd_verify_consistency(args: argparse.Namespace) -> int:
     """Verify a downloaded `verderer.consistency/v1` bundle offline — the log never forked.
 
-    Soundness note: pin Verderer' public key with `--pubkey` (obtained from a trusted channel).
+    Soundness note: pin Verderer's public key with `--pubkey` (obtained from a trusted channel).
     A gossip proof is only meaningful against a *pinned* key — verifying a bundle under the key
-    it carries proves it is internally consistent, not that it is Verderer' real log (an attacker
+    it carries proves it is internally consistent, not that it is Verderer's real log (an attacker
     can fabricate a self-consistent history under their own key)."""
     try:
         verifier = find_binary("verderer-verify")
@@ -468,7 +468,7 @@ def cmd_verify_consistency(args: argparse.Namespace) -> int:
         key = bundle_key
         print(
             "warning: no --pubkey pinned - this proves the bundle is internally consistent, NOT "
-            "that it is Verderer' real log. Pin Verderer' key with --pubkey for a trust decision."
+            "that it is Verderer's real log. Pin Verderer's key with --pubkey for a trust decision."
         )
     payload = {
         "old_checkpoint": bundle["old_checkpoint"],
@@ -540,7 +540,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     verify_consistency.add_argument("path", type=Path)
     verify_consistency.add_argument(
-        "--pubkey", default=None, help="pin Verderer' public key (hex) - required for a real trust decision"
+        "--pubkey", default=None, help="pin Verderer's public key (hex) - required for a real trust decision"
     )
     verify_bundle = sub.add_parser("verify-bundle", help="verify a downloaded proof bundle offline")
     verify_bundle.add_argument("path", type=Path)

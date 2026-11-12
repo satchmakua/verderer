@@ -1,0 +1,58 @@
+---
+// One watched source at a glance: its state, what last changed, and when it was last checked.
+import type { Target } from '../lib/record';
+import { fmtDate, hostOf, lastCheckNote, plural } from '../lib/record';
+import When from './When.astro';
+
+interface Props {
+  target: Target;
+}
+const { target } = Astro.props;
+const state = target.state;
+const latest = target.observations[target.observations.length - 1];
+
+// The one line that says what this source's history amounts to.
+function story(): string {
+  switch (state.code) {
+    case 'live':
+      return target.change_count
+        ? `${plural(target.change_count, 'change')} recorded · last on ${fmtDate(target.last_change_at)}`
+        : `No changes since first observed on ${fmtDate(target.observations[0]?.fetched_at)}`;
+    case 'blocked':
+      return `Refusing the collector since ${fmtDate(state.since)}`;
+    case 'gone':
+      return `Not found since ${fmtDate(state.since)}`;
+    case 'failing':
+      return `Stopped answering after ${fmtDate(latest?.fetched_at)}`;
+    case 'unreachable':
+      return 'Has never answered';
+    case 'excluded':
+      return 'Not fetched, at the request of the site';
+    default:
+      return state.detail;
+  }
+}
+---
+
+<a class="card source" href={`/target/${target.id}`}>
+  <div class="top">
+    <div>
+      <h3>{target.title}</h3>
+      <div class="host">{hostOf(target.url)}</div>
+    </div>
+    <span class={`chip ${state.code}`}>
+      {state.label}{state.http_status && state.code !== 'live' ? ` · ${state.http_status}` : ''}
+    </span>
+  </div>
+  <div class="lines">
+    <span>{story()}</span>
+    {state.final_url && <span class="muted">Redirects to {hostOf(state.final_url)}</span>}
+    <span class="muted">
+      {target.monitor?.last_checked ? (
+        <>Checked <When iso={target.monitor.last_checked} rel="always" /> — {lastCheckNote(target)}</>
+      ) : (
+        'No check recorded yet'
+      )}
+    </span>
+  </div>
+</a>

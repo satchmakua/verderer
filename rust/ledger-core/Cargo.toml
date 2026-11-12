@@ -3,7 +3,7 @@ name = "ledger-core"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-description = "Verderer' trust core: a tlog Merkle log with C2SP signed checkpoints and an offline verifier."
+description = "Verderer's trust core: a tlog Merkle log with C2SP signed checkpoints and an offline verifier."
 
 [dependencies]
 tlog_tiles = "0.2"

@@ -1,62 +1,236 @@
 ---
 import Base from '../layouts/Base.astro';
+import { record, targets } from '../lib/record';
+import { hasBundle } from '../lib/site';
+
+const sources = targets.filter((t) => hasBundle(t.id)).map((t) => ({ id: t.id, title: t.title }));
+// Handed to the page script as inert JSON (never as markup).
+const pageData = JSON.stringify({ pinnedKey: record.publicKey, sources }).replace(/</g, '\\u003c');
 ---
 
-<Base title="Verderer — verify a proof bundle">
-  <h1>Verify a proof bundle</h1>
-  <p class="muted">
-    Choose a <code>verderer.proofbundle/v1</code> file. It is verified <strong>entirely in your
-    browser</strong> (WebAssembly) — trusting neither the government nor Verderer's servers. Nothing is
-    uploaded. This is the whole point: the proof is transferable, and you can check it yourself.
+<Base title="Verderer — verify a proof" active="verify">
+  <h1>Verify a proof</h1>
+  <p class="lede">
+    A proof bundle is one file: a recorded response, the exact bytes received, and the proof that it sits in
+    Verderer’s signed log. It is checked <strong>entirely in your browser</strong> — nothing is uploaded, and
+    nothing depends on trusting this site.
   </p>
 
-  <div class="verify">
-    <input type="file" id="bundle-file" accept="application/json,.json" />
-    <button id="verify-btn">Verify offline</button>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>Check a source’s latest proof</h3>
+      <p class="small muted">Fetches the published bundle for a source and verifies it here.</p>
+      <div class="toolbar">
+        <select id="bundle-source" aria-label="Source">
+          {sources.map((s) => <option value={s.id}>{s.title}</option>)}
+        </select>
+        <button class="btn primary" id="verify-source" type="button" disabled={sources.length === 0}>Verify</button>
+      </div>
+      {sources.length === 0 && <p class="small muted">No proof bundles are published with this build.</p>}
+    </div>
+    <div class="card">
+      <h3>Check a file you have</h3>
+      <p class="small muted">A <code>verderer.proofbundle/v1</code> file, from this site or anyone else.</p>
+      <div class="toolbar">
+        <input type="file" id="bundle-file" accept="application/json,.json" aria-label="Proof bundle file" />
+        <button class="btn" id="verify-btn" type="button">Verify file</button>
+      </div>
+    </div>
   </div>
-  <p id="verify-status" class="muted">Loading the verifier…</p>
-  <pre id="verify-result" class="result" hidden></pre>
 
-  <p class="muted small">
-    A valid result attests: Verderer observed exactly this content at this URL, faithfully preserved and
-    included in the signed log, and (if anchored) that the log existed no later than the timestamp — none
-    of which routes through Verderer's live service.
-  </p>
+  <p id="verify-status" class="muted small" style="margin-top:12px" aria-live="polite">Loading the verifier…</p>
+  <section id="verify-report" hidden aria-live="polite"></section>
+
+  <h2>What a valid proof establishes</h2>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>It does show</h3>
+      <p class="small">
+        That Verderer’s collector received exactly these bytes, with this status, from this address; that the
+        record of it is in the signed log; and — when the bundle carries an independent timestamp — that the
+        log existed no later than that time.
+      </p>
+    </div>
+    <div class="card">
+      <h3>It does not show</h3>
+      <p class="small">
+        What the agency “really” published, what other visitors were served, anything before the first
+        recorded response, or why something changed. <a href="/guide#proof">More on the limits →</a>
+      </p>
+    </div>
+  </div>
 
   <style>
-    .verify { display: flex; gap: 10px; align-items: center; margin: 18px 0 8px; flex-wrap: wrap; }
-    #verify-btn { background: var(--accent); color: #0b0e12; border: 0; border-radius: 8px; padding: 8px 16px; font-weight: 700; cursor: pointer; }
-    #verify-btn:disabled { opacity: .5; cursor: default; }
-    input[type=file] { color: var(--muted); }
-    .result { white-space: pre-wrap; border-radius: 8px; padding: 12px; margin-top: 10px; }
-    .result.ok { border: 1px solid #2f8a5b; background: #10231a; color: #7ee2a8; }
-    .result.bad { border: 1px solid #7a2f2f; background: #241012; color: #f0a0a0; }
-    .small { font-size: 12.5px; max-width: 62ch; }
+    #verify-report { margin-top: 14px; }
+    .verdict { border-radius: 12px; padding: 16px 18px; border: 1px solid var(--line); background: var(--surface); }
+    .verdict.ok { border-color: color-mix(in srgb, var(--ok) 55%, var(--line)); background: var(--ok-bg); }
+    .verdict.warn { border-color: color-mix(in srgb, var(--warn) 55%, var(--line)); background: var(--warn-bg); }
+    .verdict.bad { border-color: color-mix(in srgb, var(--bad) 55%, var(--line)); background: var(--bad-bg); }
+    .verdict h2 { margin: 0 0 4px; font-size: 21px; }
+    .verdict .out { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; color: var(--ink-2); margin: 8px 0 0; }
+    ul.checks { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+    ul.checks li { display: grid; grid-template-columns: 26px 1fr; gap: 6px; align-items: start; }
+    ul.checks .mark { font-weight: 700; }
+    ul.checks .pass .mark { color: var(--ok); }
+    ul.checks .fail .mark { color: var(--bad); }
+    ul.checks .note .mark { color: var(--muted); }
+    ul.checks small { display: block; color: var(--muted); overflow-wrap: anywhere; }
   </style>
 
+  <script type="application/json" id="verify-data" set:html={pageData}></script>
   <script is:inline type="module">
     import init, { verify_bundle } from '/wasm/ledger_wasm.js';
-    const status = document.getElementById('verify-status');
-    const btn = document.getElementById('verify-btn');
-    const out = document.getElementById('verify-result');
-    const ready = init().then(() => { status.textContent = 'Verifier ready (runs offline in your browser).'; })
-                         .catch((e) => { status.textContent = 'Could not load the WASM verifier: ' + e; });
 
-    function show(message) {
-      const ok = message.startsWith('VALID');
-      out.hidden = false;
-      out.className = 'result ' + (ok ? 'ok' : 'bad');
-      out.textContent = (ok ? '✓ ' : '✗ ') + message;
+    const { pinnedKey, sources } = JSON.parse(document.getElementById('verify-data').textContent);
+    const status = document.getElementById('verify-status');
+    const report = document.getElementById('verify-report');
+    const known = new Map(sources.map((s) => [s.id, s.title]));
+    const ready = init()
+      .then(() => { status.textContent = 'Verifier ready. It runs offline, in this browser tab.'; })
+      .catch((error) => { status.textContent = `Could not load the verifier: ${error}`; throw error; });
+
+    // Everything from a bundle is untrusted input: it only ever reaches the page as text.
+    const el = (tag, className, text) => {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    };
+    const check = (kind, title, detail) => {
+      const item = el('li', kind);
+      item.append(el('span', 'mark', kind === 'pass' ? '✓' : kind === 'fail' ? '✗' : '•'));
+      const body = el('div');
+      body.append(el('strong', '', title));
+      if (detail) body.append(el('small', '', detail));
+      item.append(body);
+      return item;
+    };
+
+    function render(message, bundle, origin) {
+      const valid = message.startsWith('VALID');
+      const key = typeof bundle?.pubkey_hex === 'string' ? bundle.pubkey_hex : '';
+      const ours = Boolean(pinnedKey) && key.toLowerCase() === pinnedKey.toLowerCase();
+      const foreign = valid && Boolean(pinnedKey) && !ours;
+      const observation = bundle && typeof bundle.observation === 'object' ? bundle.observation : null;
+
+      const verdict = el('div', `verdict ${!valid ? 'bad' : foreign ? 'warn' : 'ok'}`);
+      verdict.append(
+        el('h2', '', !valid ? '✗ Not valid' : foreign ? '⚠ Consistent, but not from this log' : '✓ Verified'),
+        el(
+          'p',
+          '',
+          !valid
+            ? 'This file does not hold together as a proof. Something in it was altered, or it is not a proof bundle.'
+            : foreign
+              ? 'The file is internally consistent, but it is signed by a different key than Verderer’s published one — so it proves nothing about Verderer’s record.'
+              : 'Every check passed. This recorded response is exactly what Verderer’s signed log says it is.',
+        ),
+      );
+
+      const checks = el('ul', 'checks');
+      if (valid) {
+        const artifacts = message.match(/(\d+) artifact\(s\) match/);
+        checks.append(
+          check('pass', 'The captured bytes match the recorded fingerprint',
+            artifacts ? `${artifacts[1]} file(s) in the bundle hash to exactly what the record commits to.` : ''),
+          check('pass', 'The record is in the signed log',
+            `Its inclusion proof leads to the signed head of the log${logSize(bundle) ? ` (${logSize(bundle)} entries at the time)` : ''}.`),
+        );
+        if (!pinnedKey) {
+          checks.append(check('note', 'The log signature is valid under the key in the bundle', 'This build has no published key to compare it with.'));
+        } else if (ours) {
+          checks.append(check('pass', 'Signed by Verderer’s published log key', key));
+        } else {
+          checks.append(check('fail', 'Not signed by Verderer’s published log key', `Bundle key ${key || '(none)'} — expected ${pinnedKey}`));
+        }
+        const anchored = message.match(/(\d+) anchor\(s\) verified - existed no later than ([^;]+)/);
+        const unanchored = message.match(/(\d+) anchor\(s\) present but not verified/);
+        if (anchored) {
+          checks.append(check('pass', `Independently timestamped: existed no later than ${anchored[2].trim()}`,
+            `${anchored[1]} timestamp(s) from outside Verderer bound when the log existed.`));
+        } else {
+          checks.append(check('note', 'No independent timestamp in this bundle',
+            'The time below is the collector’s own clock. The proof of what was received does not depend on it.'));
+        }
+        if (unanchored) {
+          checks.append(check('note', `${unanchored[1]} timestamp(s) present but not checked`, 'They come from an authority this verifier does not pin, so they are reported and ignored.'));
+        }
+        const witnessed = message.match(/(\d+)(?:\/\d+)? witness cosignature\(s\)/);
+        if (witnessed) checks.append(check('note', `${witnessed[1]} witness cosignature(s) attached`, 'Independent parties countersigned this log head.'));
+      } else {
+        checks.append(check('fail', 'Verification failed', message.replace(/^INVALID\s*/, '')));
+      }
+      verdict.append(checks);
+
+      if (observation) {
+        const facts = el('dl', 'facts');
+        facts.style.marginTop = '14px';
+        const fact = (name, value) => {
+          const cell = el('div');
+          cell.append(el('dt', '', name), el('dd', '', value === undefined || value === null ? '—' : String(value)));
+          facts.append(cell);
+        };
+        fact(valid ? 'Address fetched' : 'Address claimed', observation.url);
+        fact('Fetched (collector clock)', observation.fetched_at);
+        fact('Response', observation.http_status ? `HTTP ${observation.http_status}` : undefined);
+        fact('Content hash', observation.raw_bytes_hash);
+        verdict.append(facts);
+        if (valid && ours && known.has(observation.target_id)) {
+          const more = el('p', 'small');
+          more.style.margin = '12px 0 0';
+          const link = el('a', '', `See ${known.get(observation.target_id)}’s history →`);
+          link.href = `/target/${encodeURIComponent(observation.target_id)}`;
+          more.append(link);
+          verdict.append(more);
+        }
+      }
+      verdict.append(el('p', 'out', `${origin} — verifier output: ${message}`));
+      report.replaceChildren(verdict);
+      report.hidden = false;
     }
 
-    btn.addEventListener('click', async () => {
-      const file = document.getElementById('bundle-file').files[0];
-      if (!file) { status.textContent = 'Choose a proof.json first.'; return; }
+    function logSize(bundle) {
+      const size = typeof bundle?.checkpoint === 'string' ? Number(bundle.checkpoint.split('\n')[1]) : NaN;
+      return Number.isFinite(size) ? size : null;
+    }
+
+    async function run(text, origin) {
       await ready;
-      const text = await file.text();
-      try { show(verify_bundle(text)); }
-      catch (e) { show('INVALID could not parse bundle: ' + e); }
+      let message;
+      try { message = verify_bundle(text); } catch (error) { message = `INVALID could not read the bundle: ${error}`; }
+      let bundle = null;
+      try { bundle = JSON.parse(text); } catch {}
+      render(String(message), bundle, origin);
+    }
+
+    async function runSource(id) {
+      if (!known.has(id)) return;
+      status.textContent = `Fetching the published proof for ${known.get(id)}…`;
+      try {
+        const response = await fetch(`/bundles/${encodeURIComponent(id)}.json`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        await run(await response.text(), `Published proof for ${known.get(id)}`);
+        status.textContent = 'Verified in this browser tab. Nothing was uploaded.';
+      } catch (error) {
+        status.textContent = `Could not fetch that proof: ${error}`;
+      }
+    }
+
+    document.getElementById('verify-btn').addEventListener('click', async () => {
+      const file = document.getElementById('bundle-file').files[0];
+      if (!file) { status.textContent = 'Choose a proof bundle file first.'; return; }
+      await run(await file.text(), `File ${file.name}`);
+      status.textContent = 'Verified in this browser tab. Nothing was uploaded.';
     });
+    const picker = document.getElementById('bundle-source');
+    document.getElementById('verify-source').addEventListener('click', () => runSource(picker.value));
+
+    // A link from a source page (?bundle=<id>) verifies that source's proof straight away.
+    const wanted = new URLSearchParams(location.search).get('bundle');
+    if (wanted && known.has(wanted)) {
+      picker.value = wanted;
+      runSource(wanted);
+    }
 
     // Test hook so the WASM path can be checked headlessly.
     window.__verifyBundle = async (text) => { await ready; return verify_bundle(text); };

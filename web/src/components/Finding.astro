@@ -1,0 +1,64 @@
+---
+// One finding (a classified diff event), read in plain language, with the logged evidence
+// one click away. The sentence is interpretation; the evidence is what the ledger holds.
+import type { Finding } from '../lib/record';
+import { sevClass } from '../lib/record';
+
+interface Props {
+  finding: Finding;
+  link?: boolean;
+  raw?: boolean;
+}
+const { finding, link = true, raw = true } = Astro.props;
+const evidence = finding.evidence ?? {};
+const explain = finding.explain ?? {
+  kind: 'other',
+  title: finding.diff_type,
+  summary: JSON.stringify(evidence),
+};
+const percent = explain.kind === 'number_changed' ? (explain.summary.match(/\(([+-]\d+%)\)/)?.[1] ?? null) : null;
+const counts = explain.kind.startsWith('term_') && typeof evidence.from === 'number' && typeof evidence.to === 'number';
+const mentions = (n: unknown) => `${n} mention${n === 1 ? '' : 's'}`;
+---
+
+<div class="finding">
+  <div class="ftitle">
+    <span class={`sev ${sevClass(finding.severity)}`}>{finding.severity}</span>
+    {link ? <a href={`/event/${finding.id}`}>{explain.title}</a> : <span>{explain.title}</span>}
+  </div>
+  {explain.kind === 'number_changed' && (
+    <div class="delta">
+      <span class="from">{String(evidence.from)}</span>
+      <span class="arrow" aria-label="became">→</span>
+      <span>{String(evidence.to)}</span>
+      {percent && <span class="pct">{percent}</span>}
+    </div>
+  )}
+  {counts && (
+    <div class="delta">
+      <span class="from">{mentions(evidence.from)}</span>
+      <span class="arrow" aria-label="became">→</span>
+      <span>{mentions(evidence.to)}</span>
+    </div>
+  )}
+  {explain.diff ? (
+    <div class="textdiff">
+      {explain.diff.before}{' '}
+      {explain.diff.removed && <del>{explain.diff.removed}</del>}{' '}
+      {explain.diff.added && <ins>{explain.diff.added}</ins>}{' '}
+      {explain.diff.after}
+    </div>
+  ) : (
+    <p>{explain.summary}</p>
+  )}
+  {raw && (
+    <details class="raw">
+      <summary>Evidence as logged</summary>
+      <pre>{JSON.stringify(evidence, null, 2)}</pre>
+      <p class="small muted">
+        Type <code>{finding.diff_type}</code> · detection layer <code>{finding.layer ?? '—'}</code> · finding id{' '}
+        <code>{finding.id}</code>
+      </p>
+    </details>
+  )}
+</div>

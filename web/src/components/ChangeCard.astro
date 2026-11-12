@@ -1,0 +1,64 @@
+---
+// One change: everything the differ found in a single observed transition, led by what
+// matters most. Carries data attributes so the changes page can filter without a reload.
+import type { Change } from '../lib/record';
+import { changeById, findingsOf, fmtDate, plural, sevClass, titleOf } from '../lib/record';
+import When from './When.astro';
+
+interface Props {
+  change: Change;
+  showSource?: boolean;
+}
+const { change, showSource = true } = Astro.props;
+const findings = findingsOf(change);
+const undoneBy = changeById(change.reverted_by);
+const undoes = changeById(change.reverts);
+const only = findings.length === 1 ? findings[0] : undefined;
+const diff = only?.explain?.diff;
+const searchable = [titleOf(change.target_id), change.target_id, change.headline, ...change.points, ...change.diff_types]
+  .join(' ')
+  .toLowerCase();
+---
+
+<article
+  class:list={['card', 'change', `sev-${sevClass(change.severity)}`]}
+  data-change
+  data-severity={change.severity}
+  data-source={change.target_id}
+  data-category={change.category}
+  data-search={searchable}
+>
+  <div class="meta">
+    <span class={`sev ${sevClass(change.severity)}`}>{change.severity}</span>
+    {showSource && <a class="src" href={`/target/${change.target_id}`}>{titleOf(change.target_id)}</a>}
+    <When iso={change.detected_at} />
+    {change.category === 'churn' && <span class="note-chip">error-page churn</span>}
+  </div>
+  <h3><a href={`/change/${change.id}`}>{change.headline}</a></h3>
+  {diff ? (
+    <div class="textdiff">
+      {diff.before}{' '}
+      {diff.removed && <del>{diff.removed}</del>}{' '}
+      {diff.added && <ins>{diff.added}</ins>}{' '}
+      {diff.after}
+    </div>
+  ) : (
+    <ul class="points">
+      {change.points.map((point) => <li>{point}</li>)}
+    </ul>
+  )}
+  <div class="foot">
+    {undoneBy && (
+      <span class="note-chip">
+        ↩ Reversed {fmtDate(undoneBy.detected_at)} · <a href={`/change/${undoneBy.id}`}>see the reversal</a>
+      </span>
+    )}
+    {undoes && (
+      <span class="note-chip">
+        ↩ Reverses <a href={`/change/${undoes.id}`}>the change of {fmtDate(undoes.detected_at)}</a>
+      </span>
+    )}
+    <span>{plural(findings.length || change.event_ids.length, 'finding')}</span>
+    <a href={`/change/${change.id}`}>Evidence and proof →</a>
+  </div>
+</article>

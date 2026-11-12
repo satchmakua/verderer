@@ -1,0 +1,133 @@
+---
+import Base from '../layouts/Base.astro';
+import ChangeCard from '../components/ChangeCard.astro';
+import type { Change } from '../lib/record';
+import { changes, fmtMonth, summary, targets } from '../lib/record';
+
+// Newest first, grouped under month headings.
+const groups: { month: string; items: Change[] }[] = [];
+for (const change of changes) {
+  const month = fmtMonth(change.detected_at);
+  const last = groups[groups.length - 1];
+  if (last && last.month === month) last.items.push(change);
+  else groups.push({ month, items: [change] });
+}
+const sources = targets.filter((t) => changes.some((c) => c.target_id === t.id));
+const severities = ['High', 'Medium', 'Low', 'Info'].filter((s) => changes.some((c) => c.severity === s));
+const churn = summary.error_page_churn;
+---
+
+<Base title="Verderer — changes" active="changes">
+  <h1>Changes</h1>
+  <p class="lede">
+    Every change detected across the watched sources, newest first. One entry is one comparison between two
+    recorded versions of a source, listing everything that moved between them.
+  </p>
+
+  <div class="toolbar" id="filters">
+    <input type="search" id="q" placeholder="Search changes (a term, a number, a source)…" autocomplete="off" aria-label="Search changes" />
+    <div class="seg" role="group" aria-label="Filter by severity">
+      <button type="button" data-sev="" aria-pressed="true">All</button>
+      {severities.map((s) => <button type="button" data-sev={s} aria-pressed="false">{s}</button>)}
+    </div>
+    <select id="source" aria-label="Filter by source">
+      <option value="">All sources</option>
+      {sources.map((t) => <option value={t.id}>{t.title}</option>)}
+    </select>
+    {churn > 0 && (
+      <label class="check">
+        <input type="checkbox" id="churn" /> Include error-page churn ({churn})
+      </label>
+    )}
+  </div>
+  <p class="muted small" id="count" aria-live="polite">
+    {summary.changes} changes{churn > 0 && `, plus ${churn} error-page changes set aside`}.
+  </p>
+
+  {groups.map((group) => (
+    <section data-month hidden={group.items.every((c) => c.category === 'churn')}>
+      <div class="month">{group.month}</div>
+      <div class="grid">
+        {group.items.map((change) =>
+          change.category === 'churn' ? (
+            <div hidden data-wrap><ChangeCard change={change} /></div>
+          ) : (
+            <div data-wrap><ChangeCard change={change} /></div>
+          ),
+        )}
+      </div>
+    </section>
+  ))}
+  <p id="empty" class="card muted" hidden>No changes match these filters.</p>
+  {churn > 0 && (
+    <p class="small muted" style="margin-top:22px">
+      Error-page churn is a server’s error page rewording itself (a new reference number on an “access denied”
+      page, say). It is recorded, but it is not a change to the source — <a href="/guide#churn">more on this</a>.
+    </p>
+  )}
+
+  <script is:inline>
+    (() => {
+      const wraps = Array.from(document.querySelectorAll('[data-wrap]'));
+      const months = Array.from(document.querySelectorAll('[data-month]'));
+      const q = document.getElementById('q');
+      const source = document.getElementById('source');
+      const churn = document.getElementById('churn');
+      const buttons = Array.from(document.querySelectorAll('[data-sev]'));
+      const count = document.getElementById('count');
+      const empty = document.getElementById('empty');
+      if (!q || !source || !count || !empty) return;
+
+      // Filters live in the address bar, so a filtered view can be bookmarked or shared.
+      const params = new URLSearchParams(location.search);
+      const state = {
+        q: params.get('q') || '',
+        severity: params.get('severity') || '',
+        source: params.get('source') || '',
+        churn: params.get('churn') === '1',
+      };
+
+      function apply() {
+        const needle = state.q.trim().toLowerCase();
+        let shown = 0;
+        let pool = 0;
+        for (const wrap of wraps) {
+          const data = wrap.querySelector('[data-change]').dataset;
+          const inPool = state.churn || data.category !== 'churn';
+          if (inPool) pool++;
+          const visible =
+            inPool &&
+            (!state.severity || data.severity === state.severity) &&
+            (!state.source || data.source === state.source) &&
+            (!needle || (data.search || '').includes(needle));
+          wrap.hidden = !visible;
+          if (visible) shown++;
+        }
+        for (const month of months) month.hidden = !month.querySelector('[data-wrap]:not([hidden])');
+        count.textContent = shown === pool ? `${pool} changes` : `${shown} of ${pool} changes match`;
+        empty.hidden = shown > 0;
+
+        q.value = state.q;
+        source.value = state.source;
+        if (churn) churn.checked = state.churn;
+        for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.sev === state.severity));
+
+        const next = new URLSearchParams();
+        if (state.q) next.set('q', state.q);
+        if (state.severity) next.set('severity', state.severity);
+        if (state.source) next.set('source', state.source);
+        if (state.churn) next.set('churn', '1');
+        const query = next.toString();
+        history.replaceState(null, '', query ? `?${query}` : location.pathname);
+      }
+
+      q.addEventListener('input', () => { state.q = q.value; apply(); });
+      source.addEventListener('change', () => { state.source = source.value; apply(); });
+      churn?.addEventListener('change', () => { state.churn = churn.checked; apply(); });
+      for (const button of buttons) {
+        button.addEventListener('click', () => { state.severity = button.dataset.sev || ''; apply(); });
+      }
+      apply();
+    })();
+  </script>
+</Base>

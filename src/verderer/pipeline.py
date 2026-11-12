@@ -23,6 +23,13 @@ from .differ.dataset import dataset_diff
 from .differ.embedding import Embedder, embedding_triage
 from .differ.normalize import normalize_for_diff
 from .differ.numeric import numeric_watch
+from .differ.status import (
+    DIFFERS_FROM_LAST_SERVED,
+    NO_EARLIER_VERSION,
+    SAME_AS_LAST_SERVED,
+    is_served,
+    status_watch,
+)
 from .differ.structure import structure_watch
 from .differ.termwatch import term_watch
 from .ledger.core import Ledger, checkpoint_size
@@ -128,12 +135,18 @@ class Verderer:
                 f"which is not registered ({sorted(self.collectors)})"
             ) from None
 
-    def _latest_observation_for(self, target_id: str) -> Observation | None:
+    def _latest_observation_for(self, target_id: str, *, served_only: bool = False) -> Observation | None:
+        """This target's most recent attested observation — or, with ``served_only``, the most
+        recent one whose response actually carried the resource (a 2xx), which is the version
+        a reappearing resource is compared against."""
         latest: dict | None = None
         for entry in self.log.entries():
             record = entry.record
-            if record.get("schema") == "verderer.observation/v1" and record.get("target_id") == target_id:
-                latest = record
+            if record.get("schema") != "verderer.observation/v1" or record.get("target_id") != target_id:
+                continue
+            if served_only and not is_served(int(record.get("http_status") or 0)):
+                continue
+            latest = record
         return Observation.from_record(latest) if latest is not None else None
 
     def observe(self, target_id: str) -> ObserveResult:
@@ -197,7 +210,7 @@ class Verderer:
             observation = self._archive_warc(observation, body, collected.capture)
 
         diffs: list[DiffRecord] = []
-        if previous is not None and previous.raw_bytes_hash != observation.raw_bytes_hash:
+        if previous is not None:
             diffs = self._diff(target, previous, observation, body)
 
         # The attested observation is logged first, then its interpretation.
@@ -237,18 +250,65 @@ class Verderer:
     def _diff(
         self, target: Target, previous: Observation, observation: Observation, body: bytes
     ) -> list[DiffRecord]:
+        """Interpret the transition ``previous`` -> ``observation`` (DESIGN §6.2).
+
+        Availability first (the status watch): an error response's body is the server's error
+        page, not the resource's content, so the content layers only ever compare two responses
+        that were both *served*. A resource that comes back is compared with the last version
+        that was served — whether it returned altered is exactly what a reappearance raises.
+        """
         now = _utc_now()
+        was_served, now_served = is_served(previous.http_status), is_served(observation.http_status)
+        if was_served and now_served:
+            diffs = status_watch(previous, observation, detected_at=now)  # a final-URL change, if any
+            if previous.raw_bytes_hash != observation.raw_bytes_hash:
+                prev_body = self.store.get(previous.raw_bytes_hash)
+                diffs += self._content_diff(target, previous, prev_body, observation, body, now)
+            return diffs
+
+        baseline: Observation | None = None
+        versus: str | None = None
+        if now_served:
+            baseline = self._latest_observation_for(target.id, served_only=True)
+            if baseline is None:
+                versus = NO_EARLIER_VERSION
+            elif baseline.raw_bytes_hash == observation.raw_bytes_hash:
+                versus = SAME_AS_LAST_SERVED
+            else:
+                versus = DIFFERS_FROM_LAST_SERVED
+        diffs = status_watch(previous, observation, detected_at=now, versus_last_served=versus)
+        if baseline is not None and versus == DIFFERS_FROM_LAST_SERVED:
+            try:
+                baseline_body: bytes | None = self.store.get(baseline.raw_bytes_hash)
+            except Exception:
+                # The earlier version's bytes can't be read back (the store is a port; every
+                # backend fails differently). The reappearance is still recorded — it just
+                # isn't itemised — rather than losing the observation to a retry loop.
+                baseline_body = None
+            if baseline_body is not None:
+                diffs += self._content_diff(target, baseline, baseline_body, observation, body, now)
+        return diffs
+
+    def _content_diff(
+        self,
+        target: Target,
+        previous: Observation,
+        prev_body: bytes,
+        observation: Observation,
+        body: bytes,
+        now: str,
+    ) -> list[DiffRecord]:
+        """The content layers, over two responses that both carried the resource."""
         if target.kind == "dataset":
             # L4 — tabular schema + distributional diff over the raw bytes.
             return dataset_diff(
-                self.store.get(previous.raw_bytes_hash),
+                prev_body,
                 body,
                 target_id=observation.target_id,
                 detected_at=now,
                 from_hash=previous.raw_bytes_hash,
                 to_hash=observation.raw_bytes_hash,
             )
-        prev_body = self.store.get(previous.raw_bytes_hash)
         # M12: normalize AND noise-suppress (timestamps/nonces/session ids) before diffing, so
         # a re-render that changed nothing meaningful doesn't false-fire. Attested bytes untouched.
         prev_text = normalize_for_diff(prev_body)

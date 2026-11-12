@@ -76,6 +76,16 @@ def _default_jitter(interval: float, fraction: float) -> float:
     return random.uniform(-fraction, fraction) * interval
 
 
+# An error message is kept short: it is published (as operator-reported health, never as an
+# attested fact) so a reader can tell a dead domain from a collector fault.
+_ERROR_CAP = 300
+
+
+def _describe_error(error: BaseException) -> str:
+    text = " ".join(f"{type(error).__name__}: {error}".split())
+    return text[:_ERROR_CAP]
+
+
 @dataclass
 class ScheduleEntry:
     target_id: str
@@ -83,6 +93,8 @@ class ScheduleEntry:
     last_run: float | None = None
     last_status: str = ""  # last ObserveResult.status, or "error"
     consecutive_failures: int = 0
+    last_ok: float | None = None  # the last attempt that got an answer (observed/unchanged/skipped)
+    last_error: str = ""  # why the most recent attempt failed; cleared by the next success
 
     def to_record(self) -> dict[str, Any]:
         return {
@@ -91,18 +103,41 @@ class ScheduleEntry:
             "last_run": self.last_run,
             "last_status": self.last_status,
             "consecutive_failures": self.consecutive_failures,
+            "last_ok": self.last_ok,
+            "last_error": self.last_error,
         }
 
     @classmethod
     def from_record(cls, rec: dict[str, Any]) -> ScheduleEntry:
         last_run = rec.get("last_run")
+        last_ok = rec.get("last_ok")
         return cls(
             target_id=str(rec["target_id"]),
             next_due=float(rec["next_due"]),
             last_run=None if last_run is None else float(last_run),
             last_status=str(rec.get("last_status", "")),
             consecutive_failures=int(rec.get("consecutive_failures", 0)),
+            last_ok=None if last_ok is None else float(last_ok),
+            last_error=str(rec.get("last_error", "")),
         )
+
+
+def load_schedule_state(path: Path) -> dict[str, ScheduleEntry]:
+    """The persisted per-target schedule state, or ``{}`` if it is absent or unreadable.
+
+    Shared by the scheduler (which owns the file) and the public-record export (which reports
+    each target's last check alongside the attested record — clearly labelled as the
+    operator's own account, since "we looked and nothing changed" leaves no ledger leaf).
+    """
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return {str(rec["target_id"]): ScheduleEntry.from_record(rec) for rec in data.get("entries", [])}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        # A corrupt schedule file must not brick the watchdog; start fresh (every target
+        # simply becomes due now). The ledger and attested record are untouched.
+        return {}
 
 
 @dataclass
@@ -144,17 +179,7 @@ class Scheduler:
     # -- state persistence -------------------------------------------------------------
 
     def _load_state(self) -> dict[str, ScheduleEntry]:
-        if not self.state_path.exists():
-            return {}
-        try:
-            data = json.loads(self.state_path.read_text(encoding="utf-8"))
-            return {
-                str(rec["target_id"]): ScheduleEntry.from_record(rec) for rec in data.get("entries", [])
-            }
-        except (OSError, ValueError, TypeError, KeyError):
-            # A corrupt schedule file must not brick the watchdog; start fresh (every target
-            # simply becomes due now). The ledger and attested record are untouched.
-            return {}
+        return load_schedule_state(self.state_path)
 
     def _save_state(self) -> None:
         self.state_path.parent.mkdir(parents=True, exist_ok=True)
@@ -219,11 +244,14 @@ class Scheduler:
             outcome: ObserveResult = self.verderer.observe(target_id)
         except Exception as error:  # transient/parse failure — retry soon, do not lose it
             entry.last_status = "error"
+            entry.last_error = _describe_error(error)
             self._reschedule(entry, interval, now, failed=True)
             result.errored.append(f"{target_id}: {error}")
             self._save_state()
             return
         entry.last_status = outcome.status
+        entry.last_ok = now
+        entry.last_error = ""
         self._reschedule(entry, interval, now, failed=False)
         if outcome.status == "observed":
             result.observed.append(target_id)

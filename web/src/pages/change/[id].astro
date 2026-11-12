@@ -1,0 +1,153 @@
+---
+import Base from '../../layouts/Base.astro';
+import Finding from '../../components/Finding.astro';
+import When from '../../components/When.astro';
+import type { Change, Endpoint } from '../../lib/record';
+import {
+  changeById,
+  changes,
+  findingsOf,
+  fmtDate,
+  fmtDateTime,
+  plural,
+  sevClass,
+  shortHash,
+  targetById,
+  titleOf,
+} from '../../lib/record';
+import { hasBundle } from '../../lib/site';
+
+export function getStaticPaths() {
+  return changes.map((c) => ({ params: { id: c.id }, props: { change: c } }));
+}
+const { change } = Astro.props as { change: Change };
+const target = targetById(change.target_id);
+const findings = findingsOf(change);
+const undoneBy = changeById(change.reverted_by);
+const undoes = changeById(change.reverts);
+const bundle = hasBundle(change.target_id);
+const versions: { label: string; side: Endpoint }[] = [
+  { label: 'Before', side: change.from },
+  { label: 'After', side: change.to },
+];
+---
+
+<Base title={`Verderer — ${change.headline}`} description={`${titleOf(change.target_id)}: ${change.headline}`} active="changes">
+  <div class="crumbs">
+    <a href="/">Overview</a> / <a href="/changes">Changes</a> /
+    <a href={`/target/${change.target_id}`}>{titleOf(change.target_id)}</a>
+  </div>
+  <p class="eyebrow">Change detected <When iso={change.detected_at} time rel="never" /></p>
+  <h1>{change.headline}</h1>
+  <p>
+    <span class={`sev ${sevClass(change.severity)}`}>{change.severity} severity</span>
+    &nbsp; on <a href={`/target/${change.target_id}`}>{titleOf(change.target_id)}</a>
+    {target && <span class="muted"> · <a href={target.url} rel="noopener">{target.url}</a></span>}
+  </p>
+
+  {change.category === 'churn' && (
+    <div class="callout">
+      <p>
+        <strong>This is error-page churn, not a change to the source.</strong> The server answered with an
+        error page both times (HTTP {change.to?.http_status ?? '—'}), and only that page’s wording differs. It
+        is on the record because every distinct response is, but it says nothing about the source’s content.
+      </p>
+    </div>
+  )}
+  {undoneBy && (
+    <div class="callout ok">
+      <p>
+        <strong>Reversed on {fmtDate(undoneBy.detected_at)}.</strong> A later change put back exactly what this
+        one altered. <a href={`/change/${undoneBy.id}`}>See the reversal →</a>
+      </p>
+    </div>
+  )}
+  {undoes && (
+    <div class="callout ok">
+      <p>
+        <strong>This reverses an earlier change.</strong> It puts back exactly what
+        <a href={`/change/${undoes.id}`}>the change of {fmtDate(undoes.detected_at)}</a> altered.
+      </p>
+    </div>
+  )}
+
+  <h2>What changed</h2>
+  {change.netted && (
+    <div class="card" style="margin-bottom:14px">
+      <p class="eyebrow">Net effect</p>
+      <ul class="points" style="margin:6px 0 0; padding-left:20px">
+        {change.points.map((point) => <li>{point}</li>)}
+      </ul>
+    </div>
+  )}
+  {change.netted ? (
+    <details>
+      <summary>All {plural(findings.length, 'finding')} as the differ reported them</summary>
+      <div class="card" style="margin-top:10px">
+        {findings.map((finding) => <Finding finding={finding} />)}
+      </div>
+    </details>
+  ) : (
+    <div class="card">
+      {findings.map((finding) => <Finding finding={finding} />)}
+      {findings.length === 0 && <p class="muted">The findings for this change are not in this record.</p>}
+    </div>
+  )}
+
+  <h2>The two versions compared</h2>
+  <p class="section-note">
+    Both versions are recorded responses, signed into the log. Download either capture to see the exact bytes
+    the collector received.
+  </p>
+  <div class="grid cols-2">
+    {versions.map(({ label, side }) => (
+      <div class="card">
+        <p class="eyebrow">{label}</p>
+        {side ? (
+          <dl class="facts" style="grid-template-columns:1fr">
+            <div><dt>Fetched</dt><dd>{fmtDateTime(side.observed_at)}</dd></div>
+            <div><dt>Response</dt><dd>HTTP {side.http_status ?? '—'}</dd></div>
+            <div>
+              <dt>Content hash</dt>
+              <dd>
+                <code title={side.content_hash}>{shortHash(side.content_hash, 20)}</code>
+                <button class="copy" type="button" data-copy={side.content_hash ?? ''}>copy</button>
+              </dd>
+            </div>
+            {side.warc && <div><dt>Capture</dt><dd><a href={`/${side.warc}`} download>Download WARC</a></dd></div>}
+          </dl>
+        ) : (
+          <p class="muted">This version’s record could not be matched.</p>
+        )}
+      </div>
+    ))}
+  </div>
+
+  <h2 id="proof">What is proven, and what is interpretation</h2>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>Proven</h3>
+      <p class="small">
+        That the collector received the “before” bytes at one time and the “after” bytes at another, from this
+        address — and that neither record has been altered since. Each is a leaf in a signed, append-only log,
+        checkable offline.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Interpretation</h3>
+      <p class="small">
+        The headline, the severity, and the change type are a best-effort reading of the difference between
+        those two versions. They are open to review, and nothing about why the source changed is claimed.
+      </p>
+    </div>
+  </div>
+  <div class="actions">
+    {bundle && <a class="btn primary" href={`/verify?bundle=${change.target_id}`}>Verify this source’s latest proof</a>}
+    <a class="btn" href="/guide#verify">How to verify it yourself</a>
+  </div>
+
+  <p class="small muted" style="margin-top:22px">
+    Permanent id <code>{change.id}</code>
+    <button class="copy" type="button" data-copy={change.id}>copy</button>
+  </p>
+</Base>

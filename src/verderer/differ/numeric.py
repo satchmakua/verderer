@@ -181,3 +181,28 @@ def numeric_watch(
             )
         )
     return diffs
+
+
+def relative_change(previous_raw: str, current_raw: str) -> float | None:
+    """The fractional change between two quantities as written ("0.010 mg/L" -> "0.015 mg/L"
+    is ``0.5``), or ``None`` when it can't be stated honestly: unparseable text, a zero
+    baseline, or two units that share no dimension. Cross-unit pairs are compared in base
+    units, exactly as the detector compares them. A presentation aid for readers — it never
+    feeds back into detection."""
+    prev_match, curr_match = _QTY.search(previous_raw), _QTY.search(current_raw)
+    if prev_match is None or curr_match is None:
+        return None
+    try:
+        prev_value = float(prev_match.group("value").replace(",", ""))
+        curr_value = float(curr_match.group("value").replace(",", ""))
+    except ValueError:
+        return None
+    prev_unit, curr_unit = prev_match.group("unit"), curr_match.group("unit")
+    if prev_unit != curr_unit:
+        prev_base, curr_base = _base(prev_value, prev_unit), _base(curr_value, curr_unit)
+        if prev_base is None or curr_base is None or prev_base[1] != curr_base[1]:
+            return None
+        prev_value, curr_value = prev_base[0], curr_base[0]
+    if prev_value == 0 or not math.isfinite(prev_value) or not math.isfinite(curr_value):
+        return None
+    return (curr_value - prev_value) / abs(prev_value)

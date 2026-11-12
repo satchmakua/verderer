@@ -132,7 +132,7 @@ def test_cmd_consistency_baseline_then_proves(tmp_path: Path, ledger_built: None
 
 def test_verify_consistency_binds_to_a_pinned_key(tmp_path: Path, ledger_built: None) -> None:
     # A gossip bundle verified under a WRONG pinned key must be rejected (an attacker's
-    # self-consistent history under their own key proves nothing about Verderer' real log).
+    # self-consistent history under their own key proves nothing about Verderer's real log).
     import argparse
 
     from verderer.cli import cmd_verify_consistency

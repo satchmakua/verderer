@@ -1,83 +1,174 @@
 ---
 import Base from '../layouts/Base.astro';
-import record from '../data/record.json';
-import { sevClass, summarize, type Event } from '../lib/format';
+import ChangeCard from '../components/ChangeCard.astro';
+import SourceCard from '../components/SourceCard.astro';
+import When from '../components/When.astro';
+import {
+  changes,
+  fmtDate,
+  fmtDateTime,
+  plural,
+  record,
+  sevClass,
+  shortHash,
+  sortedSources,
+  STATE_NAMES,
+  STATE_ORDER,
+  summary,
+  titleOf,
+} from '../lib/record';
 
-const events = (record.events ?? []) as Event[];
-const targets = record.targets ?? [];
+const meaningful = changes.filter((c) => c.category !== 'churn');
+const notable = meaningful.filter((c) => c.category === 'notable');
+const recent = meaningful.slice(0, 8);
+const sources = sortedSources();
+const states = STATE_ORDER.filter((code) => summary.states[code]).map((code) => ({
+  code,
+  count: summary.states[code],
+  name: STATE_NAMES[code] ?? code,
+}));
 ---
 
-<Base title="Verderer — the public record">
-  <section class="hero">
-    <h1>What the government's environmental data said — and how it is being changed.</h1>
-    <p>
-      An immutable, provable record over a curated set of high-value targets. Every observation is
-      cryptographically attested and independently verifiable offline; every change below is classified.
+<Base title="Verderer — the public record" active="overview">
+  <section>
+    <h1>What the government’s environmental data said — and how it is changing.</h1>
+    <p class="lede">
+      Verderer re-checks {summary.targets} government pages and datasets several times a day, keeps a signed,
+      tamper-evident record of every distinct response, and flags the changes that matter. Nothing here asks
+      for your trust: every entry can be verified independently.
     </p>
-    <p>
-      <a href="/feed.xml">Subscribe (RSS) to all changes →</a>
-      &nbsp;·&nbsp;
-      <a href="/verify">Verify a proof bundle in your browser →</a>
-      &nbsp;·&nbsp;
-      <a href="/overlay">Federated overlay (attested vs archived) →</a>
+
+    <div class="status" data-freshness data-generated={record.generatedAt ?? ''} data-tone="idle">
+      <span class="dot" aria-hidden="true"></span>
+      <strong data-fresh-label>Record generated</strong>
+      <span class="muted" data-fresh-detail>{fmtDateTime(record.generatedAt)}</span>
+    </div>
+
+    <div class="grid cols-4">
+      <div class="card stat">
+        <div class="label">Sources watched</div>
+        <div class="value">{summary.targets}</div>
+        <div class="statebar" aria-hidden="true">
+          {states.map((s) => <span class={s.code} style={`flex: ${s.count}`}></span>)}
+        </div>
+        <div class="legend">
+          {states.map((s) => (
+            <span class={s.code}><i></i>{s.count} {s.name.toLowerCase()}</span>
+          ))}
+        </div>
+      </div>
+      <div class="card stat">
+        <div class="label">Changes detected</div>
+        <div class="value">{summary.changes}</div>
+        <div class="sub">
+          <strong>{summary.notable_changes} high severity</strong> · since {fmtDate(summary.first_observed_at)}
+        </div>
+        {summary.error_page_churn > 0 && (
+          <div class="sub muted">
+            plus {summary.error_page_churn} error-page changes <a href="/guide#churn">set aside</a>
+          </div>
+        )}
+      </div>
+      <div class="card stat">
+        <div class="label">Signed log entries</div>
+        <div class="value">{record.size.toLocaleString('en-US')}</div>
+        <div class="sub">
+          {plural(summary.observations, 'recorded response')} and {plural(summary.findings, 'finding')}, each
+          provable offline.
+        </div>
+      </div>
+      <div class="card stat">
+        <div class="label">Check it yourself</div>
+        <div class="sub" style="margin-top:0">
+          Download a proof for any source and verify it in your browser — no trust in this site required.
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="/verify">Verify a proof</a>
+        </div>
+        {record.checkpoint && (
+          <div class="sub muted small">
+            Log root <code title={record.checkpoint.root}>{shortHash(record.checkpoint.root, 12)}</code>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Notable findings</h2>
+    <p class="section-note">
+      The changes rated high severity: a watched term disappearing, a regulatory number moving, a dataset losing
+      data, a page ceasing to be served. Each is a best-effort classification of two recorded versions —
+      <a href="/guide#severity">how severity is assigned</a>.
     </p>
+    <div class="grid">
+      {notable.map((change) => <ChangeCard change={change} />)}
+      {notable.length === 0 && (
+        <div class="card muted">No high-severity change has been detected so far.</div>
+      )}
+    </div>
+  </section>
+
+  <section>
+    <h2>Sources</h2>
+    <p class="section-note">
+      Every watched page and dataset, and what it is doing now. “Checked” times are the watchdog’s own report of
+      its last look; a check that finds nothing new adds nothing to the signed record.
+      <a href="/guide#states">What the states mean</a>.
+    </p>
+    <div class="grid cols-3">
+      {sources.map((target) => <SourceCard target={target} />)}
+    </div>
   </section>
 
   <section>
     <h2>Recent changes</h2>
-    {events.length === 0 && <p class="muted">No changes recorded yet.</p>}
-    {events.length > 0 && (
-      <input id="search" type="search" placeholder="Filter changes (target, type, severity, value)…" autocomplete="off" />
-    )}
-    <ul class="events">
-      {events.slice(0, 200).map((ev) => (
-        <li
-          id={`event-${ev.id.slice(0, 16)}`}
-          data-search={`${ev.diff_type} ${ev.target_id} ${ev.severity} ${summarize(ev)}`.toLowerCase()}
-        >
-          <span class={`badge ${sevClass(ev.severity)}`}>{ev.severity}</span>
-          <a class="type" href={`/event/${ev.id}`}>{ev.diff_type}</a>
-          <span class="summary"><a href={`/target/${ev.target_id}`}>{ev.target_id}</a> — {summarize(ev)}</span>
-          <time>{ev.detected_at}</time>
-        </li>
+    <p class="section-note">The latest changes of any severity, newest first.</p>
+    <div>
+      {recent.map((change) => (
+        <div class="row-change">
+          <span><span class={`sev ${sevClass(change.severity)}`}>{change.severity}</span></span>
+          <div class="what">
+            <a class="h" href={`/change/${change.id}`}>{change.headline}</a>
+            <div class="src">{titleOf(change.target_id)}</div>
+          </div>
+          <When iso={change.detected_at} />
+        </div>
       ))}
-    </ul>
-    <p id="no-results" class="muted" hidden>No changes match that filter.</p>
-    <style>
-      #search { width: 100%; margin: 4px 0 14px; padding: 9px 12px; border-radius: 8px;
-        border: 1px solid var(--line); background: #0b0e12; color: var(--ink); font: inherit; }
-      #search:focus { outline: none; border-color: var(--accent); }
-    </style>
-    <script is:inline>
-      (() => {
-        const input = document.getElementById('search');
-        if (!input) return;
-        const items = Array.from(document.querySelectorAll('ul.events > li'));
-        const none = document.getElementById('no-results');
-        input.addEventListener('input', () => {
-          const q = input.value.trim().toLowerCase();
-          let shown = 0;
-          for (const li of items) {
-            const hit = !q || (li.dataset.search || '').includes(q);
-            li.hidden = !hit;
-            if (hit) shown++;
-          }
-          if (none) none.hidden = shown > 0;
-        });
-      })();
-    </script>
+      {recent.length === 0 && <p class="muted">No changes have been recorded yet.</p>}
+    </div>
+    <p style="margin-top:14px">
+      <a href="/changes">All {plural(summary.changes, 'change')}, with filters →</a>
+      &nbsp;·&nbsp; <a href="/feed.xml">Subscribe by RSS</a>
+    </p>
   </section>
 
   <section>
-    <h2>Targets</h2>
-    <div class="targets">
-      {targets.map((t: any) => (
-        <a class="card" href={`/target/${t.id}`}>
-          <h3>{t.title}</h3>
-          <p class="url">{t.url}</p>
-          <p class="stat">{t.observations.length} observations · {t.events.length} changes · {t.kind}</p>
-        </a>
-      ))}
+    <h2>Reading this record</h2>
+    <div class="grid cols-3">
+      <div class="card">
+        <h3>What a change is</h3>
+        <p class="small muted">
+          Whenever a source answers differently than it did last time, the two versions are compared and
+          whatever moved is listed — a watched term, a number with a unit, a passage, a column of data. One
+          comparison is one change.
+        </p>
+      </div>
+      <div class="card">
+        <h3>What is proven</h3>
+        <p class="small muted">
+          That this collector received these exact bytes from this address at this time, and that the record
+          has not been altered since. Severity and change types are interpretation, and labelled as such.
+        </p>
+      </div>
+      <div class="card">
+        <h3>What “blocked” and “unreachable” mean</h3>
+        <p class="small muted">
+          A blocked source refuses the collector, so its content is not being observed. An unreachable one has
+          never answered, so there is nothing to record. Neither is hidden: an absence is part of the story.
+        </p>
+      </div>
     </div>
+    <p style="margin-top:14px"><a href="/guide">The full guide to reading and verifying this record →</a></p>
   </section>
 </Base>

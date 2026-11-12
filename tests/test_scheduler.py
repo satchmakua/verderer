@@ -347,3 +347,64 @@ def test_scheduler_state_save_is_atomic(tmp_path: Path, ledger_built: None) -> N
     state = tmp_path / "data" / "schedule-state.json"
     assert state.exists() and not state.with_name(state.name + ".tmp").exists()
     json.loads(state.read_text(encoding="utf-8"))  # valid JSON
+
+
+# --- health the public record reports: why a check failed, and when one last succeeded ---
+
+
+def test_a_failure_records_its_reason_and_a_success_clears_it(tmp_path: Path, ledger_built: None) -> None:
+    clock = FakeWallClock()
+    verderer = _verderer(tmp_path, {"t": _target("t", interval=100_000.0)}, FlakyFetcher(fail_times=1))
+    sched = _scheduler(verderer, clock)
+
+    sched.run_due()
+    failed = sched.entries["t"]
+    assert failed.last_error == "ConnectionError: origin down"
+    assert failed.last_ok is None  # it has never answered
+
+    clock.advance(300.0)
+    answered_at = clock.now()
+    sched.run_due()
+    recovered = sched.entries["t"]
+    assert recovered.last_error == "" and recovered.last_ok == answered_at
+
+    # Both survive a restart (they are what the record's health view is built from).
+    reloaded = _scheduler(verderer, clock).entries["t"]
+    assert reloaded.last_ok == answered_at and reloaded.last_error == ""
+
+
+def test_an_unchanged_check_still_counts_as_an_answer(tmp_path: Path, ledger_built: None) -> None:
+    clock = FakeWallClock()
+    verderer = _verderer(tmp_path, {"t": _target("t", interval=100.0)}, MutableFetcher([b"<html>same</html>"]))
+    sched = _scheduler(verderer, clock)
+    sched.run_due()
+    clock.advance(100.0)
+    second = sched.run_due()
+    assert second.unchanged == ["t"]
+    assert sched.entries["t"].last_ok == clock.now()  # "we looked, nothing changed" is a healthy check
+
+
+def test_long_error_messages_are_capped_and_single_line(tmp_path: Path, ledger_built: None) -> None:
+    class Exploding:
+        def __call__(self, url: str, *, timeout: float = 30.0, headers: Mapping[str, str] | None = None) -> FetchResult:
+            raise RuntimeError("boom\n" + "x" * 2000)
+
+    verderer = _verderer(tmp_path, {"t": _target("t")}, Exploding())
+    sched = _scheduler(verderer, FakeWallClock())
+    sched.run_due()
+    message = sched.entries["t"].last_error
+    assert message.startswith("RuntimeError: boom x") and "\n" not in message and len(message) == 300
+
+
+def test_state_written_before_health_fields_existed_still_loads(tmp_path: Path) -> None:
+    from verderer.scheduler import load_schedule_state
+
+    path = tmp_path / "schedule-state.json"
+    entry_record = {"target_id": "t", "next_due": 5.0, "last_run": 4.0, "last_status": "error", "consecutive_failures": 409}
+    legacy = {"entries": [entry_record]}
+    path.write_text(json.dumps(legacy), encoding="utf-8")
+    entry = load_schedule_state(path)["t"]
+    assert entry.consecutive_failures == 409 and entry.last_ok is None and entry.last_error == ""
+    assert load_schedule_state(tmp_path / "absent.json") == {}
+    path.write_text("[1, 2, 3]", encoding="utf-8")  # valid JSON, wrong shape
+    assert load_schedule_state(path) == {}

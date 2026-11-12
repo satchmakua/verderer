@@ -1,4 +1,4 @@
-"""The ledger — Verderer' trust core.
+"""The ledger — Verderer's trust core.
 
 The cryptographic core lives in `rust/ledger-core`: a C2SP tlog-tiles Merkle log with
 signed checkpoints (Ed25519 signed notes) and an independent offline verifier. This

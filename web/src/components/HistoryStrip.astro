@@ -1,0 +1,59 @@
+---
+// A source's whole history on one line: a tick for every recorded response (coloured by
+// whether it was served, refused, or missing) and a dot for every change found.
+import type { Change, Observation } from '../lib/record';
+import { fmtDate, sevClass } from '../lib/record';
+
+interface Props {
+  observations: Observation[];
+  changes: Change[];
+  until: string | null;
+}
+const { observations, changes, until } = Astro.props;
+
+const X0 = 12;
+const X1 = 988;
+const times = observations.map((o) => Date.parse(o.fetched_at)).filter((t) => !Number.isNaN(t));
+const start = times.length ? Math.min(...times) : 0;
+const endCandidate = Math.max(until ? Date.parse(until) || 0 : 0, ...times);
+const end = Math.max(endCandidate, start + 86400000);
+const x = (ms: number) => X0 + ((ms - start) / (end - start)) * (X1 - X0);
+const tone = (status: number) =>
+  status >= 200 && status < 300 ? 'served' : [401, 403, 429, 451].includes(status) ? 'blocked' : 'gone';
+const marks = changes
+  .filter((c) => c.category !== 'churn')
+  .map((c) => ({ change: c, at: Date.parse(c.detected_at) }))
+  .filter((m) => !Number.isNaN(m.at));
+---
+
+{times.length > 0 && (
+  <svg
+    class="strip"
+    viewBox="0 0 1000 66"
+    role="img"
+    aria-label={`Timeline: ${observations.length} recorded responses and ${marks.length} changes`}
+  >
+    <line class="axis" x1={X0} x2={X1} y1="46" y2="46" />
+    {observations.map((o) => (
+      <line
+        class={`tick ${tone(o.http_status)}`}
+        x1={x(Date.parse(o.fetched_at))}
+        x2={x(Date.parse(o.fetched_at))}
+        y1="32"
+        y2="46"
+        stroke-width="1.6"
+      >
+        <title>{`${fmtDate(o.fetched_at)} — HTTP ${o.http_status}`}</title>
+      </line>
+    ))}
+    {marks.map((m) => (
+      <a href={`/change/${m.change.id}`}>
+        <circle class={`mark ${sevClass(m.change.severity)}`} cx={x(m.at)} cy="18" r="6.5">
+          <title>{`${fmtDate(m.change.detected_at)} — ${m.change.headline}`}</title>
+        </circle>
+      </a>
+    ))}
+    <text x={X0} y="62">{fmtDate(new Date(start).toISOString())}</text>
+    <text x={X1} y="62" text-anchor="end">{fmtDate(new Date(end).toISOString())}</text>
+  </svg>
+)}

@@ -1,35 +1,49 @@
 ---
+// A single finding's permanent page. A finding is one item the differ reported; the change it
+// belongs to gathers everything found in the same comparison.
 import Base from '../../layouts/Base.astro';
-import record from '../../data/record.json';
-import { sevClass, type Event } from '../../lib/format';
+import Finding from '../../components/Finding.astro';
+import When from '../../components/When.astro';
+import type { Finding as FindingT } from '../../lib/record';
+import { changeById, events, plural, titleOf } from '../../lib/record';
 
 export function getStaticPaths() {
-  return ((record.events ?? []) as Event[]).map((e) => ({ params: { id: e.id }, props: { ev: e } }));
+  return events.map((e) => ({ params: { id: e.id }, props: { finding: e } }));
 }
-const { ev } = Astro.props as { ev: Event };
+const { finding } = Astro.props as { finding: FindingT };
+const change = changeById(finding.change_id);
+const title = finding.explain?.title ?? finding.diff_type;
 ---
 
-<Base title={`Verderer — ${ev.diff_type}`}>
-  <p><a href={`/target/${ev.target_id}`}>← {ev.target_id}</a></p>
-  <h1><span class={`badge ${sevClass(ev.severity)}`}>{ev.severity}</span> {ev.diff_type}</h1>
-  <p class="muted">Detected {ev.detected_at} · differ layer {ev.layer}</p>
+<Base title={`Verderer — ${title}`} description={`${titleOf(finding.target_id)}: ${title}`} active="changes">
+  <div class="crumbs">
+    <a href="/">Overview</a> / <a href="/changes">Changes</a> /
+    <a href={`/target/${finding.target_id}`}>{titleOf(finding.target_id)}</a>
+  </div>
+  <p class="eyebrow">Finding detected <When iso={finding.detected_at} time rel="never" /></p>
+  <h1>{title}</h1>
+  <p>on <a href={`/target/${finding.target_id}`}>{titleOf(finding.target_id)}</a></p>
 
-  <h2>Evidence</h2>
-  <pre>{JSON.stringify(ev.evidence, null, 2)}</pre>
+  <div class="card">
+    <Finding finding={finding} link={false} />
+  </div>
 
-  <h2>Attested observations</h2>
-  <p>
-    from <code>{ev.from_hash ?? '(first observation)'}</code><br />
-    to <code>{ev.to_hash}</code>
+  {change && (
+    <div class="callout">
+      <p>
+        This is {change.event_ids.length === 1 ? 'the only finding' : `one of ${plural(change.event_ids.length, 'finding')}`}
+        from a single comparison of two recorded versions.
+        <a href={`/change/${change.id}`}>See the whole change, both versions, and how to verify them →</a>
+      </p>
+    </div>
+  )}
+
+  <p class="small muted">
+    This classification is a best-effort, human-reviewable interpretation — not a verified fact. What is
+    verifiable is that the two versions it compares were recorded when and where the log says.
   </p>
-  <p class="muted">
-    That content A was observed at one time and content B at another is cryptographically attested and
-    offline-verifiable (download the proof bundle for either observation). This classification is Verderer's
-    best-effort, human-reviewable interpretation — not a verified fact.
+  <p class="small muted">
+    Permanent id <code>{finding.id}</code>
+    <button class="copy" type="button" data-copy={finding.id}>copy</button>
   </p>
-
-  <h2>Permalink</h2>
-  <p><code>{ev.id}</code></p>
-
-  <p><a href="/verify">→ Verify a downloaded proof bundle in your browser</a> (offline, trusting no one).</p>
 </Base>

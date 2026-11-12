@@ -179,7 +179,7 @@ See [DESIGN.md §8](DESIGN.md) for the full rationale behind this arc.
 - [x] **M7 — Federated overlay index + verification badging.** _Confirmed 2026-07-10._
   `overlay.py` harvests third-party archive metadata behind an injectable `ArchiveSource`
   port (default `WaybackSource` — Internet Archive CDX, polite/read-only; OSF/Dataverse/
-  Perma.cc/PEDP are the same port) and `build_overlay` cross-references it with Verderer'
+  Perma.cc/PEDP are the same port) and `build_overlay` cross-references it with Verderer's
   attested observations into a `verderer.overlay/v1` index: a resource in both is badged
   **verderer-attested** with a downloadable proof bundle, a third-party-only copy shows no
   badge. `verderer overlay` writes `overlay.json` + `bundles/`; a `/overlay` Astro page
@@ -269,7 +269,7 @@ schedule, real network) as well as offline.
     log never forked, shrank, or rewrote history — via `verderer-verify consistency`, with the
     export/site carrying a rolling consistency chain a client can gossip. The client-side
     verifier binds to a **pinned** public key (a bundle verified under its own key proves
-    only internal consistency, not that it is Verderer' log).
+    only internal consistency, not that it is Verderer's log).
     **Test:** a consistency proof between two real checkpoints validates; a forged history (a
     changed leaf, a shorter tree claiming to extend a longer one, or an equivocation — two
     roots at one size) is rejected. `cargo test` + `pytest` green.

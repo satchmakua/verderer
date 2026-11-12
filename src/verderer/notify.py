@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from .pipeline import Verderer
+from .web.explain import explain_event
 
 SEVERITY_ORDER = {"Info": 0, "Low": 1, "Medium": 2, "High": 3}
 
@@ -91,7 +92,16 @@ class Notifier(Protocol):
 
 
 def alert_payload(sub: Subscription, event: dict[str, Any]) -> dict[str, Any]:
-    return {"schema": "verderer.alert/v1", "subscription": sub.name, **event}
+    """The webhook body: the classified event as logged, plus a plain-language reading
+    (``explain`` — interpretation, like the classification itself) so a receiver can show a
+    sentence without re-deriving one from the typed evidence."""
+    explain = explain_event(event)
+    return {
+        "schema": "verderer.alert/v1",
+        "subscription": sub.name,
+        **event,
+        "explain": {"title": explain["title"], "summary": explain["summary"]},
+    }
 
 
 class HttpWebhookNotifier:
@@ -117,16 +127,21 @@ class HttpWebhookNotifier:
 
 
 def build_email(sub: Subscription, event: dict[str, Any], *, from_addr: str) -> EmailMessage:
+    explain = explain_event(event)
     msg = EmailMessage()
-    msg["Subject"] = f"[Verderer] {event['diff_type']} [{event['severity']}] - {event['target_id']}"
+    msg["Subject"] = (
+        f"[Verderer] {event['diff_type']} [{event['severity']}] - {event['target_id']}: {explain['title']}"
+    )
     msg["From"] = from_addr
     msg["To"] = sub.dest
     body = (
         f"Verderer detected a change on {event['target_id']}.\n\n"
+        f"  {explain['title']}\n"
+        f"  {explain['summary']}\n\n"
         f"  type:     {event['diff_type']} [{event['severity']}]\n"
         f"  detected: {event['detected_at']}\n"
         f"  evidence: {event['evidence']}\n\n"
-        f"This classification is Verderer' best-effort, human-reviewable interpretation. The underlying\n"
+        f"This classification is Verderer's best-effort, human-reviewable interpretation. The underlying\n"
         f"observations are cryptographically attested and offline-verifiable.\n\n"
         f"  event id: {event['id']}\n"
     )
