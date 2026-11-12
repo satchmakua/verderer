@@ -2,13 +2,17 @@
   "entries": [
     {
       "consecutive_failures": 0,
-      "last_run": 1794467433.0804684,
+      "last_error": "",
+      "last_ok": 1794513290.1550705,
+      "last_run": 1794513290.1550705,
       "last_status": "unchanged",
-      "next_due": 1794511661.3723412,
+      "next_due": 1794557052.3967078,
       "target_id": "epa-ghgrp"
     },
     {
       "consecutive_failures": 0,
+      "last_error": "",
+      "last_ok": null,
       "last_run": 1794467433.4460382,
       "last_status": "unchanged",
       "next_due": 1794553197.336791,
@@ -16,55 +20,71 @@
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1794425755.6333714,
-      "last_status": "observed",
-      "next_due": 1794467786.7801075,
+      "last_error": "",
+      "last_ok": 1794513291.1669712,
+      "last_run": 1794513291.1669712,
+      "last_status": "unchanged",
+      "next_due": 1794557397.8661897,
       "target_id": "epa-drinking-water-mcl"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1794425756.7820508,
-      "last_status": "observed",
-      "next_due": 1794505600.2643452,
+      "last_error": "",
+      "last_ok": 1794513291.3637822,
+      "last_run": 1794513291.3637822,
+      "last_status": "unchanged",
+      "next_due": 1794605752.1763892,
       "target_id": "epa-glyphosate"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1794467434.9433818,
+      "last_error": "",
+      "last_ok": 1794513292.362344,
+      "last_run": 1794513292.362344,
       "last_status": "unchanged",
-      "next_due": 1794509963.617424,
+      "next_due": 1794557295.4230237,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 409,
-      "last_run": 1794467435.6697044,
+      "consecutive_failures": 410,
+      "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
+      "last_ok": null,
+      "last_run": 1794513293.731933,
       "last_status": "error",
-      "next_due": 1794471035.6697044,
+      "next_due": 1794516893.731933,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 409,
-      "last_run": 1794467444.7661364,
+      "consecutive_failures": 410,
+      "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
+      "last_ok": null,
+      "last_run": 1794513304.1132138,
       "last_status": "error",
-      "next_due": 1794471044.7661364,
+      "next_due": 1794516904.1132138,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 409,
-      "last_run": 1794467450.170725,
+      "consecutive_failures": 410,
+      "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
+      "last_ok": null,
+      "last_run": 1794513316.2186332,
       "last_status": "error",
-      "next_due": 1794471050.170725,
+      "next_due": 1794516916.2186332,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
-      "last_run": 1794425784.4535851,
+      "last_error": "",
+      "last_ok": 1794513321.872164,
+      "last_run": 1794513321.872164,
       "last_status": "observed",
-      "next_due": 1794468240.381779,
+      "next_due": 1794553217.150904,
       "target_id": "noaa-climate-gov"
     },
     {
       "consecutive_failures": 0,
+      "last_error": "",
+      "last_ok": null,
       "last_run": 1794467456.3153377,
       "last_status": "unchanged",
       "next_due": 1794562429.585069,
@@ -72,6 +92,8 @@
     },
     {
       "consecutive_failures": 0,
+      "last_error": "",
+      "last_ok": null,
       "last_run": 1794425785.0404165,
       "last_status": "observed",
       "next_due": 1794518868.803564,
@@ -79,6 +101,8 @@
     },
     {
       "consecutive_failures": 0,
+      "last_error": "",
+      "last_ok": null,
       "last_run": 1794467456.604523,
       "last_status": "observed",
       "next_due": 1794559845.2334714,
