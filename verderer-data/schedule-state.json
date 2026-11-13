@@ -46,30 +46,30 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 410,
+      "consecutive_failures": 411,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1794513293.731933,
+      "last_run": 1794552375.0034237,
       "last_status": "error",
-      "next_due": 1794516893.731933,
+      "next_due": 1794555975.0034237,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 410,
+      "consecutive_failures": 411,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794513304.1132138,
+      "last_run": 1794552382.645926,
       "last_status": "error",
-      "next_due": 1794516904.1132138,
+      "next_due": 1794555982.645926,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 410,
+      "consecutive_failures": 411,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794513316.2186332,
+      "last_run": 1794552391.0081034,
       "last_status": "error",
-      "next_due": 1794516916.2186332,
+      "next_due": 1794555991.0081034,
       "target_id": "nca5"
     },
     {
@@ -93,10 +93,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": null,
-      "last_run": 1794425785.0404165,
+      "last_ok": 1794552397.8577614,
+      "last_run": 1794552397.8577614,
       "last_status": "observed",
-      "next_due": 1794518868.803564,
+      "next_due": 1794646142.477121,
       "target_id": "usda-climate-hubs"
     },
     {
