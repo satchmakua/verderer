@@ -3,28 +3,28 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794513290.1550705,
-      "last_run": 1794513290.1550705,
-      "last_status": "unchanged",
-      "next_due": 1794557052.3967078,
+      "last_ok": 1794598988.917708,
+      "last_run": 1794598988.917708,
+      "last_status": "observed",
+      "next_due": 1794645840.8325365,
       "target_id": "epa-ghgrp"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": null,
-      "last_run": 1794467433.4460382,
+      "last_ok": 1794598989.1584327,
+      "last_run": 1794598989.1584327,
       "last_status": "unchanged",
-      "next_due": 1794553197.336791,
+      "next_due": 1794682715.347944,
       "target_id": "epa-ghgrp-data"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794513291.1669712,
-      "last_run": 1794513291.1669712,
-      "last_status": "unchanged",
-      "next_due": 1794557397.8661897,
+      "last_ok": 1794598990.524773,
+      "last_run": 1794598990.524773,
+      "last_status": "observed",
+      "next_due": 1794639425.561014,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -39,55 +39,55 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794513292.362344,
-      "last_run": 1794513292.362344,
+      "last_ok": 1794598991.3159811,
+      "last_run": 1794598991.3159811,
       "last_status": "unchanged",
-      "next_due": 1794557295.4230237,
+      "next_due": 1794642177.6044848,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 411,
+      "consecutive_failures": 412,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1794552375.0034237,
+      "last_run": 1794598992.4806213,
       "last_status": "error",
-      "next_due": 1794555975.0034237,
+      "next_due": 1794602592.4806213,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 411,
+      "consecutive_failures": 412,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794552382.645926,
+      "last_run": 1794598998.1664674,
       "last_status": "error",
-      "next_due": 1794555982.645926,
+      "next_due": 1794602598.1664674,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 411,
+      "consecutive_failures": 412,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794552391.0081034,
+      "last_run": 1794599008.9789455,
       "last_status": "error",
-      "next_due": 1794555991.0081034,
+      "next_due": 1794602608.9789455,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794513321.872164,
-      "last_run": 1794513321.872164,
+      "last_ok": 1794599015.2383354,
+      "last_run": 1794599015.2383354,
       "last_status": "observed",
-      "next_due": 1794553217.150904,
+      "next_due": 1794639739.3805299,
       "target_id": "noaa-climate-gov"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": null,
-      "last_run": 1794467456.3153377,
+      "last_ok": 1794599015.800212,
+      "last_run": 1794599015.800212,
       "last_status": "unchanged",
-      "next_due": 1794562429.585069,
+      "next_due": 1794681055.6028748,
       "target_id": "noaa-co2-trends"
     },
     {
@@ -102,10 +102,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": null,
-      "last_run": 1794467456.604523,
+      "last_ok": 1794599016.1491172,
+      "last_run": 1794599016.1491172,
       "last_status": "observed",
-      "next_due": 1794559845.2334714,
+      "next_due": 1794690659.9553258,
       "target_id": "fema-nri"
     }
   ]
