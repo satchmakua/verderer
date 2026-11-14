@@ -12,10 +12,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794598989.1584327,
-      "last_run": 1794598989.1584327,
+      "last_ok": 1794695072.90619,
+      "last_run": 1794695072.90619,
       "last_status": "unchanged",
-      "next_due": 1794682715.347944,
+      "next_due": 1794779756.880143,
       "target_id": "epa-ghgrp-data"
     },
     {
@@ -46,30 +46,30 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 414,
+      "consecutive_failures": 415,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1794679300.7213795,
+      "last_run": 1794695073.6267438,
       "last_status": "error",
-      "next_due": 1794682900.7213795,
+      "next_due": 1794698673.6267438,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 414,
+      "consecutive_failures": 415,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794679313.0294285,
+      "last_run": 1794695083.4375508,
       "last_status": "error",
-      "next_due": 1794682913.0294285,
+      "next_due": 1794698683.4375508,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 414,
+      "consecutive_failures": 415,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794679320.630017,
+      "last_run": 1794695093.7872021,
       "last_status": "error",
-      "next_due": 1794682920.630017,
+      "next_due": 1794698693.7872021,
       "target_id": "nca5"
     },
     {
@@ -84,10 +84,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794599015.800212,
-      "last_run": 1794599015.800212,
+      "last_ok": 1794695103.897773,
+      "last_run": 1794695103.897773,
       "last_status": "unchanged",
-      "next_due": 1794681055.6028748,
+      "next_due": 1794783216.4062893,
       "target_id": "noaa-co2-trends"
     },
     {
@@ -100,12 +100,12 @@
       "target_id": "usda-climate-hubs"
     },
     {
-      "consecutive_failures": 0,
-      "last_error": "",
+      "consecutive_failures": 1,
+      "last_error": "TransientFetchError: https://hazards.fema.gov/nri/: [Errno 104] Connection reset by peer",
       "last_ok": 1794599016.1491172,
-      "last_run": 1794599016.1491172,
-      "last_status": "observed",
-      "next_due": 1794690659.9553258,
+      "last_run": 1794695104.0439627,
+      "last_status": "error",
+      "next_due": 1794695404.0439627,
       "target_id": "fema-nri"
     }
   ]
