@@ -30,10 +30,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794513291.3637822,
-      "last_run": 1794513291.3637822,
-      "last_status": "unchanged",
-      "next_due": 1794605752.1763892,
+      "last_ok": 1794637410.0894327,
+      "last_run": 1794637410.0894327,
+      "last_status": "observed",
+      "next_due": 1794718777.184489,
       "target_id": "epa-glyphosate"
     },
     {
@@ -46,30 +46,30 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 412,
+      "consecutive_failures": 413,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1794598992.4806213,
+      "last_run": 1794637410.2903228,
       "last_status": "error",
-      "next_due": 1794602592.4806213,
+      "next_due": 1794641010.2903228,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 412,
+      "consecutive_failures": 413,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794598998.1664674,
+      "last_run": 1794637416.6317275,
       "last_status": "error",
-      "next_due": 1794602598.1664674,
+      "next_due": 1794641016.6317275,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 412,
+      "consecutive_failures": 413,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794599008.9789455,
+      "last_run": 1794637425.1968267,
       "last_status": "error",
-      "next_due": 1794602608.9789455,
+      "next_due": 1794641025.1968267,
       "target_id": "nca5"
     },
     {
