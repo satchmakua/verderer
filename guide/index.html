@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A verifiable, tamper-evident record of what U.S. government environmental data said, and how it is being changed."><meta name="color-scheme" content="light dark"><title>Verderer — how to read this record</title><link rel="alternate" type="application/rss+xml" title="Verderer — all changes" href="/feed.xml"><script>
+      // Apply a saved theme before first paint (no flash). Storage can be unavailable; ignore.
+      try {
+        const saved = localStorage.getItem('verderer-theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      } catch {}
+    </script><link rel="stylesheet" href="/_astro/Base.CG78TJll.css"></head> <body> <header class="site"> <div class="wrap"> <a class="mark" href="/">VERDERER</a> <nav aria-label="Main"> <a href="/">Overview</a><a href="/changes">Changes</a><a href="/guide" aria-current="page">How to read this</a><a href="/verify">Verify</a><a href="/overlay">Archives</a> </nav> <button id="theme-toggle" type="button" aria-label="Switch between light and dark theme">Theme</button> </div> </header> <main><div class="wrap"> <h1>How to read this record</h1> <p class="lede">
+Verderer watches a small, curated set of U.S. government environmental pages and datasets. This page
+    explains what it records, what its labels mean, how much of it is proven — and how to check that for
+    yourself.
+</p> <h2 id="works">What it does</h2> <ol> <li> <strong>It checks each source on a schedule</strong> — politely, obeying each site’s robots.txt and rate
+      limits. Sources are re-checked several times a day.
+</li> <li> <strong>It records every distinct response.</strong> The exact bytes received are stored and their
+      fingerprint is appended to a signed, append-only log. A re-check that returns the same bytes adds
+      nothing.
+</li> <li> <strong>It compares each new version with the one before</strong> and lists what moved: a watched term,
+      a number with a unit, a passage of text, a column of data, or whether the source is served at all.
+</li> <li> <strong>It publishes everything</strong> — this site, a machine-readable record, RSS feeds, the captures
+      themselves, and proofs anyone can verify offline.
+</li> </ol> <h2 id="changes">Changes and findings</h2> <p>
+A <strong>change</strong> is one comparison between two recorded versions of a source. Everything found in
+    that comparison is a <strong>finding</strong>, so a change that removed two terms and lowered the count of
+    a third has three findings and one headline.
+</p> <p>
+When a list gains or loses an item, everything after it shifts position, and a position-by-position
+    comparison reports each shifted item as an edit. Verderer cancels those out and shows the net effect —
+    what was actually added or removed — with the original findings one click away.
+</p> <p>
+If a later change puts back exactly what an earlier one altered, the two are linked as a reversal. Both
+    stay on the record: that something was changed and then changed back is itself information.
+</p> <h2 id="severity">Severity</h2> <p>
+Severity is a rule-based triage label that says how closely a change matches the patterns this project
+    exists to catch. It is not a judgment about intent, or about how much a change matters.
+</p> <div class="scroll"> <table class="data"> <tbody> <tr> <td><span class="sev high">High</span></td> <td>Something was taken away or a regulated value moved: a watched term vanished, a number with a unit changed, a dataset lost a column or rows, a source stopped being served.</td> </tr> <tr> <td><span class="sev med">Medium</span></td> <td>A real change that needs a human reading: text was edited, a watched term’s count shifted, something was added, a source came back.</td> </tr> <tr> <td><span class="sev low">Low</span></td> <td>Rewording that leaves the meaning close to what it was.</td> </tr> </tbody> </table> </div> <h2 id="types">Kinds of change</h2> <div class="scroll"> <table class="data"> <thead><tr><th>What you will see</th><th>Means</th><th>Usual severity</th><th>Logged as</th></tr></thead> <tbody> <tr> <td><strong>No longer served</strong></td> <td>The address answered normally and now returns an error or a refusal.</td> <td class="nowrap">High</td> <td><code>Deletion</code></td> </tr><tr> <td><strong>Served again</strong></td> <td>An address that was returning an error is being served again. Its content is compared with the last version that was served.</td> <td class="nowrap">Medium</td> <td><code>Reappearance</code></td> </tr><tr> <td><strong>Watched term removed</strong></td> <td>A term on the watch list was on the page and now is not there at all.</td> <td class="nowrap">High</td> <td><code>TermSubstitution</code></td> </tr><tr> <td><strong>Watched term appeared, or its count changed</strong></td> <td>A watched term appears where it did not, or is mentioned more or fewer times.</td> <td class="nowrap">Medium</td> <td><code>TermSubstitution</code></td> </tr><tr> <td><strong>Regulatory number changed</strong></td> <td>A number with a unit, next to regulatory wording such as “limit” or “level”, has a different value.</td> <td class="nowrap">High</td> <td><code>NumericThresholdChange</code></td> </tr><tr> <td><strong>Text edited, added or removed</strong></td> <td>A passage — a list item, a heading, a table cell — reads differently, and no watched term or number was involved.</td> <td class="nowrap">Medium</td> <td><code>ContentEdit</code></td> </tr><tr> <td><strong>Page text changed</strong></td> <td>The text changed too broadly to pin on one passage. The two captures show exactly how.</td> <td class="nowrap">Medium</td> <td><code>ContentEdit</code></td> </tr><tr> <td><strong>Dataset structure changed</strong></td> <td>A column, sheet, file or variable was removed (High), or added or retyped (Medium).</td> <td class="nowrap">High / Medium</td> <td><code>SchemaChange</code></td> </tr><tr> <td><strong>Dataset values shifted</strong></td> <td>The row count changed, or a column’s numbers moved in aggregate — a re-baselining or a truncation.</td> <td class="nowrap">High</td> <td><code>DistributionalShift</code></td> </tr><tr> <td><strong>Status, address or metadata changed</strong></td> <td>An unavailable source started failing differently, requests now end at a different address, or a dataset’s attributes changed.</td> <td class="nowrap">Medium</td> <td><code>MetadataChange</code></td> </tr> </tbody> </table> </div> <details style="margin-top:12px"> <summary>The 23 watched terms</summary> <p class="small muted" style="margin-top:8px">
+Each earned its place by a documented history of being removed or substituted, or by naming a legal
+        concept whose wording shifts obligations.
+</p> <p><span class="tag" style="margin:0 6px 6px 0">climate change</span><span class="tag" style="margin:0 6px 6px 0">global warming</span><span class="tag" style="margin:0 6px 6px 0">climate crisis</span><span class="tag" style="margin:0 6px 6px 0">greenhouse gas</span><span class="tag" style="margin:0 6px 6px 0">greenhouse gas emissions</span><span class="tag" style="margin:0 6px 6px 0">carbon dioxide</span><span class="tag" style="margin:0 6px 6px 0">methane</span><span class="tag" style="margin:0 6px 6px 0">sea level rise</span><span class="tag" style="margin:0 6px 6px 0">ocean acidification</span><span class="tag" style="margin:0 6px 6px 0">extreme weather</span><span class="tag" style="margin:0 6px 6px 0">climate resilience</span><span class="tag" style="margin:0 6px 6px 0">climate adaptation</span><span class="tag" style="margin:0 6px 6px 0">clean energy</span><span class="tag" style="margin:0 6px 6px 0">renewable energy</span><span class="tag" style="margin:0 6px 6px 0">environmental justice</span><span class="tag" style="margin:0 6px 6px 0">environmental racism</span><span class="tag" style="margin:0 6px 6px 0">disadvantaged communities</span><span class="tag" style="margin:0 6px 6px 0">overburdened communities</span><span class="tag" style="margin:0 6px 6px 0">cumulative impacts</span><span class="tag" style="margin:0 6px 6px 0">maximum contaminant level</span><span class="tag" style="margin:0 6px 6px 0">reporting threshold</span><span class="tag" style="margin:0 6px 6px 0">endangerment finding</span><span class="tag" style="margin:0 6px 6px 0">best available science</span></p> </details><h2 id="states">Source states</h2> <div class="scroll"> <table class="data"> <tbody> <tr> <td class="nowrap"><span class="chip failing">Not responding</span></td> <td>It used to answer and has stopped responding.</td> </tr><tr> <td class="nowrap"><span class="chip live">Live</span></td> <td>Answering normally. Its content is being recorded and compared.</td> </tr><tr> <td class="nowrap"><span class="chip blocked">Blocked</span></td> <td>The server refuses the collector. The refusal is recorded; the content is not being observed.</td> </tr><tr> <td class="nowrap"><span class="chip gone">Gone</span></td> <td>The address returns &quot;not found&quot;. The absence is recorded, and the watch continues.</td> </tr><tr> <td class="nowrap"><span class="chip error">Erroring</span></td> <td>The address returns an error status.</td> </tr><tr> <td class="nowrap"><span class="chip unreachable">Unreachable</span></td> <td>It has never answered. There is nothing to record until it does.</td> </tr><tr> <td class="nowrap"><span class="chip excluded">Not collected</span></td> <td>The site&#39;s robots.txt asks crawlers not to fetch it, so it is not fetched.</td> </tr><tr> <td class="nowrap"><span class="chip pending">Awaiting first check</span></td> <td>No check has completed yet.</td> </tr> </tbody> </table> </div> <p class="small muted" style="margin-top:10px">
+A refusal is recorded as what this collector was told. It does not show that other visitors are refused,
+    or what the page says to them.
+</p> <h2 id="churn">Error-page churn</h2> <p>
+When a server refuses the collector, the body it sends is its error page, not the source. Some error pages
+    change on every request — an “access denied” page that prints a new reference number, for instance. Each
+    is a distinct response and is recorded, but comparing two error pages says nothing about the source, so
+    these are set aside rather than reported as changes.
+ This record holds 100 of them from before that rule was in place; they are
+      kept, labelled, and left out of the counts and feeds. </p> <h2 id="proof">What is proven, and what is not</h2> <div class="grid cols-3"> <div class="card"> <h3>Proven</h3> <p class="small">
+That the collector received <em>this response</em> — these exact bytes, this status — from
+<em>this address</em>, and logged it at <em>this time</em>; and that the log has not been rewritten
+        since. Recorded responses and findings are entries in a signed, append-only log.
+</p> </div> <div class="card"> <h3>Interpretation</h3> <p class="small">
+Headlines, severities, change types, a source’s state, and which changes count as notable. They are
+        derived from the proven entries by published rules, are best-effort, and can be re-derived or
+        disputed.
+</p> </div> <div class="card"> <h3>The operator’s report</h3> <p class="small">
+When a source was last checked, and that a check failed. A look that finds nothing new — or gets no
+        answer — leaves no entry to sign, so this is the watchdog’s own account, not a proof.
+</p> </div> </div> <p style="margin-top:14px"><strong>Verderer does not claim</strong>:</p> <ul> <li>that a response is what the agency “really” published, or what any other visitor was served;</li> <li>anything about a source before its first recorded response;</li> <li>why a change was made, or by whom;</li> <li>that a time is exact — times are the collector’s clock, bounded from outside only where a proof carries an independent timestamp.</li> </ul> <h2 id="verify">Verify it yourself</h2> <ol> <li>Open any source and choose <strong>Verify the latest proof</strong>, or download its proof bundle.</li> <li>
+The <a href="/verify">verifier</a> runs entirely in your browser. It checks that the captured bytes
+      match the recorded fingerprint, that the record is in the signed log, and that the log is signed by
+      Verderer’s published key. Nothing is uploaded.
+</li> <li>
+To check without this site at all, run the open-source verifier on the downloaded file:
+<code>verderer-verify bundle proof.json</code>.
+</li> </ol> <p class="small">
+The log’s public key — also published in the
+<a href="https://github.com/satchmakua/verderer#pin-the-logs-key">project README</a>, so it can be
+      pinned from a second place:<br> <code>5ba707a9c137b726d5494d73d9d946e581969cbc65f01dab5e3bcf83a52a24db</code> <button class="copy" type="button" data-copy="5ba707a9c137b726d5494d73d9d946e581969cbc65f01dab5e3bcf83a52a24db">copy</button> </p><h2 id="data">Data and feeds</h2> <div class="scroll"> <table class="data"> <tbody> <tr><td><a href="/record.json">record.json</a></td><td>The whole record, machine-readable. Its <code>legend</code> entry states which fields are proven, interpreted, or operator-reported.</td></tr> <tr><td><a href="/feed.xml">feed.xml</a></td><td>RSS of every change. Each source also has its own feed, linked from its page.</td></tr> <tr><td><a href="/checkpoint">checkpoint</a></td><td>The log’s current signed head: its size and root fingerprint.</td></tr> <tr><td><code>/tile/…</code></td><td>The log itself, as standard tiles — enough to recompute any proof without asking this site.</td></tr> <tr><td><code>/warc/…</code></td><td>Every recorded response as a standard web-archive file, readable by any archive tool.</td></tr> <tr><td><code>/bundles/…</code></td><td>A self-verifying proof bundle for each source’s latest recorded response.</td></tr> </tbody> </table> </div> <h2 id="glossary">Glossary</h2> <dl class="facts" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))"> <div><dt>Recorded response</dt><dd style="font-weight:400">One fetch of a source: the bytes received, the status, the final address, and the time — signed into the log.</dd></div> <div><dt>Content hash</dt><dd style="font-weight:400">A fingerprint of the exact bytes received. Change one byte and it changes completely.</dd></div> <div><dt>Signed log</dt><dd style="font-weight:400">An append-only list of entries whose head is signed. Entries can be added, never altered or removed, without the signature chain exposing it.</dd></div> <div><dt>Checkpoint</dt><dd style="font-weight:400">The signed statement of the log’s size and root at a moment in time.</dd></div> <div><dt>Proof bundle</dt><dd style="font-weight:400">One file holding a recorded response, its bytes, and the proof that it is in the signed log — checkable offline.</dd></div> <div><dt>WARC</dt><dd style="font-weight:400">The standard file format web archives use for a captured request and response.</dd></div> </dl> </div></main> <footer class="site"> <div class="wrap"> <div>
+Verderer attests only what its collector received: this response, from this address, at this time —
+          preserved faithfully and verifiable offline. Labels such as severity and change type are a best-effort,
+          human-reviewable interpretation, never a verified fact.
+<a href="/guide#proof">What is and isn't proven →</a> </div> <div class="links"> <a href="/feed.xml">RSS feed</a> <a href="/record.json">record.json</a> <a href="/checkpoint">Signed checkpoint</a> <a href="/verify">Verify a proof</a> <a href="https://github.com/satchmakua/verderer">Source code</a> </div> </div> </footer> <script>
+      (() => {
+        const root = document.documentElement;
+
+        // Theme toggle: follows the system until chosen; the choice is a per-reader convenience.
+        const toggle = document.getElementById('theme-toggle');
+        const current = () =>
+          root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const label = () => { if (toggle) toggle.textContent = current() === 'dark' ? 'Light theme' : 'Dark theme'; };
+        label();
+        toggle?.addEventListener('click', () => {
+          const next = current() === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try { localStorage.setItem('verderer-theme', next); } catch {}
+          label();
+        });
+
+        // Relative times. The server prints an absolute UTC date; a recent one reads better
+        // as "3 hours ago", and every one gets the reader's local time on hover.
+        const UNITS = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
+        const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+        const relative = (date) => {
+          const seconds = (date.getTime() - Date.now()) / 1000;
+          for (const [unit, size] of UNITS) {
+            if (Math.abs(seconds) >= size) return rtf.format(Math.round(seconds / size), unit);
+          }
+          return 'just now';
+        };
+        const RECENT = 14 * 86400 * 1000;
+
+        function refresh() {
+          for (const el of document.querySelectorAll('time[datetime]')) {
+            const date = new Date(el.getAttribute('datetime'));
+            if (Number.isNaN(date.getTime())) continue;
+            if (!el.dataset.abs) el.dataset.abs = el.textContent;
+            el.title = `${date.toLocaleString()} your time · ${el.dataset.abs}`;
+            const mode = el.dataset.rel;
+            if (mode === 'always' || (mode === 'recent' && Math.abs(Date.now() - date.getTime()) < RECENT)) {
+              el.textContent = relative(date);
+            }
+          }
+          // Is the watchdog still running? The record carries when it was generated; if that
+          // is long ago, say so plainly instead of presenting stale data as current.
+          for (const el of document.querySelectorAll('[data-freshness]')) {
+            const date = new Date(el.dataset.generated || '');
+            if (Number.isNaN(date.getTime())) continue;
+            const hours = (Date.now() - date.getTime()) / 3600000;
+            const tone = hours < 15 ? 'ok' : hours < 36 ? 'warn' : 'bad';
+            el.dataset.tone = tone;
+            const title = el.querySelector('[data-fresh-label]');
+            const detail = el.querySelector('[data-fresh-detail]');
+            if (title) title.textContent = tone === 'ok' ? 'Watchdog running' : tone === 'warn' ? 'Watchdog delayed' : 'Watchdog stalled';
+            if (detail) {
+              detail.textContent =
+                tone === 'ok'
+                  ? `Last run ${relative(date)}. Sources are re-checked several times a day.`
+                  : tone === 'warn'
+                    ? `Last run ${relative(date)} — later than usual. The record below is still accurate as of then.`
+                    : `No completed run since ${relative(date)}. Everything below is accurate only as of that run.`;
+            }
+          }
+        }
+        refresh();
+        setInterval(refresh, 60000);
+
+        // Copy a full hash/key that is shown shortened.
+        document.addEventListener('click', (event) => {
+          const button = event.target instanceof Element ? event.target.closest('[data-copy]') : null;
+          if (!button || !navigator.clipboard) return;
+          navigator.clipboard.writeText(button.getAttribute('data-copy') || '').then(() => {
+            const before = button.textContent;
+            button.textContent = 'Copied';
+            setTimeout(() => { button.textContent = before; }, 1200);
+          });
+        });
+      })();
+    </script> </body> </html>

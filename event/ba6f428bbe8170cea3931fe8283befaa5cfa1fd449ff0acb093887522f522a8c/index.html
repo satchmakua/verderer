@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="EPA Greenhouse Gas Reporting Program: Text edited (list item 12)"><meta name="color-scheme" content="light dark"><title>Verderer — Text edited (list item 12)</title><link rel="alternate" type="application/rss+xml" title="Verderer — all changes" href="/feed.xml"><script>
+      // Apply a saved theme before first paint (no flash). Storage can be unavailable; ignore.
+      try {
+        const saved = localStorage.getItem('verderer-theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      } catch {}
+    </script><link rel="stylesheet" href="/_astro/Base.CG78TJll.css"></head> <body> <header class="site"> <div class="wrap"> <a class="mark" href="/">VERDERER</a> <nav aria-label="Main"> <a href="/">Overview</a><a href="/changes" aria-current="page">Changes</a><a href="/guide">How to read this</a><a href="/verify">Verify</a><a href="/overlay">Archives</a> </nav> <button id="theme-toggle" type="button" aria-label="Switch between light and dark theme">Theme</button> </div> </header> <main><div class="wrap"> <div class="crumbs"> <a href="/">Overview</a> / <a href="/changes">Changes</a> /
+<a href="/target/epa-ghgrp">EPA Greenhouse Gas Reporting Program</a> </div> <p class="eyebrow">Finding detected <time datetime="2026-11-04T06:22:55Z">Nov 4, 2026, 06:22 UTC</time></p> <h1>Text edited (list item 12)</h1> <p>on <a href="/target/epa-ghgrp">EPA Greenhouse Gas Reporting Program</a></p> <div class="card"> <div class="finding"> <div class="ftitle"> <span class="sev med">Medium</span> <span>Text edited (list item 12)</span> </div>   <div class="textdiff">   <del>View resources with information for GHGRP reporters. View Reporter Resources</del>  <ins>Events and Training</ins>   </div> <details class="raw"> <summary>Evidence as logged</summary> <pre>{
+  &quot;block&quot;: &quot;li[11]&quot;,
+  &quot;from&quot;: &quot;View resources with information for GHGRP reporters. View Reporter Resources&quot;,
+  &quot;to&quot;: &quot;Events and Training&quot;
+}</pre> <p class="small muted">
+Type <code>ContentEdit</code> · detection layer <code>L0-structure</code> · finding id  <code>ba6f428bbe8170cea3931fe8283befaa5cfa1fd449ff0acb093887522f522a8c</code> </p> </details> </div> </div> <div class="callout"> <p>
+This is one of 19 findings
+from a single comparison of two recorded versions.
+<a href="/change/4d03981b425ae7fd721d0d2846db53e703a9ad6bf5d1d74149db339bfa355428">See the whole change, both versions, and how to verify them →</a> </p> </div><p class="small muted">
+This classification is a best-effort, human-reviewable interpretation — not a verified fact. What is
+    verifiable is that the two versions it compares were recorded when and where the log says.
+</p> <p class="small muted">
+Permanent id <code>ba6f428bbe8170cea3931fe8283befaa5cfa1fd449ff0acb093887522f522a8c</code> <button class="copy" type="button" data-copy="ba6f428bbe8170cea3931fe8283befaa5cfa1fd449ff0acb093887522f522a8c">copy</button> </p> </div></main> <footer class="site"> <div class="wrap"> <div>
+Verderer attests only what its collector received: this response, from this address, at this time —
+          preserved faithfully and verifiable offline. Labels such as severity and change type are a best-effort,
+          human-reviewable interpretation, never a verified fact.
+<a href="/guide#proof">What is and isn't proven →</a> </div> <div class="links"> <a href="/feed.xml">RSS feed</a> <a href="/record.json">record.json</a> <a href="/checkpoint">Signed checkpoint</a> <a href="/verify">Verify a proof</a> <a href="https://github.com/satchmakua/verderer">Source code</a> </div> </div> </footer> <script>
+      (() => {
+        const root = document.documentElement;
+
+        // Theme toggle: follows the system until chosen; the choice is a per-reader convenience.
+        const toggle = document.getElementById('theme-toggle');
+        const current = () =>
+          root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const label = () => { if (toggle) toggle.textContent = current() === 'dark' ? 'Light theme' : 'Dark theme'; };
+        label();
+        toggle?.addEventListener('click', () => {
+          const next = current() === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try { localStorage.setItem('verderer-theme', next); } catch {}
+          label();
+        });
+
+        // Relative times. The server prints an absolute UTC date; a recent one reads better
+        // as "3 hours ago", and every one gets the reader's local time on hover.
+        const UNITS = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
+        const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+        const relative = (date) => {
+          const seconds = (date.getTime() - Date.now()) / 1000;
+          for (const [unit, size] of UNITS) {
+            if (Math.abs(seconds) >= size) return rtf.format(Math.round(seconds / size), unit);
+          }
+          return 'just now';
+        };
+        const RECENT = 14 * 86400 * 1000;
+
+        function refresh() {
+          for (const el of document.querySelectorAll('time[datetime]')) {
+            const date = new Date(el.getAttribute('datetime'));
+            if (Number.isNaN(date.getTime())) continue;
+            if (!el.dataset.abs) el.dataset.abs = el.textContent;
+            el.title = `${date.toLocaleString()} your time · ${el.dataset.abs}`;
+            const mode = el.dataset.rel;
+            if (mode === 'always' || (mode === 'recent' && Math.abs(Date.now() - date.getTime()) < RECENT)) {
+              el.textContent = relative(date);
+            }
+          }
+          // Is the watchdog still running? The record carries when it was generated; if that
+          // is long ago, say so plainly instead of presenting stale data as current.
+          for (const el of document.querySelectorAll('[data-freshness]')) {
+            const date = new Date(el.dataset.generated || '');
+            if (Number.isNaN(date.getTime())) continue;
+            const hours = (Date.now() - date.getTime()) / 3600000;
+            const tone = hours < 15 ? 'ok' : hours < 36 ? 'warn' : 'bad';
+            el.dataset.tone = tone;
+            const title = el.querySelector('[data-fresh-label]');
+            const detail = el.querySelector('[data-fresh-detail]');
+            if (title) title.textContent = tone === 'ok' ? 'Watchdog running' : tone === 'warn' ? 'Watchdog delayed' : 'Watchdog stalled';
+            if (detail) {
+              detail.textContent =
+                tone === 'ok'
+                  ? `Last run ${relative(date)}. Sources are re-checked several times a day.`
+                  : tone === 'warn'
+                    ? `Last run ${relative(date)} — later than usual. The record below is still accurate as of then.`
+                    : `No completed run since ${relative(date)}. Everything below is accurate only as of that run.`;
+            }
+          }
+        }
+        refresh();
+        setInterval(refresh, 60000);
+
+        // Copy a full hash/key that is shown shortened.
+        document.addEventListener('click', (event) => {
+          const button = event.target instanceof Element ? event.target.closest('[data-copy]') : null;
+          if (!button || !navigator.clipboard) return;
+          navigator.clipboard.writeText(button.getAttribute('data-copy') || '').then(() => {
+            const before = button.textContent;
+            button.textContent = 'Copied';
+            setTimeout(() => { button.textContent = before; }, 1200);
+          });
+        });
+      })();
+    </script> </body> </html>

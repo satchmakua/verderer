@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A verifiable, tamper-evident record of what U.S. government environmental data said, and how it is being changed."><meta name="color-scheme" content="light dark"><title>Verderer — verify a proof</title><link rel="alternate" type="application/rss+xml" title="Verderer — all changes" href="/feed.xml"><script>
+      // Apply a saved theme before first paint (no flash). Storage can be unavailable; ignore.
+      try {
+        const saved = localStorage.getItem('verderer-theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      } catch {}
+    </script><link rel="stylesheet" href="/_astro/Base.CG78TJll.css"><style>#verify-report[data-astro-cid-iv4vc336]{margin-top:14px}.verdict[data-astro-cid-iv4vc336]{border-radius:12px;padding:16px 18px;border:1px solid var(--line);background:var(--surface)}.verdict[data-astro-cid-iv4vc336].ok{border-color:color-mix(in srgb,var(--ok) 55%,var(--line));background:var(--ok-bg)}.verdict[data-astro-cid-iv4vc336].warn{border-color:color-mix(in srgb,var(--warn) 55%,var(--line));background:var(--warn-bg)}.verdict[data-astro-cid-iv4vc336].bad{border-color:color-mix(in srgb,var(--bad) 55%,var(--line));background:var(--bad-bg)}.verdict[data-astro-cid-iv4vc336] h2[data-astro-cid-iv4vc336]{margin:0 0 4px;font-size:21px}.verdict[data-astro-cid-iv4vc336] .out[data-astro-cid-iv4vc336]{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere;color:var(--ink-2);margin:8px 0 0}ul[data-astro-cid-iv4vc336].checks{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}ul[data-astro-cid-iv4vc336].checks li[data-astro-cid-iv4vc336]{display:grid;grid-template-columns:26px 1fr;gap:6px;align-items:start}ul[data-astro-cid-iv4vc336].checks .mark[data-astro-cid-iv4vc336]{font-weight:700}ul[data-astro-cid-iv4vc336].checks .pass[data-astro-cid-iv4vc336] .mark[data-astro-cid-iv4vc336]{color:var(--ok)}ul[data-astro-cid-iv4vc336].checks .fail[data-astro-cid-iv4vc336] .mark[data-astro-cid-iv4vc336]{color:var(--bad)}ul[data-astro-cid-iv4vc336].checks .note[data-astro-cid-iv4vc336] .mark[data-astro-cid-iv4vc336]{color:var(--muted)}ul[data-astro-cid-iv4vc336].checks small[data-astro-cid-iv4vc336]{display:block;color:var(--muted);overflow-wrap:anywhere}
+</style></head> <body> <header class="site"> <div class="wrap"> <a class="mark" href="/">VERDERER</a> <nav aria-label="Main"> <a href="/">Overview</a><a href="/changes">Changes</a><a href="/guide">How to read this</a><a href="/verify" aria-current="page">Verify</a><a href="/overlay">Archives</a> </nav> <button id="theme-toggle" type="button" aria-label="Switch between light and dark theme">Theme</button> </div> </header> <main><div class="wrap"> <h1 data-astro-cid-iv4vc336>Verify a proof</h1> <p class="lede" data-astro-cid-iv4vc336>
+A proof bundle is one file: a recorded response, the exact bytes received, and the proof that it sits in
+    Verderer’s signed log. It is checked <strong data-astro-cid-iv4vc336>entirely in your browser</strong> — nothing is uploaded, and
+    nothing depends on trusting this site.
+</p> <div class="grid cols-2" data-astro-cid-iv4vc336> <div class="card" data-astro-cid-iv4vc336> <h3 data-astro-cid-iv4vc336>Check a source’s latest proof</h3> <p class="small muted" data-astro-cid-iv4vc336>Fetches the published bundle for a source and verifies it here.</p> <div class="toolbar" data-astro-cid-iv4vc336> <select id="bundle-source" aria-label="Source" data-astro-cid-iv4vc336> <option value="epa-climate-indicators" data-astro-cid-iv4vc336>EPA Climate Change Indicators</option><option value="epa-drinking-water-mcl" data-astro-cid-iv4vc336>EPA National Primary Drinking Water Regulations (MCL table)</option><option value="epa-ghgrp" data-astro-cid-iv4vc336>EPA Greenhouse Gas Reporting Program</option><option value="epa-ghgrp-data" data-astro-cid-iv4vc336>EPA GHGRP facility-level emissions (data download)</option><option value="epa-glyphosate" data-astro-cid-iv4vc336>EPA glyphosate registration review</option><option value="fema-nri" data-astro-cid-iv4vc336>FEMA National Risk Index</option><option value="noaa-climate-gov" data-astro-cid-iv4vc336>NOAA Climate.gov</option><option value="noaa-co2-trends" data-astro-cid-iv4vc336>NOAA GML CO2 trends (Mauna Loa) - data page</option><option value="usda-climate-hubs" data-astro-cid-iv4vc336>USDA Climate Hubs</option> </select> <button class="btn primary" id="verify-source" type="button" data-astro-cid-iv4vc336>Verify</button> </div>  </div> <div class="card" data-astro-cid-iv4vc336> <h3 data-astro-cid-iv4vc336>Check a file you have</h3> <p class="small muted" data-astro-cid-iv4vc336>A <code data-astro-cid-iv4vc336>verderer.proofbundle/v1</code> file, from this site or anyone else.</p> <div class="toolbar" data-astro-cid-iv4vc336> <input type="file" id="bundle-file" accept="application/json,.json" aria-label="Proof bundle file" data-astro-cid-iv4vc336> <button class="btn" id="verify-btn" type="button" data-astro-cid-iv4vc336>Verify file</button> </div> </div> </div> <p id="verify-status" class="muted small" style="margin-top:12px" aria-live="polite" data-astro-cid-iv4vc336>Loading the verifier…</p> <section id="verify-report" hidden aria-live="polite" data-astro-cid-iv4vc336></section> <h2 data-astro-cid-iv4vc336>What a valid proof establishes</h2> <div class="grid cols-2" data-astro-cid-iv4vc336> <div class="card" data-astro-cid-iv4vc336> <h3 data-astro-cid-iv4vc336>It does show</h3> <p class="small" data-astro-cid-iv4vc336>
+That Verderer’s collector received exactly these bytes, with this status, from this address; that the
+        record of it is in the signed log; and — when the bundle carries an independent timestamp — that the
+        log existed no later than that time.
+</p> </div> <div class="card" data-astro-cid-iv4vc336> <h3 data-astro-cid-iv4vc336>It does not show</h3> <p class="small" data-astro-cid-iv4vc336>
+What the agency “really” published, what other visitors were served, anything before the first
+        recorded response, or why something changed. <a href="/guide#proof" data-astro-cid-iv4vc336>More on the limits →</a> </p> </div> </div>  <script type="application/json" id="verify-data">{"pinnedKey":"5ba707a9c137b726d5494d73d9d946e581969cbc65f01dab5e3bcf83a52a24db","sources":[{"id":"epa-climate-indicators","title":"EPA Climate Change Indicators"},{"id":"epa-drinking-water-mcl","title":"EPA National Primary Drinking Water Regulations (MCL table)"},{"id":"epa-ghgrp","title":"EPA Greenhouse Gas Reporting Program"},{"id":"epa-ghgrp-data","title":"EPA GHGRP facility-level emissions (data download)"},{"id":"epa-glyphosate","title":"EPA glyphosate registration review"},{"id":"fema-nri","title":"FEMA National Risk Index"},{"id":"noaa-climate-gov","title":"NOAA Climate.gov"},{"id":"noaa-co2-trends","title":"NOAA GML CO2 trends (Mauna Loa) - data page"},{"id":"usda-climate-hubs","title":"USDA Climate Hubs"}]}</script> <script type="module">
+    import init, { verify_bundle } from '/wasm/ledger_wasm.js';
+
+    const { pinnedKey, sources } = JSON.parse(document.getElementById('verify-data').textContent);
+    const status = document.getElementById('verify-status');
+    const report = document.getElementById('verify-report');
+    const known = new Map(sources.map((s) => [s.id, s.title]));
+    const ready = init()
+      .then(() => { status.textContent = 'Verifier ready. It runs offline, in this browser tab.'; })
+      .catch((error) => { status.textContent = `Could not load the verifier: ${error}`; throw error; });
+
+    // Everything from a bundle is untrusted input: it only ever reaches the page as text.
+    const el = (tag, className, text) => {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    };
+    const check = (kind, title, detail) => {
+      const item = el('li', kind);
+      item.append(el('span', 'mark', kind === 'pass' ? '✓' : kind === 'fail' ? '✗' : '•'));
+      const body = el('div');
+      body.append(el('strong', '', title));
+      if (detail) body.append(el('small', '', detail));
+      item.append(body);
+      return item;
+    };
+
+    function render(message, bundle, origin) {
+      const valid = message.startsWith('VALID');
+      const key = typeof bundle?.pubkey_hex === 'string' ? bundle.pubkey_hex : '';
+      const ours = Boolean(pinnedKey) && key.toLowerCase() === pinnedKey.toLowerCase();
+      const foreign = valid && Boolean(pinnedKey) && !ours;
+      const observation = bundle && typeof bundle.observation === 'object' ? bundle.observation : null;
+
+      const verdict = el('div', `verdict ${!valid ? 'bad' : foreign ? 'warn' : 'ok'}`);
+      verdict.append(
+        el('h2', '', !valid ? '✗ Not valid' : foreign ? '⚠ Consistent, but not from this log' : '✓ Verified'),
+        el(
+          'p',
+          '',
+          !valid
+            ? 'This file does not hold together as a proof. Something in it was altered, or it is not a proof bundle.'
+            : foreign
+              ? 'The file is internally consistent, but it is signed by a different key than Verderer’s published one — so it proves nothing about Verderer’s record.'
+              : 'Every check passed. This recorded response is exactly what Verderer’s signed log says it is.',
+        ),
+      );
+
+      const checks = el('ul', 'checks');
+      if (valid) {
+        const artifacts = message.match(/(\d+) artifact\(s\) match/);
+        checks.append(
+          check('pass', 'The captured bytes match the recorded fingerprint',
+            artifacts ? `${artifacts[1]} file(s) in the bundle hash to exactly what the record commits to.` : ''),
+          check('pass', 'The record is in the signed log',
+            `Its inclusion proof leads to the signed head of the log${logSize(bundle) ? ` (${logSize(bundle)} entries at the time)` : ''}.`),
+        );
+        if (!pinnedKey) {
+          checks.append(check('note', 'The log signature is valid under the key in the bundle', 'This build has no published key to compare it with.'));
+        } else if (ours) {
+          checks.append(check('pass', 'Signed by Verderer’s published log key', key));
+        } else {
+          checks.append(check('fail', 'Not signed by Verderer’s published log key', `Bundle key ${key || '(none)'} — expected ${pinnedKey}`));
+        }
+        const anchored = message.match(/(\d+) anchor\(s\) verified - existed no later than ([^;]+)/);
+        const unanchored = message.match(/(\d+) anchor\(s\) present but not verified/);
+        if (anchored) {
+          checks.append(check('pass', `Independently timestamped: existed no later than ${anchored[2].trim()}`,
+            `${anchored[1]} timestamp(s) from outside Verderer bound when the log existed.`));
+        } else {
+          checks.append(check('note', 'No independent timestamp in this bundle',
+            'The time below is the collector’s own clock. The proof of what was received does not depend on it.'));
+        }
+        if (unanchored) {
+          checks.append(check('note', `${unanchored[1]} timestamp(s) present but not checked`, 'They come from an authority this verifier does not pin, so they are reported and ignored.'));
+        }
+        const witnessed = message.match(/(\d+)(?:\/\d+)? witness cosignature\(s\)/);
+        if (witnessed) checks.append(check('note', `${witnessed[1]} witness cosignature(s) attached`, 'Independent parties countersigned this log head.'));
+      } else {
+        checks.append(check('fail', 'Verification failed', message.replace(/^INVALID\s*/, '')));
+      }
+      verdict.append(checks);
+
+      if (observation) {
+        const facts = el('dl', 'facts');
+        facts.style.marginTop = '14px';
+        const fact = (name, value) => {
+          const cell = el('div');
+          cell.append(el('dt', '', name), el('dd', '', value === undefined || value === null ? '—' : String(value)));
+          facts.append(cell);
+        };
+        fact(valid ? 'Address fetched' : 'Address claimed', observation.url);
+        fact('Fetched (collector clock)', observation.fetched_at);
+        fact('Response', observation.http_status ? `HTTP ${observation.http_status}` : undefined);
+        fact('Content hash', observation.raw_bytes_hash);
+        verdict.append(facts);
+        if (valid && ours && known.has(observation.target_id)) {
+          const more = el('p', 'small');
+          more.style.margin = '12px 0 0';
+          const link = el('a', '', `See ${known.get(observation.target_id)}’s history →`);
+          link.href = `/target/${encodeURIComponent(observation.target_id)}`;
+          more.append(link);
+          verdict.append(more);
+        }
+      }
+      verdict.append(el('p', 'out', `${origin} — verifier output: ${message}`));
+      report.replaceChildren(verdict);
+      report.hidden = false;
+    }
+
+    function logSize(bundle) {
+      const size = typeof bundle?.checkpoint === 'string' ? Number(bundle.checkpoint.split('\n')[1]) : NaN;
+      return Number.isFinite(size) ? size : null;
+    }
+
+    async function run(text, origin) {
+      await ready;
+      let message;
+      try { message = verify_bundle(text); } catch (error) { message = `INVALID could not read the bundle: ${error}`; }
+      let bundle = null;
+      try { bundle = JSON.parse(text); } catch {}
+      render(String(message), bundle, origin);
+    }
+
+    async function runSource(id) {
+      if (!known.has(id)) return;
+      status.textContent = `Fetching the published proof for ${known.get(id)}…`;
+      try {
+        const response = await fetch(`/bundles/${encodeURIComponent(id)}.json`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        await run(await response.text(), `Published proof for ${known.get(id)}`);
+        status.textContent = 'Verified in this browser tab. Nothing was uploaded.';
+      } catch (error) {
+        status.textContent = `Could not fetch that proof: ${error}`;
+      }
+    }
+
+    document.getElementById('verify-btn').addEventListener('click', async () => {
+      const file = document.getElementById('bundle-file').files[0];
+      if (!file) { status.textContent = 'Choose a proof bundle file first.'; return; }
+      await run(await file.text(), `File ${file.name}`);
+      status.textContent = 'Verified in this browser tab. Nothing was uploaded.';
+    });
+    const picker = document.getElementById('bundle-source');
+    document.getElementById('verify-source').addEventListener('click', () => runSource(picker.value));
+
+    // A link from a source page (?bundle=<id>) verifies that source's proof straight away.
+    const wanted = new URLSearchParams(location.search).get('bundle');
+    if (wanted && known.has(wanted)) {
+      picker.value = wanted;
+      runSource(wanted);
+    }
+
+    // Test hook so the WASM path can be checked headlessly.
+    window.__verifyBundle = async (text) => { await ready; return verify_bundle(text); };
+  </script> </div></main> <footer class="site"> <div class="wrap"> <div>
+Verderer attests only what its collector received: this response, from this address, at this time —
+          preserved faithfully and verifiable offline. Labels such as severity and change type are a best-effort,
+          human-reviewable interpretation, never a verified fact.
+<a href="/guide#proof">What is and isn't proven →</a> </div> <div class="links"> <a href="/feed.xml">RSS feed</a> <a href="/record.json">record.json</a> <a href="/checkpoint">Signed checkpoint</a> <a href="/verify">Verify a proof</a> <a href="https://github.com/satchmakua/verderer">Source code</a> </div> </div> </footer> <script>
+      (() => {
+        const root = document.documentElement;
+
+        // Theme toggle: follows the system until chosen; the choice is a per-reader convenience.
+        const toggle = document.getElementById('theme-toggle');
+        const current = () =>
+          root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const label = () => { if (toggle) toggle.textContent = current() === 'dark' ? 'Light theme' : 'Dark theme'; };
+        label();
+        toggle?.addEventListener('click', () => {
+          const next = current() === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try { localStorage.setItem('verderer-theme', next); } catch {}
+          label();
+        });
+
+        // Relative times. The server prints an absolute UTC date; a recent one reads better
+        // as "3 hours ago", and every one gets the reader's local time on hover.
+        const UNITS = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
+        const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+        const relative = (date) => {
+          const seconds = (date.getTime() - Date.now()) / 1000;
+          for (const [unit, size] of UNITS) {
+            if (Math.abs(seconds) >= size) return rtf.format(Math.round(seconds / size), unit);
+          }
+          return 'just now';
+        };
+        const RECENT = 14 * 86400 * 1000;
+
+        function refresh() {
+          for (const el of document.querySelectorAll('time[datetime]')) {
+            const date = new Date(el.getAttribute('datetime'));
+            if (Number.isNaN(date.getTime())) continue;
+            if (!el.dataset.abs) el.dataset.abs = el.textContent;
+            el.title = `${date.toLocaleString()} your time · ${el.dataset.abs}`;
+            const mode = el.dataset.rel;
+            if (mode === 'always' || (mode === 'recent' && Math.abs(Date.now() - date.getTime()) < RECENT)) {
+              el.textContent = relative(date);
+            }
+          }
+          // Is the watchdog still running? The record carries when it was generated; if that
+          // is long ago, say so plainly instead of presenting stale data as current.
+          for (const el of document.querySelectorAll('[data-freshness]')) {
+            const date = new Date(el.dataset.generated || '');
+            if (Number.isNaN(date.getTime())) continue;
+            const hours = (Date.now() - date.getTime()) / 3600000;
+            const tone = hours < 15 ? 'ok' : hours < 36 ? 'warn' : 'bad';
+            el.dataset.tone = tone;
+            const title = el.querySelector('[data-fresh-label]');
+            const detail = el.querySelector('[data-fresh-detail]');
+            if (title) title.textContent = tone === 'ok' ? 'Watchdog running' : tone === 'warn' ? 'Watchdog delayed' : 'Watchdog stalled';
+            if (detail) {
+              detail.textContent =
+                tone === 'ok'
+                  ? `Last run ${relative(date)}. Sources are re-checked several times a day.`
+                  : tone === 'warn'
+                    ? `Last run ${relative(date)} — later than usual. The record below is still accurate as of then.`
+                    : `No completed run since ${relative(date)}. Everything below is accurate only as of that run.`;
+            }
+          }
+        }
+        refresh();
+        setInterval(refresh, 60000);
+
+        // Copy a full hash/key that is shown shortened.
+        document.addEventListener('click', (event) => {
+          const button = event.target instanceof Element ? event.target.closest('[data-copy]') : null;
+          if (!button || !navigator.clipboard) return;
+          navigator.clipboard.writeText(button.getAttribute('data-copy') || '').then(() => {
+            const before = button.textContent;
+            button.textContent = 'Copied';
+            setTimeout(() => { button.textContent = before; }, 1200);
+          });
+        });
+      })();
+    </script> </body> </html>

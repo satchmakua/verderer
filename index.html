@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A verifiable, tamper-evident record of what U.S. government environmental data said, and how it is being changed."><meta name="color-scheme" content="light dark"><title>Verderer — the public record</title><link rel="alternate" type="application/rss+xml" title="Verderer — all changes" href="/feed.xml"><script>
+      // Apply a saved theme before first paint (no flash). Storage can be unavailable; ignore.
+      try {
+        const saved = localStorage.getItem('verderer-theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      } catch {}
+    </script><link rel="stylesheet" href="/_astro/Base.CG78TJll.css"></head> <body> <header class="site"> <div class="wrap"> <a class="mark" href="/">VERDERER</a> <nav aria-label="Main"> <a href="/" aria-current="page">Overview</a><a href="/changes">Changes</a><a href="/guide">How to read this</a><a href="/verify">Verify</a><a href="/overlay">Archives</a> </nav> <button id="theme-toggle" type="button" aria-label="Switch between light and dark theme">Theme</button> </div> </header> <main><div class="wrap"> <section> <h1>What the government’s environmental data said — and how it is changing.</h1> <p class="lede">
+Verderer re-checks 12 government pages and datasets several times a day, keeps a signed,
+      tamper-evident record of every distinct response, and flags the changes that matter. Nothing here asks
+      for your trust: every entry can be verified independently.
+</p> <div class="status" data-freshness data-generated="2026-11-14T06:23:52Z" data-tone="idle"> <span class="dot" aria-hidden="true"></span> <strong data-fresh-label>Record generated</strong> <span class="muted" data-fresh-detail>Nov 14, 2026, 06:23 UTC</span> </div> <div class="grid cols-4"> <div class="card stat"> <div class="label">Sources watched</div> <div class="value">12</div> <div class="statebar" aria-hidden="true"> <span class="live" style="flex: 7"></span><span class="blocked" style="flex: 1"></span><span class="gone" style="flex: 1"></span><span class="unreachable" style="flex: 3"></span> </div> <div class="legend"> <span class="live"><i></i>7 live</span><span class="blocked"><i></i>1 blocked</span><span class="gone"><i></i>1 gone</span><span class="unreachable"><i></i>3 unreachable</span> </div> </div> <div class="card stat"> <div class="label">Changes detected</div> <div class="value">13</div> <div class="sub"> <strong>2 high severity</strong> · since Jul 20, 2026 </div> <div class="sub muted">
+plus 100 error-page changes <a href="/guide#churn">set aside</a> </div> </div> <div class="card stat"> <div class="label">Signed log entries</div> <div class="value">624</div> <div class="sub"> 471 recorded responses and 153 findings, each
+          provable offline.
+</div> </div> <div class="card stat"> <div class="label">Check it yourself</div> <div class="sub" style="margin-top:0">
+Download a proof for any source and verify it in your browser — no trust in this site required.
+</div> <div class="actions"> <a class="btn primary" href="/verify">Verify a proof</a> </div> <div class="sub muted small">
+Log root <code title="+0Dfq0+PTBmynK3JbgM/d2mzBV5i7eM3I8zw844zL3w=">+0Dfq0+PTBmy…</code> </div> </div> </div> </section> <section> <h2>Notable findings</h2> <p class="section-note">
+The changes rated high severity: a watched term disappearing, a regulatory number moving, a dataset losing
+      data, a page ceasing to be served. Each is a best-effort classification of two recorded versions —
+<a href="/guide#severity">how severity is assigned</a>.
+</p> <div class="grid"> <article class="card change sev-high" data-change data-severity="High" data-source="epa-ghgrp" data-category="notable" data-search="epa greenhouse gas reporting program epa-ghgrp 2 watched terms removed: “climate change”, “methane” (+1 more) “climate change” appeared 2 times in the previous version and is now gone. “methane” appeared 1 time in the previous version and is now gone. mentions of “greenhouse gas” fell from 6 to 4. termsubstitution"> <div class="meta"> <span class="sev high">High</span> <a class="src" href="/target/epa-ghgrp">EPA Greenhouse Gas Reporting Program</a> <time datetime="2026-09-22T04:57:11Z" data-rel="recent">Sep 22, 2026</time>  </div> <h3><a href="/change/409364f698db79ac6c445f91580cdb62dc1834d37ba1de766de2096e92af245c">2 watched terms removed: “climate change”, “methane” (+1 more)</a></h3> <ul class="points"> <li>“climate change” appeared 2 times in the previous version and is now gone.</li><li>“methane” appeared 1 time in the previous version and is now gone.</li><li>Mentions of “greenhouse gas” fell from 6 to 4.</li> </ul> <div class="foot"> <span class="note-chip">
+↩ Reversed Sep 22, 2026 · <a href="/change/6cc3c3d33262dbd8923d9b778a8652b0a7dc65d4c3f601294b7918ee033234fd">see the reversal</a> </span>  <span>3 findings</span> <a href="/change/409364f698db79ac6c445f91580cdb62dc1834d37ba1de766de2096e92af245c">Evidence and proof →</a> </div> </article><article class="card change sev-high" data-change data-severity="High" data-source="epa-drinking-water-mcl" data-category="notable" data-search="epa national primary drinking water regulations (mcl table) epa-drinking-water-mcl regulatory number changed: 0.010 mg/l → 0.015 mg/l in the passage “…level is 1.3 mg/l , and for lead is”, the value changed from 0.010 mg/l to 0.015 mg/l (+50%). numericthresholdchange"> <div class="meta"> <span class="sev high">High</span> <a class="src" href="/target/epa-drinking-water-mcl">EPA National Primary Drinking Water Regulations (MCL table)</a> <time datetime="2026-09-01T11:39:55Z" data-rel="recent">Sep 1, 2026</time>  </div> <h3><a href="/change/c189a6693303c28784da1e4dc617bd70337e9e6d46707f1a3cb1a87c0e5afc5c">Regulatory number changed: 0.010 mg/L → 0.015 mg/L</a></h3> <ul class="points"> <li>In the passage “…level is 1.3 mg/L , and for lead is”, the value changed from 0.010 mg/L to 0.015 mg/L (+50%).</li> </ul> <div class="foot">   <span>1 finding</span> <a href="/change/c189a6693303c28784da1e4dc617bd70337e9e6d46707f1a3cb1a87c0e5afc5c">Evidence and proof →</a> </div> </article>  </div> </section> <section> <h2>Sources</h2> <p class="section-note">
+Every watched page and dataset, and what it is doing now. “Checked” times are the watchdog’s own report of
+      its last look; a check that finds nothing new adds nothing to the signed record.
+<a href="/guide#states">What the states mean</a>.
+</p> <div class="grid cols-3"> <a class="card source" href="/target/fema-nri"> <div class="top"> <div> <h3>FEMA National Risk Index</h3> <div class="host">hazards.fema.gov</div> </div> <span class="chip live"> Live </span> </div> <div class="lines"> <span>1 change recorded · last on Nov 13, 2026</span> <span class="muted">Redirects to fema.gov</span> <span class="muted"> Checked <time datetime="2026-11-13T19:43:36Z" data-rel="always">Nov 13, 2026</time> — recorded a new response </span> </div> </a><a class="card source" href="/target/epa-ghgrp"> <div class="top"> <div> <h3>EPA Greenhouse Gas Reporting Program</h3> <div class="host">epa.gov</div> </div> <span class="chip live"> Live </span> </div> <div class="lines"> <span>8 changes recorded · last on Nov 4, 2026</span>  <span class="muted"> Checked <time datetime="2026-11-13T19:43:08Z" data-rel="always">Nov 13, 2026</time> — recorded a new response </span> </div> </a><a class="card source" href="/target/usda-climate-hubs"> <div class="top"> <div> <h3>USDA Climate Hubs</h3> <div class="host">climatehubs.usda.gov</div> </div> <span class="chip live"> Live </span> </div> <div class="lines"> <span>1 change recorded · last on Sep 18, 2026</span>  <span class="muted"> Checked <time datetime="2026-11-13T06:46:37Z" data-rel="always">Nov 13, 2026</time> — recorded a new response </span> </div> </a><a class="card source" href="/target/epa-drinking-water-mcl"> <div class="top"> <div> <h3>EPA National Primary Drinking Water Regulations (MCL table)</h3> <div class="host">epa.gov</div> </div> <span class="chip live"> Live </span> </div> <div class="lines"> <span>1 change recorded · last on Sep 1, 2026</span>  <span class="muted"> Checked <time datetime="2026-11-13T19:43:10Z" data-rel="always">Nov 13, 2026</time> — recorded a new response </span> </div> </a><a class="card source" href="/target/epa-glyphosate"> <div class="top"> <div> <h3>EPA glyphosate registration review</h3> <div class="host">epa.gov</div> </div> <span class="chip live"> Live </span> </div> <div class="lines"> <span>2 changes recorded · last on Aug 27, 2026</span>  <span class="muted"> Checked <time datetime="2026-11-14T06:23:30Z" data-rel="always">Nov 14, 2026</time> — recorded a new response </span> </div> </a><a class="card source" href="/target/epa-ghgrp-data"> <div class="top"> <div> <h3>EPA GHGRP facility-level emissions (data download)</h3> <div class="host">epa.gov</div> </div> <span class="chip live"> Live </span> </div> <div class="lines"> <span>No changes since first observed on Jul 20, 2026</span>  <span class="muted"> Checked <time datetime="2026-11-13T19:43:09Z" data-rel="always">Nov 13, 2026</time> — nothing new </span> </div> </a><a class="card source" href="/target/noaa-co2-trends"> <div class="top"> <div> <h3>NOAA GML CO2 trends (Mauna Loa) - data page</h3> <div class="host">gml.noaa.gov</div> </div> <span class="chip live"> Live </span> </div> <div class="lines"> <span>No changes since first observed on Jul 20, 2026</span>  <span class="muted"> Checked <time datetime="2026-11-13T19:43:35Z" data-rel="always">Nov 13, 2026</time> — nothing new </span> </div> </a><a class="card source" href="/target/noaa-climate-gov"> <div class="top"> <div> <h3>NOAA Climate.gov</h3> <div class="host">climate.gov</div> </div> <span class="chip blocked"> Blocked · 403 </span> </div> <div class="lines"> <span>Refusing the collector since Jul 20, 2026</span> <span class="muted">Redirects to noaa.gov</span> <span class="muted"> Checked <time datetime="2026-11-13T19:43:35Z" data-rel="always">Nov 13, 2026</time> — recorded a new response </span> </div> </a><a class="card source" href="/target/epa-climate-indicators"> <div class="top"> <div> <h3>EPA Climate Change Indicators</h3> <div class="host">epa.gov</div> </div> <span class="chip gone"> Gone · 404 </span> </div> <div class="lines"> <span>Not found since Jul 20, 2026</span>  <span class="muted"> Checked <time datetime="2026-11-13T19:43:11Z" data-rel="always">Nov 13, 2026</time> — nothing new </span> </div> </a><a class="card source" href="/target/epa-ejscreen"> <div class="top"> <div> <h3>EPA EJScreen environmental-justice screening tool</h3> <div class="host">ejscreen.epa.gov</div> </div> <span class="chip unreachable"> Unreachable </span> </div> <div class="lines"> <span>Has never answered</span>  <span class="muted"> Checked <time datetime="2026-11-14T06:23:30Z" data-rel="always">Nov 14, 2026</time> — no response (413 in a row) </span> </div> </a><a class="card source" href="/target/nca5"> <div class="top"> <div> <h3>Fifth National Climate Assessment (nca2023.globalchange.gov)</h3> <div class="host">nca2023.globalchange.gov</div> </div> <span class="chip unreachable"> Unreachable </span> </div> <div class="lines"> <span>Has never answered</span>  <span class="muted"> Checked <time datetime="2026-11-14T06:23:45Z" data-rel="always">Nov 14, 2026</time> — no response (413 in a row) </span> </div> </a><a class="card source" href="/target/usgcrp"> <div class="top"> <div> <h3>U.S. Global Change Research Program (globalchange.gov)</h3> <div class="host">globalchange.gov</div> </div> <span class="chip unreachable"> Unreachable </span> </div> <div class="lines"> <span>Has never answered</span>  <span class="muted"> Checked <time datetime="2026-11-14T06:23:36Z" data-rel="always">Nov 14, 2026</time> — no response (413 in a row) </span> </div> </a> </div> </section> <section> <h2>Recent changes</h2> <p class="section-note">The latest changes of any severity, newest first.</p> <div> <div class="row-change"> <span><span class="sev med">Medium</span></span> <div class="what"> <a class="h" href="/change/4e4a72860b9f97913673e5d64adc2834d7c555e16cd37a888b296b3b360f54c7">Served again: HTTP 403 → 200</a> <div class="src">FEMA National Risk Index</div> </div> <time datetime="2026-11-13T19:43:36Z" data-rel="recent">Nov 13, 2026</time> </div><div class="row-change"> <span><span class="sev med">Medium</span></span> <div class="what"> <a class="h" href="/change/4d03981b425ae7fd721d0d2846db53e703a9ad6bf5d1d74149db339bfa355428">Text removed: “Registration for reporting deadline extension public hearing”</a> <div class="src">EPA Greenhouse Gas Reporting Program</div> </div> <time datetime="2026-11-04T06:22:55Z" data-rel="recent">Nov 4, 2026</time> </div><div class="row-change"> <span><span class="sev med">Medium</span></span> <div class="what"> <a class="h" href="/change/18ce14eb56ee88e42a38e389d2f6bc98d344e91e3724f8a14149e8c09012caea">Page text changed</a> <div class="src">EPA Greenhouse Gas Reporting Program</div> </div> <time datetime="2026-10-19T13:16:29Z" data-rel="recent">Oct 19, 2026</time> </div><div class="row-change"> <span><span class="sev med">Medium</span></span> <div class="what"> <a class="h" href="/change/a6ee5d6941f6d502621186a39bd8063e7b8f38b7cf41865eb420443fadc1a3a8">Text added: “Registration for reporting deadline extension public hearing”</a> <div class="src">EPA Greenhouse Gas Reporting Program</div> </div> <time datetime="2026-10-17T10:44:50Z" data-rel="recent">Oct 17, 2026</time> </div><div class="row-change"> <span><span class="sev med">Medium</span></span> <div class="what"> <a class="h" href="/change/8d3014ff361b79986fb1028525ee5b53c11ded6b67d1a4f6612e3b13cee2ca0a">Text edited (list item 5)</a> <div class="src">EPA Greenhouse Gas Reporting Program</div> </div> <time datetime="2026-10-09T06:09:27Z" data-rel="recent">Oct 9, 2026</time> </div><div class="row-change"> <span><span class="sev med">Medium</span></span> <div class="what"> <a class="h" href="/change/6cc3c3d33262dbd8923d9b778a8652b0a7dc65d4c3f601294b7918ee033234fd">2 watched terms appeared: “climate change”, “methane” (+1 more)</a> <div class="src">EPA Greenhouse Gas Reporting Program</div> </div> <time datetime="2026-09-22T21:20:01Z" data-rel="recent">Sep 22, 2026</time> </div><div class="row-change"> <span><span class="sev high">High</span></span> <div class="what"> <a class="h" href="/change/409364f698db79ac6c445f91580cdb62dc1834d37ba1de766de2096e92af245c">2 watched terms removed: “climate change”, “methane” (+1 more)</a> <div class="src">EPA Greenhouse Gas Reporting Program</div> </div> <time datetime="2026-09-22T04:57:11Z" data-rel="recent">Sep 22, 2026</time> </div><div class="row-change"> <span><span class="sev med">Medium</span></span> <div class="what"> <a class="h" href="/change/09d0ef7b1d060428c83cbcce1c9d75e9cbf945b8a310741d54dd86f764865809">Fewer mentions of “greenhouse gas”</a> <div class="src">USDA Climate Hubs</div> </div> <time datetime="2026-09-18T20:55:35Z" data-rel="recent">Sep 18, 2026</time> </div>  </div> <p style="margin-top:14px"> <a href="/changes">All 13 changes, with filters →</a>
+&nbsp;·&nbsp; <a href="/feed.xml">Subscribe by RSS</a> </p> </section> <section> <h2>Reading this record</h2> <div class="grid cols-3"> <div class="card"> <h3>What a change is</h3> <p class="small muted">
+Whenever a source answers differently than it did last time, the two versions are compared and
+          whatever moved is listed — a watched term, a number with a unit, a passage, a column of data. One
+          comparison is one change.
+</p> </div> <div class="card"> <h3>What is proven</h3> <p class="small muted">
+That this collector received these exact bytes from this address at this time, and that the record
+          has not been altered since. Severity and change types are interpretation, and labelled as such.
+</p> </div> <div class="card"> <h3>What “blocked” and “unreachable” mean</h3> <p class="small muted">
+A blocked source refuses the collector, so its content is not being observed. An unreachable one has
+          never answered, so there is nothing to record. Neither is hidden: an absence is part of the story.
+</p> </div> </div> <p style="margin-top:14px"><a href="/guide">The full guide to reading and verifying this record →</a></p> </section> </div></main> <footer class="site"> <div class="wrap"> <div>
+Verderer attests only what its collector received: this response, from this address, at this time —
+          preserved faithfully and verifiable offline. Labels such as severity and change type are a best-effort,
+          human-reviewable interpretation, never a verified fact.
+<a href="/guide#proof">What is and isn't proven →</a> </div> <div class="links"> <a href="/feed.xml">RSS feed</a> <a href="/record.json">record.json</a> <a href="/checkpoint">Signed checkpoint</a> <a href="/verify">Verify a proof</a> <a href="https://github.com/satchmakua/verderer">Source code</a> </div> </div> </footer> <script>
+      (() => {
+        const root = document.documentElement;
+
+        // Theme toggle: follows the system until chosen; the choice is a per-reader convenience.
+        const toggle = document.getElementById('theme-toggle');
+        const current = () =>
+          root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const label = () => { if (toggle) toggle.textContent = current() === 'dark' ? 'Light theme' : 'Dark theme'; };
+        label();
+        toggle?.addEventListener('click', () => {
+          const next = current() === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try { localStorage.setItem('verderer-theme', next); } catch {}
+          label();
+        });
+
+        // Relative times. The server prints an absolute UTC date; a recent one reads better
+        // as "3 hours ago", and every one gets the reader's local time on hover.
+        const UNITS = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
+        const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+        const relative = (date) => {
+          const seconds = (date.getTime() - Date.now()) / 1000;
+          for (const [unit, size] of UNITS) {
+            if (Math.abs(seconds) >= size) return rtf.format(Math.round(seconds / size), unit);
+          }
+          return 'just now';
+        };
+        const RECENT = 14 * 86400 * 1000;
+
+        function refresh() {
+          for (const el of document.querySelectorAll('time[datetime]')) {
+            const date = new Date(el.getAttribute('datetime'));
+            if (Number.isNaN(date.getTime())) continue;
+            if (!el.dataset.abs) el.dataset.abs = el.textContent;
+            el.title = `${date.toLocaleString()} your time · ${el.dataset.abs}`;
+            const mode = el.dataset.rel;
+            if (mode === 'always' || (mode === 'recent' && Math.abs(Date.now() - date.getTime()) < RECENT)) {
+              el.textContent = relative(date);
+            }
+          }
+          // Is the watchdog still running? The record carries when it was generated; if that
+          // is long ago, say so plainly instead of presenting stale data as current.
+          for (const el of document.querySelectorAll('[data-freshness]')) {
+            const date = new Date(el.dataset.generated || '');
+            if (Number.isNaN(date.getTime())) continue;
+            const hours = (Date.now() - date.getTime()) / 3600000;
+            const tone = hours < 15 ? 'ok' : hours < 36 ? 'warn' : 'bad';
+            el.dataset.tone = tone;
+            const title = el.querySelector('[data-fresh-label]');
+            const detail = el.querySelector('[data-fresh-detail]');
+            if (title) title.textContent = tone === 'ok' ? 'Watchdog running' : tone === 'warn' ? 'Watchdog delayed' : 'Watchdog stalled';
+            if (detail) {
+              detail.textContent =
+                tone === 'ok'
+                  ? `Last run ${relative(date)}. Sources are re-checked several times a day.`
+                  : tone === 'warn'
+                    ? `Last run ${relative(date)} — later than usual. The record below is still accurate as of then.`
+                    : `No completed run since ${relative(date)}. Everything below is accurate only as of that run.`;
+            }
+          }
+        }
+        refresh();
+        setInterval(refresh, 60000);
+
+        // Copy a full hash/key that is shown shortened.
+        document.addEventListener('click', (event) => {
+          const button = event.target instanceof Element ? event.target.closest('[data-copy]') : null;
+          if (!button || !navigator.clipboard) return;
+          navigator.clipboard.writeText(button.getAttribute('data-copy') || '').then(() => {
+            const before = button.textContent;
+            button.textContent = 'Copied';
+            setTimeout(() => { button.textContent = before; }, 1200);
+          });
+        });
+      })();
+    </script> </body> </html>
