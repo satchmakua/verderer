@@ -1,8 +1,8 @@
 {
   "validators": {
     "https://hazards.fema.gov/nri/": {
-      "etag": "\"1794724158\"",
-      "last_modified": "Sun, 15 Nov 2026 06:29:18 GMT"
+      "etag": "\"1794806915\"",
+      "last_modified": "Mon, 16 Nov 2026 05:28:35 GMT"
     },
     "https://www.climatehubs.usda.gov/": {
       "etag": "\"1794765913-gzip\"",
@@ -12,8 +12,8 @@
       "etag": "W/\"6af39c96-1976\""
     },
     "https://www.epa.gov/ghgreporting": {
-      "etag": "W/\"1794613251\"",
-      "last_modified": "Fri, 13 Nov 2026 23:40:51 GMT"
+      "etag": "W/\"1794721183\"",
+      "last_modified": "Sun, 15 Nov 2026 05:39:43 GMT"
     },
     "https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations": {
       "etag": "W/\"1794719229\"",

@@ -3,19 +3,19 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794724315.7983427,
-      "last_run": 1794724315.7983427,
+      "last_ok": 1794810626.2252567,
+      "last_run": 1794810626.2252567,
       "last_status": "unchanged",
-      "next_due": 1794770780.897622,
+      "next_due": 1794855312.4948277,
       "target_id": "epa-ghgrp"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794695072.90619,
-      "last_run": 1794695072.90619,
+      "last_ok": 1794810626.4045777,
+      "last_run": 1794810626.4045777,
       "last_status": "unchanged",
-      "next_due": 1794779756.880143,
+      "next_due": 1794890315.1366372,
       "target_id": "epa-ghgrp-data"
     },
     {
@@ -46,48 +46,48 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 417,
+      "consecutive_failures": 418,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1794768692.643902,
+      "last_run": 1794810628.1019006,
       "last_status": "error",
-      "next_due": 1794772292.643902,
+      "next_due": 1794814228.1019006,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 417,
+      "consecutive_failures": 418,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794768702.6890986,
+      "last_run": 1794810640.3804872,
       "last_status": "error",
-      "next_due": 1794772302.6890986,
+      "next_due": 1794814240.3804872,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 417,
+      "consecutive_failures": 418,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794768709.5835648,
+      "last_run": 1794810648.8122323,
       "last_status": "error",
-      "next_due": 1794772309.5835648,
+      "next_due": 1794814248.8122323,
       "target_id": "nca5"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794724340.4916465,
-      "last_run": 1794724340.4916465,
+      "last_ok": 1794810658.6947787,
+      "last_run": 1794810658.6947787,
       "last_status": "observed",
-      "next_due": 1794769187.564664,
+      "next_due": 1794854704.7381666,
       "target_id": "noaa-climate-gov"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794695103.897773,
-      "last_run": 1794695103.897773,
+      "last_ok": 1794810659.1374445,
+      "last_run": 1794810659.1374445,
       "last_status": "unchanged",
-      "next_due": 1794783216.4062893,
+      "next_due": 1794895046.7707086,
       "target_id": "noaa-co2-trends"
     },
     {
@@ -102,10 +102,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794724340.780492,
-      "last_run": 1794724340.780492,
+      "last_ok": 1794810659.5085025,
+      "last_run": 1794810659.5085025,
       "last_status": "observed",
-      "next_due": 1794807509.18083,
+      "next_due": 1794895526.5964024,
       "target_id": "fema-nri"
     }
   ]
