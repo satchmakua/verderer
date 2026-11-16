@@ -209,7 +209,9 @@ const nav = [
       .scroll { overflow-x: auto; }
       .source { display: grid; gap: 8px; }
       .source .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-      .source h3 { margin: 0; }
+      .source .top > div { min-width: 0; }
+      .source .top .chip { flex-shrink: 0; }
+      .source h3 { margin: 0; overflow-wrap: anywhere; }
       .source .host { color: var(--muted); font-size: 13.5px; overflow-wrap: anywhere; }
       .source .lines { font-size: 14.5px; color: var(--ink-2); display: grid; gap: 2px; }
       .source .tags { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -228,6 +230,7 @@ const nav = [
       .toolbar input[type='search'], .toolbar select { font: inherit; font-size: 15px; padding: 8px 11px; border-radius: 8px;
         border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); }
       .toolbar input[type='search'] { flex: 1 1 240px; min-width: 0; }
+      .toolbar select, .toolbar input[type='file'] { max-width: 100%; min-width: 0; }
       .toolbar label.check { display: inline-flex; align-items: center; gap: 7px; font-size: 14.5px; color: var(--ink-2); }
       .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; }
       .seg button { font: inherit; font-size: 14.5px; padding: 7px 12px; border: 0; background: var(--surface); color: var(--ink-2);

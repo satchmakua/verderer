@@ -1,67 +1,266 @@
 ---
 import Base from '../layouts/Base.astro';
+import When from '../components/When.astro';
 import overlay from '../data/overlay.json';
+import { fmtDate, hostOf, plural, targetById } from '../lib/record';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 
-const resources = (overlay.resources ?? []) as any[];
-const sources = (overlay.sources ?? []) as string[];
-const attested = overlay.attested_count ?? 0;
+type Capture = { timestamp: string; archive_url: string; mime?: string | null; status?: string | null };
+type External = { source: string; limit?: number | null; captures: Capture[] };
+type Resource = {
+  url: string;
+  target_id?: string | null;
+  attested: boolean;
+  lookup_failed?: string[];
+  verderer: {
+    target_id: string | null;
+    index: number;
+    observations: number;
+    content_hash: string | null;
+    fetched_at: string | null;
+    bundle: string;
+  } | null;
+  external: External[];
+};
+
+const data = overlay as unknown as {
+  generated_at?: string;
+  sources?: string[];
+  errors?: { source: string; url: string; error: string }[];
+  resources?: Resource[];
+};
+const sources = data.sources ?? [];
+const errors = data.errors ?? [];
+const SOURCE_NAMES: Record<string, string> = { wayback: 'Internet Archive (Wayback Machine)' };
+
+/** The same lenient identity the index uses: scheme, `www.`, a trailing dot or slash don't matter. */
+function sameAddress(a: string, b: string): boolean {
+  const key = (url: string) => {
+    try {
+      const u = new URL(url);
+      return `${u.hostname.toLowerCase().replace(/\.$/, '').replace(/^www\./, '')}${u.pathname.replace(/\/+$/, '')}${u.search}`;
+    } catch {
+      return url;
+    }
+  };
+  return key(a) === key(b);
+}
+
+/** A Wayback timestamp (`YYYYMMDDhhmmss`) as an ISO instant, or null. */
+function waybackIso(ts: string): string | null {
+  const m = /^(\d{4})(\d{2})(\d{2})(\d{2})?(\d{2})?(\d{2})?$/.exec(ts);
+  if (!m) return null;
+  return `${m[1]}-${m[2]}-${m[3]}T${m[4] ?? '00'}:${m[5] ?? '00'}:${m[6] ?? '00'}Z`;
+}
+
+const publicDir = join(process.cwd(), 'public');
+const rows = (data.resources ?? []).map((r) => {
+  const targetId = r.target_id ?? r.verderer?.target_id;
+  const target = targetId ? targetById(targetId) : undefined;
+  const external = r.external.map((e) => {
+    const dated = e.captures
+      .map((c) => ({ ...c, iso: waybackIso(c.timestamp) }))
+      .filter((c) => c.iso !== null)
+      .sort((a, b) => (a.iso ?? '').localeCompare(b.iso ?? ''));
+    const first = dated[0] ?? null;
+    const latest = dated[dated.length - 1] ?? null;
+    // The archive was asked for its latest `limit` captures; a full page means there are likely more.
+    const capped = typeof e.limit === 'number' && e.captures.length >= e.limit;
+    const count = capped ? `The latest ${e.captures.length} distinct captures` : plural(e.captures.length, 'distinct capture');
+    const span = first && latest && first.iso !== latest.iso
+      ? `, ${fmtDate(first.iso)} – ${fmtDate(latest.iso)}`
+      : latest ? `, ${fmtDate(latest.iso)}` : '';
+    return { source: e.source, name: SOURCE_NAMES[e.source] ?? e.source, count: e.captures.length, text: `${count}${span}.`, latest };
+  });
+  const captures = external.reduce((n, e) => n + e.count, 0);
+  // Only offer a download that this build actually ships.
+  const bundle = r.verderer?.bundle && existsSync(join(publicDir, r.verderer.bundle)) ? `/${r.verderer.bundle}` : null;
+  const lookupFailed = (r.lookup_failed ?? []).map((name) => SOURCE_NAMES[name] ?? name);
+  // A watched source that redirects is recorded where it lands; say where it was asked for.
+  const requestedAt = target && !sameAddress(target.url, r.url) ? target.url : null;
+  // The source-level verifier checks the target's newest proof; only offer it on that row.
+  const newest = target?.observations[target.observations.length - 1];
+  const isNewest = Boolean(newest && r.verderer && newest.content_hash === r.verderer.content_hash && newest.fetched_at === r.verderer.fetched_at);
+  const badge = r.attested
+    ? { cls: 'att', text: 'Proof available' }
+    : captures > 0
+      ? { cls: 'un', text: 'Archived elsewhere' }
+      : { cls: 'none', text: lookupFailed.length ? 'Not yet known' : 'No copy found' };
+  return { ...r, target, external, captures, bundle, lookupFailed, requestedAt, isNewest, badge };
+});
+const attested = rows.filter((r) => r.attested).length;
+const both = rows.filter((r) => r.attested && r.captures > 0).length;
+const onlyOurs = rows.filter((r) => r.attested && r.captures === 0 && r.lookupFailed.length === 0).length;
+const watchedNoProof = rows.filter((r) => !r.attested && r.target).length;
 ---
 
-<Base title="Verderer — federated overlay">
-  <section class="hero">
-    <h1>Federated overlay index</h1>
-    <p>
-      The volunteer rescue ecosystem has archived far more than Verderer observes. This index
-      cross-references those third-party archives ({sources.join(', ') || 'none'}) against
-      Verderer's own attested record. A <strong>verderer-attested</strong> resource carries a
-      self-verifying proof bundle — exactly-these-bytes, offline-verifiable, trusting no one.
-      A third-party-only copy is a real archive, but there is nothing to <em>prove</em> about
-      its bytes, so it shows no badge.
-    </p>
-    <p class="muted">{attested} of {resources.length} resources are Verderer-attested.</p>
-  </section>
+<Base
+  title="Verderer — other archives"
+  description="Where the sources Verderer watches are also preserved by third-party archives, and which copies carry a proof."
+  active="overlay"
+>
+  <h1>Other archives</h1>
+  <p class="lede">
+    Volunteer and institutional archives have preserved far more than the few sources Verderer watches. This
+    page lines the two up. Each address is marked by the strongest guarantee anyone can give about it.
+  </p>
 
-  <section>
-    {resources.length > 0 && (
-      <input id="search" type="search" placeholder="Filter resources (URL, source, attested)…" autocomplete="off" />
+  <div class="grid cols-2">
+    <div class="card">
+      <h3><span class="badge att">Proof available</span></h3>
+      <p class="small">
+        Verderer recorded this address itself, so there is a proof bundle: the exact bytes received, and proof
+        they are in the signed log. Anyone can check it offline.
+      </p>
+    </div>
+    <div class="card">
+      <h3><span class="badge un">Archived elsewhere</span></h3>
+      <p class="small">
+        A third-party archive holds a copy. It is real and often invaluable, but Verderer never received those
+        bytes, so it has nothing to prove about them either way.
+      </p>
+    </div>
+  </div>
+
+  <div class="grid cols-4" style="margin-top:16px">
+    <div class="card stat"><div class="label">Addresses indexed</div><div class="value">{rows.length}</div></div>
+    <div class="card stat"><div class="label">With a Verderer proof</div><div class="value">{attested}</div></div>
+    <div class="card stat"><div class="label">Also in another archive</div><div class="value">{both}</div></div>
+    <div class="card stat">
+      <div class="label">Watched, no proof here</div>
+      <div class="value">{watchedNoProof}</div>
+      <div class="sub">never answered, or redirected</div>
+    </div>
+  </div>
+
+  <p class="small muted">
+    {data.generated_at ? (
+      <>Archives last consulted <When iso={data.generated_at} />. </>
+    ) : (
+      <>This index was built before archive lookups were dated. </>
     )}
-    <ul class="resources">
-      {resources.map((r: any) => (
-        <li data-search={`${r.url} ${r.attested ? 'attested verderer-attested' : 'unverified'} ${(r.external ?? []).map((e: any) => e.source).join(' ')}`.toLowerCase()}>
-          <div class="row">
-            {r.attested
-              ? <span class="badge att">verderer-attested</span>
-              : <span class="badge un">unverified</span>}
-            <a class="url" href={r.url}>{r.url}</a>
-          </div>
-          <div class="meta">
-            {r.attested && r.verderer?.bundle && (
-              <span><a href={`/${r.verderer.bundle}`} download>download proof bundle ↓</a> · <a href="/verify">verify it →</a> · </span>
-            )}
-            {(r.external ?? []).map((e: any) => (
-              <span class="src">{e.source} ({e.captures.length}) {e.captures[0] && <a href={e.captures[0].archive_url}>latest capture</a>}</span>
-            ))}
-            {(r.external ?? []).length === 0 && <span class="muted">no third-party archive</span>}
-          </div>
-        </li>
-      ))}
-    </ul>
-    <p id="no-results" class="muted" hidden>No resources match that filter.</p>
-  </section>
+    Sources: {sources.length ? sources.map((s) => SOURCE_NAMES[s] ?? s).join(', ') : 'none'}.
+    {onlyOurs > 0 && (
+      <> {onlyOurs === 1 ? 'One recorded address was' : `${onlyOurs} recorded addresses were`} found in no other archive consulted — for those, Verderer’s copy may be the only one.</>
+    )}
+  </p>
+  {errors.length > 0 && (
+    <div class="callout warn">
+      <strong>{plural(errors.length, 'lookup')} failed on the last run.</strong>
+      <span class="small"> Those addresses may have more third-party copies than shown here.</span>
+      <details>
+        <summary class="small">Which lookups</summary>
+        <ul class="small">
+          {errors.map((e) => <li><code>{e.source}</code> {e.url} — {e.error}</li>)}
+        </ul>
+      </details>
+    </div>
+  )}
+
+  {rows.length > 0 ? (
+    <>
+      <div class="toolbar" style="margin-top:18px">
+        <input id="search" type="search" placeholder="Filter by address or source…" autocomplete="off" aria-label="Filter addresses" />
+        <div class="seg" role="group" aria-label="Show">
+          <button type="button" data-show="all" aria-pressed="true">All</button>
+          <button type="button" data-show="attested" aria-pressed="false">Proof available</button>
+          <button type="button" data-show="external" aria-pressed="false">No proof here</button>
+        </div>
+      </div>
+      <ul class="resources">
+        {rows.map((r) => (
+          <li
+            data-kind={r.attested ? 'attested' : 'external'}
+            data-search={`${r.url} ${r.target?.title ?? ''} ${r.external.map((e) => `${e.source} ${e.name}`).join(' ')}`.toLowerCase()}
+          >
+            <div class="row">
+              <span class={`badge ${r.badge.cls}`}>{r.badge.text}</span>
+              <strong>{r.target ? <a href={`/target/${r.target.id}`}>{r.target.title}</a> : hostOf(r.url)}</strong>
+            </div>
+            <a class="url small" href={r.url} rel="noopener">{r.url}</a>
+            {r.requestedAt && <div class="small muted">Requests for {r.requestedAt} end here.</div>}
+            <div class="cols">
+              {r.attested && r.verderer && (
+                <div>
+                  <div class="label">Verderer</div>
+                  <div class="small">
+                    {plural(r.verderer.observations, 'recorded response')}, latest {fmtDate(r.verderer.fetched_at)}.
+                  </div>
+                  <div class="small links">
+                    {r.target && r.isNewest && <a href={`/verify?bundle=${encodeURIComponent(r.target.id)}`}>Verify the proof</a>}
+                    {r.bundle && <a href={r.bundle} download>Download proof</a>}
+                    {r.target && <a href={`/target/${r.target.id}`}>History</a>}
+                  </div>
+                </div>
+              )}
+              {!r.attested && r.target && (
+                <div>
+                  <div class="label">Verderer</div>
+                  <div class="small">
+                    Watched — <span class={`chip ${r.target.state.code}`}>{r.target.state.label}</span>
+                  </div>
+                  <div class="small muted">
+                    {r.target.state.final_url
+                      ? <>Requests for this address end at {r.target.state.final_url}, which is what is recorded.</>
+                      : r.target.observations.length === 0
+                        ? <>No response has been recorded from this address, so there is nothing to prove yet.</>
+                        : r.target.state.detail}
+                  </div>
+                  <div class="small links"><a href={`/target/${r.target.id}`}>History</a></div>
+                </div>
+              )}
+              {r.external.map((e) => (
+                <div>
+                  <div class="label">{e.name}</div>
+                  <div class="small">
+                    {e.text}
+                  </div>
+                  <div class="small links">
+                    {e.latest && <a href={e.latest.archive_url} rel="noopener">Latest capture</a>}
+                    {e.source === 'wayback' && <a href={`https://web.archive.org/web/*/${r.url}`} rel="noopener">All captures</a>}
+                  </div>
+                </div>
+              ))}
+              {r.external.length === 0 && (
+                <div>
+                  <div class="label">Other archives</div>
+                  <div class="small muted">
+                    {r.lookupFailed.length
+                      ? `The lookup at ${r.lookupFailed.join(', ')} failed on the last run, so this is not yet known.`
+                      : 'No copy found in the archives consulted.'}
+                  </div>
+                </div>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p id="no-results" class="muted" hidden>Nothing matches that filter.</p>
+    </>
+  ) : (
+    <p class="muted">The archive index is empty in this build.</p>
+  )}
+
+  <p class="small muted" style="margin-top:18px">
+    “Distinct capture” counts captures whose content differs; an archive may hold many more identical
+    snapshots. Third-party captures are listed as the archive reports them and are not checked by Verderer.
+  </p>
 
   <style>
-    #search { width: 100%; margin: 4px 0 14px; padding: 9px 12px; border-radius: 8px;
-      border: 1px solid var(--line); background: #0b0e12; color: var(--ink); font: inherit; }
-    #search:focus { outline: none; border-color: var(--accent); }
-    ul.resources { list-style: none; padding: 0; margin: 0; }
-    ul.resources > li { padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .badge { font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
+    .badge.att { background: var(--ok-bg); color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+    .badge.un { background: var(--surface-2); color: var(--ink-2); }
+    .badge.none { background: transparent; color: var(--muted); border-style: dashed; }
+    .card h3 { margin-top: 0; }
+    #search { flex: 1 1 240px; min-width: 0; }
+    ul.resources { list-style: none; padding: 0; margin: 12px 0 0; }
+    ul.resources > li { padding: 14px 0; border-bottom: 1px solid var(--line); }
     .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .badge { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
-    .badge.att { background: #123; color: #7fdca0; border: 1px solid #2a6; }
-    .badge.un { background: #1a1d22; color: var(--low); border: 1px solid var(--line); }
-    .url { word-break: break-all; }
-    .meta { margin-top: 5px; font-size: 13px; color: var(--muted); }
-    .meta .src { margin-right: 10px; }
+    .url { display: block; margin-top: 3px; color: var(--muted); overflow-wrap: anywhere; }
+    .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; margin-top: 8px; }
+    .cols .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+    .links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 2px; }
   </style>
 
   <script is:inline>
@@ -69,17 +268,27 @@ const attested = overlay.attested_count ?? 0;
       const input = document.getElementById('search');
       if (!input) return;
       const items = Array.from(document.querySelectorAll('ul.resources > li'));
+      const buttons = Array.from(document.querySelectorAll('[data-show]'));
       const none = document.getElementById('no-results');
-      input.addEventListener('input', () => {
+      let show = 'all';
+      const apply = () => {
         const q = input.value.trim().toLowerCase();
         let shown = 0;
         for (const li of items) {
-          const hit = !q || (li.dataset.search || '').includes(q);
+          const hit = (show === 'all' || li.dataset.kind === show) && (!q || (li.dataset.search || '').includes(q));
           li.hidden = !hit;
           if (hit) shown++;
         }
         if (none) none.hidden = shown > 0;
-      });
+      };
+      input.addEventListener('input', apply);
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          show = button.dataset.show;
+          for (const b of buttons) b.setAttribute('aria-pressed', String(b === button));
+          apply();
+        });
+      }
     })();
   </script>
 </Base>

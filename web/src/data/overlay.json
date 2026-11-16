@@ -1,32 +1,580 @@
 {
   "schema": "verderer.overlay/v1",
+  "generated_at": "2026-11-16T04:26:32Z",
   "sources": [
     "wayback"
   ],
-  "attested_count": 2,
-  "resource_count": 3,
+  "errors": [],
+  "attested_count": 10,
+  "resource_count": 14,
   "resources": [
     {
-      "url": "https://www.epa.gov/climate-indicators",
+      "url": "https://gml.noaa.gov/ccgg/trends/data.html",
+      "target_id": "noaa-co2-trends",
       "attested": true,
+      "lookup_failed": [],
       "badge": "verderer-attested",
       "verderer": {
-        "target_id": "epa-climate-indicators",
-        "index": 1,
+        "target_id": "noaa-co2-trends",
+        "index": 6,
         "observations": 1,
-        "content_hash": "122082a56bb6e6968563b84578328982f99a55039ed6fd62d81328495f57a8d9a0d4",
-        "fetched_at": "2026-07-11T19:44:47Z",
-        "bundle": "bundles/1.json"
+        "content_hash": "12208d62bf32ae6cfe4287a84891b32da3404d7d2b5805150c42d7c947ac661ef4d2",
+        "fetched_at": "2026-07-20T14:54:13Z",
+        "bundle": "bundles/6.json"
       },
       "external": [
         {
           "source": "wayback",
+          "limit": 20,
           "captures": [
             {
-              "timestamp": "20240701120000",
-              "archive_url": "http://web.archive.org/web/20240701120000/https://www.epa.gov/climate-indicators",
+              "timestamp": "20250808091909",
+              "archive_url": "http://web.archive.org/web/20250808091909/https://gml.noaa.gov/ccgg/trends/data.html",
               "mime": "text/html",
               "status": "200"
+            },
+            {
+              "timestamp": "20250930230145",
+              "archive_url": "http://web.archive.org/web/20250930230145/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20251017193135",
+              "archive_url": "http://web.archive.org/web/20251017193135/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20251023021116",
+              "archive_url": "http://web.archive.org/web/20251023021116/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20251028155643",
+              "archive_url": "http://web.archive.org/web/20251028155643/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20251204052737",
+              "archive_url": "http://web.archive.org/web/20251204052737/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20251213212105",
+              "archive_url": "http://web.archive.org/web/20251213212105/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260105202907",
+              "archive_url": "http://web.archive.org/web/20260105202907/https://www.gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260125020206",
+              "archive_url": "http://web.archive.org/web/20260125020206/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260211222715",
+              "archive_url": "http://web.archive.org/web/20260211222715/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20260411103456",
+              "archive_url": "http://web.archive.org/web/20260411103456/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260414150037",
+              "archive_url": "http://web.archive.org/web/20260414150037/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260422214929",
+              "archive_url": "http://web.archive.org/web/20260422214929/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260423100538",
+              "archive_url": "http://web.archive.org/web/20260423100538/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20260425133009",
+              "archive_url": "http://web.archive.org/web/20260425133009/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260516113553",
+              "archive_url": "http://web.archive.org/web/20260516113553/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260522182955",
+              "archive_url": "http://web.archive.org/web/20260522182955/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260528202415",
+              "archive_url": "http://web.archive.org/web/20260528202415/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20260611044728",
+              "archive_url": "http://web.archive.org/web/20260611044728/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261103160019",
+              "archive_url": "http://web.archive.org/web/20261103160019/https://gml.noaa.gov/ccgg/trends/data.html",
+              "mime": "warc/revisit",
+              "status": "-"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.climate.gov/",
+      "target_id": "noaa-climate-gov",
+      "attested": true,
+      "lookup_failed": [],
+      "badge": "verderer-attested",
+      "verderer": {
+        "target_id": "noaa-climate-gov",
+        "index": 67,
+        "observations": 1,
+        "content_hash": "1220aaa3489920bf668b0f0376de46da82cff37ebb5f542e0d16090ee5c46feaf73f",
+        "fetched_at": "2026-08-03T03:55:50Z",
+        "bundle": "bundles/67.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20261108060527",
+              "archive_url": "http://web.archive.org/web/20261108060527/http://www.climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261108060527",
+              "archive_url": "http://web.archive.org/web/20261108060527/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "403"
+            },
+            {
+              "timestamp": "20261108060528",
+              "archive_url": "http://web.archive.org/web/20261108060528/https://climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261110000358",
+              "archive_url": "http://web.archive.org/web/20261110000358/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "302"
+            },
+            {
+              "timestamp": "20261110001043",
+              "archive_url": "http://web.archive.org/web/20261110001043/http://www.climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261110001043",
+              "archive_url": "http://web.archive.org/web/20261110001043/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "403"
+            },
+            {
+              "timestamp": "20261110001044",
+              "archive_url": "http://web.archive.org/web/20261110001044/https://climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261110184326",
+              "archive_url": "http://web.archive.org/web/20261110184326/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "302"
+            },
+            {
+              "timestamp": "20261110191208",
+              "archive_url": "http://web.archive.org/web/20261110191208/http://www.climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261111121959",
+              "archive_url": "http://web.archive.org/web/20261111121959/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "302"
+            },
+            {
+              "timestamp": "20261111122433",
+              "archive_url": "http://web.archive.org/web/20261111122433/http://www.climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261111122434",
+              "archive_url": "http://web.archive.org/web/20261111122434/https://climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261111122434",
+              "archive_url": "http://web.archive.org/web/20261111122434/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "403"
+            },
+            {
+              "timestamp": "20261112015004",
+              "archive_url": "http://web.archive.org/web/20261112015004/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "302"
+            },
+            {
+              "timestamp": "20261112015757",
+              "archive_url": "http://web.archive.org/web/20261112015757/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "302"
+            },
+            {
+              "timestamp": "20261112092937",
+              "archive_url": "http://web.archive.org/web/20261112092937/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "302"
+            },
+            {
+              "timestamp": "20261112154627",
+              "archive_url": "http://web.archive.org/web/20261112154627/http://www.climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261112154627",
+              "archive_url": "http://web.archive.org/web/20261112154627/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "403"
+            },
+            {
+              "timestamp": "20261112154628",
+              "archive_url": "http://web.archive.org/web/20261112154628/https://climate.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261114014201",
+              "archive_url": "http://web.archive.org/web/20261114014201/https://www.climate.gov/",
+              "mime": "text/html",
+              "status": "302"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.climatehubs.usda.gov/",
+      "target_id": "usda-climate-hubs",
+      "attested": true,
+      "lookup_failed": [],
+      "badge": "verderer-attested",
+      "verderer": {
+        "target_id": "usda-climate-hubs",
+        "index": 613,
+        "observations": 103,
+        "content_hash": "12204f3c6199f5fdf4159878e36b2a092126840c6f72a89f3695fe554dcd45c43a72",
+        "fetched_at": "2026-11-11T19:36:25Z",
+        "bundle": "bundles/613.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20261111195547",
+              "archive_url": "http://web.archive.org/web/20261111195547/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111204851",
+              "archive_url": "http://web.archive.org/web/20261111204851/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111214050",
+              "archive_url": "http://web.archive.org/web/20261111214050/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111230000",
+              "archive_url": "http://web.archive.org/web/20261111230000/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111235420",
+              "archive_url": "http://web.archive.org/web/20261111235420/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112005623",
+              "archive_url": "http://web.archive.org/web/20261112005623/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112015006",
+              "archive_url": "http://web.archive.org/web/20261112015006/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112015306",
+              "archive_url": "http://web.archive.org/web/20261112015306/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112015652",
+              "archive_url": "http://web.archive.org/web/20261112015652/https://climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "302"
+            },
+            {
+              "timestamp": "20261112024414",
+              "archive_url": "http://web.archive.org/web/20261112024414/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112034009",
+              "archive_url": "http://web.archive.org/web/20261112034009/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112050256",
+              "archive_url": "http://web.archive.org/web/20261112050256/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112053754",
+              "archive_url": "http://web.archive.org/web/20261112053754/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112070234",
+              "archive_url": "http://web.archive.org/web/20261112070234/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112075805",
+              "archive_url": "http://web.archive.org/web/20261112075805/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112090121",
+              "archive_url": "http://web.archive.org/web/20261112090121/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112092939",
+              "archive_url": "http://web.archive.org/web/20261112092939/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112154628",
+              "archive_url": "http://web.archive.org/web/20261112154628/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261114015226",
+              "archive_url": "http://web.archive.org/web/20261114015226/https://www.climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261114015913",
+              "archive_url": "http://web.archive.org/web/20261114015913/https://climatehubs.usda.gov/",
+              "mime": "text/html",
+              "status": "302"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.epa.gov/climate-indicators",
+      "target_id": "epa-climate-indicators",
+      "attested": true,
+      "lookup_failed": [],
+      "badge": "verderer-attested",
+      "verderer": {
+        "target_id": "epa-climate-indicators",
+        "index": 4,
+        "observations": 1,
+        "content_hash": "1220199b876d0191032a3361571d3ee1dcf9ff966d7e67f0d3dee13de3bc01fd6e75",
+        "fetched_at": "2026-07-20T14:51:49Z",
+        "bundle": "bundles/4.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20261022013557",
+              "archive_url": "http://web.archive.org/web/20261022013557/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261023100114",
+              "archive_url": "http://web.archive.org/web/20261023100114/https://www.epa.gov/climate-indicators/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261024021700",
+              "archive_url": "http://web.archive.org/web/20261024021700/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261024231120",
+              "archive_url": "http://web.archive.org/web/20261024231120/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261025092103",
+              "archive_url": "http://web.archive.org/web/20261025092103/https://www.epa.gov/climate-indicators",
+              "mime": "text/html",
+              "status": "404"
+            },
+            {
+              "timestamp": "20261025222833",
+              "archive_url": "http://web.archive.org/web/20261025222833/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261026081731",
+              "archive_url": "http://web.archive.org/web/20261026081731/https://www.epa.gov/climate-indicators",
+              "mime": "text/html",
+              "status": "404"
+            },
+            {
+              "timestamp": "20261026203424",
+              "archive_url": "http://web.archive.org/web/20261026203424/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261027013605",
+              "archive_url": "http://web.archive.org/web/20261027013605/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261028055151",
+              "archive_url": "http://web.archive.org/web/20261028055151/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261028065613",
+              "archive_url": "http://web.archive.org/web/20261028065613/https://www.epa.gov/climate-indicators",
+              "mime": "text/html",
+              "status": "404"
+            },
+            {
+              "timestamp": "20261028215329",
+              "archive_url": "http://web.archive.org/web/20261028215329/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261029014743",
+              "archive_url": "http://web.archive.org/web/20261029014743/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261102163004",
+              "archive_url": "http://web.archive.org/web/20261102163004/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261103024046",
+              "archive_url": "http://web.archive.org/web/20261103024046/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261111101915",
+              "archive_url": "http://web.archive.org/web/20261111101915/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261111103029",
+              "archive_url": "http://web.archive.org/web/20261111103029/http://www.epa.gov/climate-indicators",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261111173648",
+              "archive_url": "http://web.archive.org/web/20261111173648/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20261111173738",
+              "archive_url": "http://web.archive.org/web/20261111173738/https://www.epa.gov/climate-indicators",
+              "mime": "text/html",
+              "status": "404"
+            },
+            {
+              "timestamp": "20261113065225",
+              "archive_url": "http://web.archive.org/web/20261113065225/https://www.epa.gov/climate-indicators",
+              "mime": "warc/revisit",
+              "status": "-"
             }
           ]
         }
@@ -34,29 +582,140 @@
     },
     {
       "url": "https://www.epa.gov/ghgreporting",
+      "target_id": "epa-ghgrp",
       "attested": true,
+      "lookup_failed": [],
       "badge": "verderer-attested",
       "verderer": {
         "target_id": "epa-ghgrp",
-        "index": 0,
-        "observations": 1,
-        "content_hash": "1220e35077d965869c5143c167b6ef937aff9a8990ca01e387b24c5207be5ab9a2f1",
-        "fetched_at": "2026-07-11T19:44:47Z",
-        "bundle": "bundles/0.json"
+        "index": 609,
+        "observations": 34,
+        "content_hash": "12201344e3c8a7b4a3f9ec3a631fc11ba56ea7dea08d5b32c977f158e673a38dd41b",
+        "fetched_at": "2026-11-11T19:35:55Z",
+        "bundle": "bundles/609.json"
       },
       "external": [
         {
           "source": "wayback",
+          "limit": 20,
           "captures": [
             {
-              "timestamp": "20121002071523",
-              "archive_url": "http://web.archive.org/web/20121002071523/http://www.epa.gov/ghgreporting/",
+              "timestamp": "20261111053338",
+              "archive_url": "http://web.archive.org/web/20261111053338/https://www.epa.gov/ghgreporting",
               "mime": "text/html",
               "status": "200"
             },
             {
-              "timestamp": "20250115090000",
-              "archive_url": "http://web.archive.org/web/20250115090000/http://www.epa.gov/ghgreporting/",
+              "timestamp": "20261111060210",
+              "archive_url": "http://web.archive.org/web/20261111060210/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111062959",
+              "archive_url": "http://web.archive.org/web/20261111062959/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111065712",
+              "archive_url": "http://web.archive.org/web/20261111065712/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111075335",
+              "archive_url": "http://web.archive.org/web/20261111075335/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111082210",
+              "archive_url": "http://web.archive.org/web/20261111082210/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111084921",
+              "archive_url": "http://web.archive.org/web/20261111084921/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111091737",
+              "archive_url": "http://web.archive.org/web/20261111091737/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111094518",
+              "archive_url": "http://web.archive.org/web/20261111094518/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111095227",
+              "archive_url": "http://web.archive.org/web/20261111095227/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111101952",
+              "archive_url": "http://web.archive.org/web/20261111101952/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111104752",
+              "archive_url": "http://web.archive.org/web/20261111104752/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111111620",
+              "archive_url": "http://web.archive.org/web/20261111111620/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111115240",
+              "archive_url": "http://web.archive.org/web/20261111115240/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111122059",
+              "archive_url": "http://web.archive.org/web/20261111122059/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111154155",
+              "archive_url": "http://web.archive.org/web/20261111154155/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111190035",
+              "archive_url": "http://web.archive.org/web/20261111190035/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112012519",
+              "archive_url": "http://web.archive.org/web/20261112012519/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112073134",
+              "archive_url": "http://web.archive.org/web/20261112073134/https://www.epa.gov/ghgreporting",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112093042",
+              "archive_url": "http://web.archive.org/web/20261112093042/https://www.epa.gov/ghgreporting",
               "mime": "text/html",
               "status": "200"
             }
@@ -65,19 +724,1157 @@
       ]
     },
     {
-      "url": "https://www.epa.gov/climate-indicators/weather-climate",
+      "url": "https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+      "target_id": "epa-drinking-water-mcl",
+      "attested": true,
+      "lookup_failed": [],
+      "badge": "verderer-attested",
+      "verderer": {
+        "target_id": "epa-drinking-water-mcl",
+        "index": 610,
+        "observations": 27,
+        "content_hash": "1220b9bbeb73e7c5d67b2d9abbaa7c595df558bf7d9760c89e65d052b1d1c0159543",
+        "fetched_at": "2026-11-11T19:35:56Z",
+        "bundle": "bundles/610.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20261111065727",
+              "archive_url": "http://web.archive.org/web/20261111065727/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111072626",
+              "archive_url": "http://web.archive.org/web/20261111072626/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111075350",
+              "archive_url": "http://web.archive.org/web/20261111075350/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111082250",
+              "archive_url": "http://web.archive.org/web/20261111082250/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111084941",
+              "archive_url": "http://web.archive.org/web/20261111084941/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111091756",
+              "archive_url": "http://web.archive.org/web/20261111091756/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111095242",
+              "archive_url": "http://web.archive.org/web/20261111095242/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111102012",
+              "archive_url": "http://web.archive.org/web/20261111102012/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111104807",
+              "archive_url": "http://web.archive.org/web/20261111104807/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111111647",
+              "archive_url": "http://web.archive.org/web/20261111111647/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111112404",
+              "archive_url": "http://web.archive.org/web/20261111112404/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111115240",
+              "archive_url": "http://web.archive.org/web/20261111115240/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111122115",
+              "archive_url": "http://web.archive.org/web/20261111122115/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111154209",
+              "archive_url": "http://web.archive.org/web/20261111154209/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111190058",
+              "archive_url": "http://web.archive.org/web/20261111190058/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111220842",
+              "archive_url": "http://web.archive.org/web/20261111220842/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112012450",
+              "archive_url": "http://web.archive.org/web/20261112012450/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112075918",
+              "archive_url": "http://web.archive.org/web/20261112075918/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112093100",
+              "archive_url": "http://web.archive.org/web/20261112093100/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261115055903",
+              "archive_url": "http://web.archive.org/web/20261115055903/https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations",
+              "mime": "text/html",
+              "status": "200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+      "target_id": "epa-glyphosate",
+      "attested": true,
+      "lookup_failed": [],
+      "badge": "verderer-attested",
+      "verderer": {
+        "target_id": "epa-glyphosate",
+        "index": 611,
+        "observations": 24,
+        "content_hash": "1220f04c2852f05eaa8ae9451701ed72ef86557bfa28a5afc4d77e24ff56ffc4c2f3",
+        "fetched_at": "2026-11-11T19:35:57Z",
+        "bundle": "bundles/611.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20261030112547",
+              "archive_url": "http://web.archive.org/web/20261030112547/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261030131517",
+              "archive_url": "http://web.archive.org/web/20261030131517/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261031024204",
+              "archive_url": "http://web.archive.org/web/20261031024204/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261031202504",
+              "archive_url": "http://web.archive.org/web/20261031202504/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261101021424",
+              "archive_url": "http://web.archive.org/web/20261101021424/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261101130110",
+              "archive_url": "http://web.archive.org/web/20261101130110/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261101223730",
+              "archive_url": "http://web.archive.org/web/20261101223730/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261102075810",
+              "archive_url": "http://web.archive.org/web/20261102075810/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261102155655",
+              "archive_url": "http://web.archive.org/web/20261102155655/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261103185310",
+              "archive_url": "http://web.archive.org/web/20261103185310/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261103231051",
+              "archive_url": "http://web.archive.org/web/20261103231051/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261104061717",
+              "archive_url": "http://web.archive.org/web/20261104061717/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261104145604",
+              "archive_url": "http://web.archive.org/web/20261104145604/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261104163838",
+              "archive_url": "http://web.archive.org/web/20261104163838/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261104211431",
+              "archive_url": "http://web.archive.org/web/20261104211431/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261105163556",
+              "archive_url": "http://web.archive.org/web/20261105163556/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261105223042",
+              "archive_url": "http://web.archive.org/web/20261105223042/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261107004045",
+              "archive_url": "http://web.archive.org/web/20261107004045/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261110034814",
+              "archive_url": "http://web.archive.org/web/20261110034814/https://www.epa.gov./ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261114130625",
+              "archive_url": "http://web.archive.org/web/20261114130625/https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+              "mime": "text/html",
+              "status": "200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip",
+      "target_id": "epa-ghgrp-data",
+      "attested": true,
+      "lookup_failed": [],
+      "badge": "verderer-attested",
+      "verderer": {
+        "target_id": "epa-ghgrp-data",
+        "index": 1,
+        "observations": 1,
+        "content_hash": "1220895349c8008b7962dba68659c8187cec6b340d68be84ccb3f0e7fb6037bf8345",
+        "fetched_at": "2026-07-20T14:51:47Z",
+        "bundle": "bundles/1.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20250522170456",
+              "archive_url": "http://web.archive.org/web/20250522170456/https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip",
+              "mime": "application/zip",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250530144714",
+              "archive_url": "http://web.archive.org/web/20250530144714/http://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261104104632",
+              "archive_url": "http://web.archive.org/web/20261104104632/https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip",
+              "mime": "application/zip",
+              "status": "200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+      "target_id": "fema-nri",
+      "attested": true,
+      "lookup_failed": [],
+      "badge": "verderer-attested",
+      "verderer": {
+        "target_id": "fema-nri",
+        "index": 614,
+        "observations": 99,
+        "content_hash": "1220988a74aed8177f0d59a0eb8892e27e59f56a13792adab888a65649b62b5d8fe5",
+        "fetched_at": "2026-11-12T07:10:57Z",
+        "bundle": "bundles/614.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20260929012553",
+              "archive_url": "http://web.archive.org/web/20260929012553/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261001020846",
+              "archive_url": "http://web.archive.org/web/20261001020846/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261003013311",
+              "archive_url": "http://web.archive.org/web/20261003013311/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261006013627",
+              "archive_url": "http://web.archive.org/web/20261006013627/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261008012649",
+              "archive_url": "http://web.archive.org/web/20261008012649/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261012225855",
+              "archive_url": "http://web.archive.org/web/20261012225855/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261013013927",
+              "archive_url": "http://web.archive.org/web/20261013013927/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261015012146",
+              "archive_url": "http://web.archive.org/web/20261015012146/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261017011735",
+              "archive_url": "http://web.archive.org/web/20261017011735/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261020012313",
+              "archive_url": "http://web.archive.org/web/20261020012313/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261020062641",
+              "archive_url": "http://web.archive.org/web/20261020062641/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261020180229",
+              "archive_url": "http://web.archive.org/web/20261020180229/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261022012104",
+              "archive_url": "http://web.archive.org/web/20261022012104/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261024011040",
+              "archive_url": "http://web.archive.org/web/20261024011040/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261027011230",
+              "archive_url": "http://web.archive.org/web/20261027011230/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261029005622",
+              "archive_url": "http://web.archive.org/web/20261029005622/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261103022134",
+              "archive_url": "http://web.archive.org/web/20261103022134/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112011339",
+              "archive_url": "http://web.archive.org/web/20261112011339/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112021113",
+              "archive_url": "http://web.archive.org/web/20261112021113/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261114014006",
+              "archive_url": "http://web.archive.org/web/20261114014006/https://www.fema.gov/emergency-managers/practitioners/resilience-analysis-and-planning-tool",
+              "mime": "text/html",
+              "status": "200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://www.noaa.gov/climate",
+      "target_id": "noaa-climate-gov",
+      "attested": true,
+      "lookup_failed": [],
+      "badge": "verderer-attested",
+      "verderer": {
+        "target_id": "noaa-climate-gov",
+        "index": 612,
+        "observations": 173,
+        "content_hash": "1220851265ba8c3f6cd5226f5372e7444dc733cc030c4046d6fe7d4c0eacd918a068",
+        "fetched_at": "2026-11-11T19:36:25Z",
+        "bundle": "bundles/612.json"
+      },
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20261111185929",
+              "archive_url": "http://web.archive.org/web/20261111185929/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111195548",
+              "archive_url": "http://web.archive.org/web/20261111195548/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111204859",
+              "archive_url": "http://web.archive.org/web/20261111204859/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111220704",
+              "archive_url": "http://web.archive.org/web/20261111220704/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111223409",
+              "archive_url": "http://web.archive.org/web/20261111223409/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111230032",
+              "archive_url": "http://web.archive.org/web/20261111230032/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261111235421",
+              "archive_url": "http://web.archive.org/web/20261111235421/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112005621",
+              "archive_url": "http://web.archive.org/web/20261112005621/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112015804",
+              "archive_url": "http://web.archive.org/web/20261112015804/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112024425",
+              "archive_url": "http://web.archive.org/web/20261112024425/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112034011",
+              "archive_url": "http://web.archive.org/web/20261112034011/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112040800",
+              "archive_url": "http://web.archive.org/web/20261112040800/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112050257",
+              "archive_url": "http://web.archive.org/web/20261112050257/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112060612",
+              "archive_url": "http://web.archive.org/web/20261112060612/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112070234",
+              "archive_url": "http://web.archive.org/web/20261112070234/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112075806",
+              "archive_url": "http://web.archive.org/web/20261112075806/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112083250",
+              "archive_url": "http://web.archive.org/web/20261112083250/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112090121",
+              "archive_url": "http://web.archive.org/web/20261112090121/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261112092938",
+              "archive_url": "http://web.archive.org/web/20261112092938/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20261114015253",
+              "archive_url": "http://web.archive.org/web/20261114015253/https://www.noaa.gov/climate",
+              "mime": "text/html",
+              "status": "200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "http://globalchange.gov/",
+      "target_id": "usgcrp",
       "attested": false,
+      "lookup_failed": [],
       "badge": null,
       "verderer": null,
       "external": [
         {
           "source": "wayback",
+          "limit": 20,
           "captures": [
             {
-              "timestamp": "20240702000000",
-              "archive_url": "http://web.archive.org/web/20240702000000/https://www.epa.gov/climate-indicators/weather-climate",
+              "timestamp": "20250629002236",
+              "archive_url": "http://web.archive.org/web/20250629002236/http://globalchange.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250629002237",
+              "archive_url": "http://web.archive.org/web/20250629002237/https://globalchange.gov/",
               "mime": "text/html",
               "status": "200"
+            },
+            {
+              "timestamp": "20250629002530",
+              "archive_url": "http://web.archive.org/web/20250629002530/https://www.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629054319",
+              "archive_url": "http://web.archive.org/web/20250629054319/http://globalchange.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250629090835",
+              "archive_url": "http://web.archive.org/web/20250629090835/https://globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629121222",
+              "archive_url": "http://web.archive.org/web/20250629121222/http://globalchange.gov/",
+              "mime": "text/html",
+              "status": "403"
+            },
+            {
+              "timestamp": "20250629170754",
+              "archive_url": "http://web.archive.org/web/20250629170754/http://globalchange.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250629170856",
+              "archive_url": "http://web.archive.org/web/20250629170856/https://globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630022533",
+              "archive_url": "http://web.archive.org/web/20250630022533/https://globalchange.gov/",
+              "mime": "text/html",
+              "status": "403"
+            },
+            {
+              "timestamp": "20250630022616",
+              "archive_url": "http://web.archive.org/web/20250630022616/https://globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630022813",
+              "archive_url": "http://web.archive.org/web/20250630022813/http://globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630023818",
+              "archive_url": "http://web.archive.org/web/20250630023818/https://www.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630025808",
+              "archive_url": "http://web.archive.org/web/20250630025808/https://globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630025838",
+              "archive_url": "http://web.archive.org/web/20250630025838/http://globalchange.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250630030037",
+              "archive_url": "http://web.archive.org/web/20250630030037/https://www.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630030510",
+              "archive_url": "http://web.archive.org/web/20250630030510/http://www.globalchange.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250630032809",
+              "archive_url": "http://web.archive.org/web/20250630032809/https://globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630043543",
+              "archive_url": "http://web.archive.org/web/20250630043543/https://www.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630050915",
+              "archive_url": "http://web.archive.org/web/20250630050915/http://globalchange.gov/",
+              "mime": "text/html",
+              "status": "403"
+            },
+            {
+              "timestamp": "20250630172322",
+              "archive_url": "http://web.archive.org/web/20250630172322/http://globalchange.gov/",
+              "mime": "text/html",
+              "status": "301"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://ejscreen.epa.gov/mapper",
+      "target_id": "epa-ejscreen",
+      "attested": false,
+      "lookup_failed": [],
+      "badge": null,
+      "verderer": null,
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20250118125507",
+              "archive_url": "http://web.archive.org/web/20250118125507/https://ejscreen.epa.gov/mapper",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250119215816",
+              "archive_url": "http://web.archive.org/web/20250119215816/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250120213703",
+              "archive_url": "http://web.archive.org/web/20250120213703/https://ejscreen.epa.gov/mapper",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250120213903",
+              "archive_url": "http://web.archive.org/web/20250120213903/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250121223417",
+              "archive_url": "http://web.archive.org/web/20250121223417/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250122220213",
+              "archive_url": "http://web.archive.org/web/20250122220213/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250123034216",
+              "archive_url": "http://web.archive.org/web/20250123034216/https://ejscreen.epa.gov/mapper",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250123082802",
+              "archive_url": "http://web.archive.org/web/20250123082802/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250123104245",
+              "archive_url": "http://web.archive.org/web/20250123104245/https://ejscreen.epa.gov/mapper",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250123161056",
+              "archive_url": "http://web.archive.org/web/20250123161056/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250123203934",
+              "archive_url": "http://web.archive.org/web/20250123203934/https://ejscreen.epa.gov/mapper/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250123214649",
+              "archive_url": "http://web.archive.org/web/20250123214649/https://ejscreen.epa.gov/mapper",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250131224732",
+              "archive_url": "http://web.archive.org/web/20250131224732/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250201025753",
+              "archive_url": "http://web.archive.org/web/20250201025753/https://ejscreen.epa.gov/mapper",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250201173705",
+              "archive_url": "http://web.archive.org/web/20250201173705/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250201201633",
+              "archive_url": "http://web.archive.org/web/20250201201633/https://ejscreen.epa.gov/mapper",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250202055022",
+              "archive_url": "http://web.archive.org/web/20250202055022/https://ejscreen.epa.gov/mapper/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250202234950",
+              "archive_url": "http://web.archive.org/web/20250202234950/https://ejscreen.epa.gov/mapper",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250204091320",
+              "archive_url": "http://web.archive.org/web/20250204091320/https://ejscreen.epa.gov/mapper/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250205205645",
+              "archive_url": "http://web.archive.org/web/20250205205645/https://ejscreen.epa.gov/mapper/",
+              "mime": "warc/revisit",
+              "status": "-"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://hazards.fema.gov/nri/",
+      "target_id": "fema-nri",
+      "attested": false,
+      "lookup_failed": [],
+      "badge": null,
+      "verderer": null,
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20260921023441",
+              "archive_url": "http://web.archive.org/web/20260921023441/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20260922015154",
+              "archive_url": "http://web.archive.org/web/20260922015154/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20260922032410",
+              "archive_url": "http://web.archive.org/web/20260922032410/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20260924013559",
+              "archive_url": "http://web.archive.org/web/20260924013559/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20260925180536",
+              "archive_url": "http://web.archive.org/web/20260925180536/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261001021115",
+              "archive_url": "http://web.archive.org/web/20261001021115/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261003175436",
+              "archive_url": "http://web.archive.org/web/20261003175436/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261013015737",
+              "archive_url": "http://web.archive.org/web/20261013015737/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261013025401",
+              "archive_url": "http://web.archive.org/web/20261013025401/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261020014313",
+              "archive_url": "http://web.archive.org/web/20261020014313/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261020225406",
+              "archive_url": "http://web.archive.org/web/20261020225406/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261022013343",
+              "archive_url": "http://web.archive.org/web/20261022013343/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261023081104",
+              "archive_url": "http://web.archive.org/web/20261023081104/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261024014236",
+              "archive_url": "http://web.archive.org/web/20261024014236/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261026222848",
+              "archive_url": "http://web.archive.org/web/20261026222848/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261029005622",
+              "archive_url": "http://web.archive.org/web/20261029005622/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261030175446",
+              "archive_url": "http://web.archive.org/web/20261030175446/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261103022732",
+              "archive_url": "http://web.archive.org/web/20261103022732/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261112002053",
+              "archive_url": "http://web.archive.org/web/20261112002053/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20261114021708",
+              "archive_url": "http://web.archive.org/web/20261114021708/https://hazards.fema.gov/nri/",
+              "mime": "text/html",
+              "status": "301"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "url": "https://nca2023.globalchange.gov/",
+      "target_id": "nca5",
+      "attested": false,
+      "lookup_failed": [],
+      "badge": null,
+      "verderer": null,
+      "external": [
+        {
+          "source": "wayback",
+          "limit": 20,
+          "captures": [
+            {
+              "timestamp": "20250629214809",
+              "archive_url": "http://web.archive.org/web/20250629214809/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629214812",
+              "archive_url": "http://web.archive.org/web/20250629214812/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629214818",
+              "archive_url": "http://web.archive.org/web/20250629214818/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250629214823",
+              "archive_url": "http://web.archive.org/web/20250629214823/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629215108",
+              "archive_url": "http://web.archive.org/web/20250629215108/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250629215211",
+              "archive_url": "http://web.archive.org/web/20250629215211/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250629215402",
+              "archive_url": "http://web.archive.org/web/20250629215402/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250629215415",
+              "archive_url": "http://web.archive.org/web/20250629215415/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629215419",
+              "archive_url": "http://web.archive.org/web/20250629215419/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250629215420",
+              "archive_url": "http://web.archive.org/web/20250629215420/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629220454",
+              "archive_url": "http://web.archive.org/web/20250629220454/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250629221818",
+              "archive_url": "http://web.archive.org/web/20250629221818/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629222237",
+              "archive_url": "http://web.archive.org/web/20250629222237/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250629225621",
+              "archive_url": "http://web.archive.org/web/20250629225621/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250630022822",
+              "archive_url": "http://web.archive.org/web/20250630022822/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630023729",
+              "archive_url": "http://web.archive.org/web/20250630023729/http://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250630025844",
+              "archive_url": "http://web.archive.org/web/20250630025844/https://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "200"
+            },
+            {
+              "timestamp": "20250630035401",
+              "archive_url": "http://web.archive.org/web/20250630035401/http://nca2023.globalchange.gov/",
+              "mime": "text/html",
+              "status": "301"
+            },
+            {
+              "timestamp": "20250630040138",
+              "archive_url": "http://web.archive.org/web/20250630040138/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
+            },
+            {
+              "timestamp": "20250630055042",
+              "archive_url": "http://web.archive.org/web/20250630055042/https://nca2023.globalchange.gov/",
+              "mime": "warc/revisit",
+              "status": "-"
             }
           ]
         }

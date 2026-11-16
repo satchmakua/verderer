@@ -165,3 +165,77 @@ def test_wayback_source_parses_cdx_rows() -> None:
 
 def test_wayback_source_empty_result() -> None:
     assert WaybackSource(fetcher=lambda url, prefix, limit: []).captures("x") == []
+
+
+def test_a_watched_address_is_named_even_before_it_is_recorded(tmp_path: Path, ledger_built: None) -> None:
+    # A curated source that has never answered, or that redirects, still belongs to its
+    # target: the row carries the target id, so a reader sees "watched", not a stranger.
+    verderer = _verderer(tmp_path)  # nothing observed yet
+    source = FakeSource({TARGET_URL: [_cap("http://www.example.gov./ghg", "20250101000000")]})
+    overlay = build_overlay(verderer, [source], query_urls=[TARGET_URL])
+    (row,) = overlay["resources"]  # the trailing-dot host is the same address
+    assert row["target_id"] == "t" and row["attested"] is False
+    assert overlay["generated_at"].endswith("Z") and overlay["errors"] == []
+
+
+def test_one_failed_archive_lookup_does_not_cost_the_index(tmp_path: Path, ledger_built: None) -> None:
+    class Flaky:
+        name = "wayback"
+        limit = 20
+
+        def captures(self, url: str) -> list[OverlayCapture]:
+            raise TimeoutError("read timed out\nafter 30s")
+
+    verderer = _verderer(tmp_path)
+    verderer.observe("t")
+    overlay = build_overlay(verderer, [Flaky()], query_urls=[TARGET_URL])
+    assert overlay["attested_count"] == 1  # the attested rows never depend on a third party
+    assert overlay["errors"] == [{"source": "wayback", "url": TARGET_URL, "error": "read timed out after 30s"}]
+    (row,) = overlay["resources"]
+    assert row["lookup_failed"] == ["wayback"] and row["external"] == []  # unknown, not "none"
+
+
+def test_the_default_harvest_also_asks_where_a_source_redirects(tmp_path: Path, ledger_built: None) -> None:
+    landed = "https://www.example.gov/moved"
+
+    def redirected(url: str, *, timeout: float = 30.0) -> FetchResult:
+        return FetchResult(url=landed, status=200, headers={}, body=b"<html>moved</html>")
+
+    verderer = Verderer(
+        tmp_path / "data",
+        targets={"t": Target(id="t", title="T", url=TARGET_URL)},
+        terms=[],
+        collector=StaticCollector(fetcher=redirected),
+    )
+    verderer.observe("t")
+    asked: list[str] = []
+
+    class Recording:
+        name = "wayback"
+
+        def captures(self, url: str) -> list[OverlayCapture]:
+            asked.append(url)
+            return []
+
+    overlay = build_overlay(verderer, [Recording()])
+    assert asked == [TARGET_URL, landed]
+    by_url = {r["url"]: r for r in overlay["resources"]}
+    assert by_url[landed]["attested"] and by_url[TARGET_URL]["target_id"] == "t"
+
+
+def test_wayback_lookups_are_spaced_out() -> None:
+    # The archive refuses a burst; consecutive lookups wait out the minimum interval.
+    now = [100.0]
+    waits: list[float] = []
+
+    def sleep(seconds: float) -> None:
+        waits.append(seconds)
+        now[0] += seconds
+
+    source = WaybackSource(fetcher=lambda url, prefix, limit: [], min_interval=3.0, clock=lambda: now[0], sleep=sleep)
+    source.captures("a")  # the first lookup never waits
+    now[0] += 1.0
+    source.captures("b")
+    now[0] += 5.0
+    source.captures("c")  # enough time already passed
+    assert waits == [2.0]

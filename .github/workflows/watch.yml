@@ -70,13 +70,22 @@ jobs:
       - name: Export the record + build the site
         run: |
           export PATH="$PWD/rust/target/release:$PATH"
-          python -m verderer --data-dir verderer-data export --out web/public
+          python -m verderer --data-dir verderer-data export --out web/public --base-url https://verderer.satchelhamilton.com
           # Fresh, verifiable proof bundles for every attested target (replace any stale ones).
           rm -f web/public/bundles/*.json
           mkdir -p web/public/bundles
+          # Cross-reference third-party archives (read-only Wayback lookups, one per source).
+          # Fail-soft: a slow or unavailable archive must never cost the record its rebuild.
+          if python -m verderer --data-dir verderer-data overlay --out web/public; then
+            cp web/public/overlay.json web/src/data/overlay.json
+          else
+            echo "overlay harvest failed; keeping the previous archive index"
+          fi
           for t in $(python -m verderer --data-dir verderer-data targets | awk '{print $1}'); do
             python -m verderer --data-dir verderer-data bundle "$t" -o "web/public/bundles/$t.json" 2>/dev/null || true
           done
+          # A warning, never a failure: nothing here may stop the ledger state being persisted.
+          node web/scripts/check-wasm.mjs web/public/bundles/*.json || echo "::warning::the committed browser verifier rejects a fresh proof bundle; rebuild it (npm run build:wasm)"
           cp web/public/record.json web/src/data/record.json
           npm --prefix web ci
           npm --prefix web run build

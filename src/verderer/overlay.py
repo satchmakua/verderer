@@ -20,6 +20,7 @@ Dataverse / Perma.cc / PEDP adapters are the same port over their metadata APIs.
 from __future__ import annotations
 
 import json
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -83,13 +84,38 @@ def wayback_cdx_fetch(url: str, match_prefix: bool = False, limit: int = 20) -> 
 class WaybackSource:
     name = "wayback"
 
-    def __init__(self, fetcher: CdxFetcher = wayback_cdx_fetch, *, match_prefix: bool = False, limit: int = 20) -> None:
+    def __init__(
+        self,
+        fetcher: CdxFetcher = wayback_cdx_fetch,
+        *,
+        match_prefix: bool = False,
+        limit: int = 20,
+        min_interval: float = 3.0,
+        clock: Callable[[], float] = time.monotonic,
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> None:
         self._fetch = fetcher
         self._match_prefix = match_prefix
-        self._limit = limit
+        self.limit = limit  # published with the index, so a reader knows a full list may be truncated
+        # The CDX API refuses connections from a client that queries in a burst, so lookups
+        # are spaced out: a dozen sources cost under a minute, and every one gets an answer.
+        self._min_interval = min_interval
+        self._clock = clock
+        self._sleep = sleep
+        self._last: float | None = None
+
+    def _pace(self) -> None:
+        now = self._clock()
+        if self._last is not None:
+            wait = self._last + self._min_interval - now
+            if wait > 0:
+                self._sleep(wait)
+                now += wait
+        self._last = now
 
     def captures(self, url: str) -> list[OverlayCapture]:
-        rows = self._fetch(url, self._match_prefix, self._limit)
+        self._pace()
+        rows = self._fetch(url, self._match_prefix, self.limit)
         if not rows or len(rows) < 2:
             return []
         header = rows[0]
@@ -121,6 +147,11 @@ def _norm(url: str) -> str:
     """A lenient identity key so `https://www.epa.gov/x/` and `http://epa.gov/x` match."""
     parts = urlsplit(url if "://" in url else "http://" + url)
     host = parts.netloc.lower()
+    # A default port and a fully-qualified trailing dot (`www.epa.gov.`) name the same host.
+    for port in (":80", ":443"):
+        if host.endswith(port):
+            host = host[: -len(port)]
+    host = host.rstrip(".")
     if host.startswith("www."):
         host = host[4:]
     path = parts.path.rstrip("/") or "/"
@@ -158,12 +189,21 @@ def build_overlay(
     a single `verderer.overlay/v1` index. Each resource is badged verderer-attested (with a proof
     bundle reference) or left unverified.
 
-    `query_urls` defaults to the curated target URLs; a source may return captures for
-    sibling resources (e.g. Wayback prefix matching), which appear as unverified rows.
+    `query_urls` defaults to the curated target URLs plus every address Verderer actually
+    recorded (a source that redirects is archived under where it lands); a source may return
+    captures for sibling resources (e.g. Wayback prefix matching), which appear as unverified
+    rows. Every watched source gets a row, and a row whose lookup failed says so, so "no
+    third-party copy" is never claimed when an archive simply did not answer.
     """
     attested = _attested_resources(verderer)
+    # Which curated target each address belongs to, so a watched source that has never been
+    # recorded (or that redirects elsewhere) still reads as watched, not as a stranger.
+    watched = {_norm(t.url): t.id for t in verderer.targets.values()}
     if query_urls is None:
-        query_urls = [t.url for t in verderer.targets.values()]
+        query_urls = []
+        for url in [t.url for t in verderer.targets.values()] + [info["url"] for info in attested.values()]:
+            if _norm(url) not in {_norm(q) for q in query_urls}:
+                query_urls.append(url)
 
     resources: dict[str, dict[str, Any]] = {}
     errors: list[dict[str, str]] = []
@@ -180,10 +220,16 @@ def build_overlay(
                 key = _norm(capture.url)
                 res = resources.setdefault(key, {"url": capture.url, "external": {}})
                 res["external"].setdefault(capture.source, []).append(capture)
-    # Include attested resources even if no third-party archive surfaced them.
+    # Include attested and watched resources even if no third-party archive surfaced them.
     for key, info in attested.items():
         resources.setdefault(key, {"url": info["url"], "external": {}})
+    for target in verderer.targets.values():
+        resources.setdefault(_norm(target.url), {"url": target.url, "external": {}})
+    failed: dict[str, set[str]] = {}
+    for failure in errors:
+        failed.setdefault(_norm(failure["url"]), set()).add(failure["source"])
 
+    limits: dict[str, int | None] = {s.name: getattr(s, "limit", None) for s in sources}
     records: list[dict[str, Any]] = []
     for key, res in resources.items():
         matched = attested.get(key)
@@ -191,11 +237,13 @@ def build_overlay(
             # For an attested resource, show the URL Verderer actually observed (what the
             # bundle proves), not a third party's equivalent-but-different capture URL.
             "url": matched["url"] if matched is not None else res["url"],
+            "target_id": matched["target_id"] if matched is not None else watched.get(key),
             "attested": matched is not None,
+            "lookup_failed": sorted(failed.get(key, ())),
             "badge": "verderer-attested" if matched is not None else None,
             "verderer": None,
             "external": [
-                {"source": name, "captures": [c.to_json() for c in caps]}
+                {"source": name, "limit": limits.get(name), "captures": [c.to_json() for c in caps]}
                 for name, caps in sorted(res["external"].items())
             ],
         }
@@ -228,7 +276,7 @@ def write_overlay(
     verderer: Verderer, out_dir: Any, sources: list[ArchiveSource], *, query_urls: list[str] | None = None
 ) -> dict[str, Any]:
     """Build the overlay and write `overlay.json` plus a downloadable proof bundle
-    (`bundles/<target>.json`) for every attested resource. Returns a summary."""
+    (`bundles/<ledger index>.json`) for every attested resource. Returns a summary."""
     from pathlib import Path
 
     out = Path(out_dir)

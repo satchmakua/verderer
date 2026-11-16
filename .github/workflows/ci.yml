@@ -50,3 +50,8 @@ jobs:
 
       - name: Test
         run: pytest
+
+      - name: Browser verifier matches the trust core
+        # The WASM verifier is committed, not rebuilt here; a stale build rejects every
+        # current proof. sample-proof.json is a real bundle in the current format.
+        run: node web/scripts/check-wasm.mjs web/public/sample-proof.json
