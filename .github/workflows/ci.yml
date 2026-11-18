@@ -16,7 +16,9 @@ jobs:
     # false exactly where it gates other people's PRs.
     services:
       minio:
-        image: bitnami/minio:latest
+        # Pinned: bitnami/minio was withdrawn from Docker Hub (its images moved to the frozen
+        # bitnamilegacy namespace) and failed every run. A fixed tag can't vanish the same way.
+        image: bitnamilegacy/minio:2025.7.23-debian-12-r5
         ports: ['9000:9000']
         env:
           MINIO_ROOT_USER: verdereradmin
