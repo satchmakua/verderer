@@ -12,10 +12,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794902119.6142008,
-      "last_run": 1794902119.6142008,
+      "last_ok": 1794986948.0456905,
+      "last_run": 1794986948.0456905,
       "last_status": "unchanged",
-      "next_due": 1794981795.1975722,
+      "next_due": 1795081716.0026839,
       "target_id": "epa-ghgrp-data"
     },
     {
@@ -46,30 +46,30 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 422,
+      "consecutive_failures": 423,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1794976913.9790614,
+      "last_run": 1794986948.610465,
       "last_status": "error",
-      "next_due": 1794980513.9790614,
+      "next_due": 1794990548.610465,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 422,
+      "consecutive_failures": 423,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794976920.4035623,
+      "last_run": 1794986954.3860006,
       "last_status": "error",
-      "next_due": 1794980520.4035623,
+      "next_due": 1794990554.3860006,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 422,
+      "consecutive_failures": 423,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1794976931.5956414,
+      "last_run": 1794986966.677409,
       "last_status": "error",
-      "next_due": 1794980531.5956414,
+      "next_due": 1794990566.677409,
       "target_id": "nca5"
     },
     {
@@ -84,10 +84,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794902143.6371129,
-      "last_run": 1794902143.6371129,
+      "last_ok": 1794986980.9446316,
+      "last_run": 1794986980.9446316,
       "last_status": "unchanged",
-      "next_due": 1794983154.4461606,
+      "next_due": 1795079959.0594256,
       "target_id": "noaa-co2-trends"
     },
     {
