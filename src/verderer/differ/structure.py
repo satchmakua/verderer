@@ -15,10 +15,14 @@ text is noise-suppressed like the flat text, so a rotating token in a cell doesn
 
 from __future__ import annotations
 
+import re
+from dataclasses import replace
+
 from bs4 import BeautifulSoup
 
 from ..models import DiffRecord, DiffType
 from .normalize import _STRIP_TAGS, _WHITESPACE, suppress_noise
+from .numeric import quantities_in, same_dimension, values_differ
 
 # Above this many changed/added/removed blocks it isn't a *localised* edit — the structure was
 # reshuffled (a row inserted re-indexes the tail), so positional block paths over-report.
@@ -100,3 +104,90 @@ def structure_watch(
     if len(localised) > _MAX_LOCALISED:
         return []  # too broad to localise usefully — defer to the coarse floor
     return localised
+
+
+_CELL = re.compile(r"^table\[(\d+)\]\.row\[(\d+)\]\.col\[(\d+)\]$")
+
+
+def table_numeric_watch(
+    prev_body: bytes,
+    curr_body: bytes,
+    *,
+    target_id: str,
+    detected_at: str,
+    from_hash: str | None,
+    to_hash: str,
+    already: frozenset[tuple[str, str]] = frozenset(),
+) -> list[DiffRecord]:
+    """L2 for tables: a regulatory value in a table cell is named by its row and column, not
+    by a keyword beside it ("PFHxS | 10 ppt" under a "Final MCL" header), so the flat-text
+    numeric watch never sees it as regulatory. This reports a cell whose quantity moved as a
+    `NumericThresholdChange`, with the row label and column header as its context.
+
+    Positional paths lie when a row is inserted (every later row shifts), so a cell is only
+    compared when its table kept the same number of rows and its row label and column header
+    (when the table has one) are unchanged. `already` holds (from, to) pairs the flat-text watch reported, so one change
+    is not logged twice.
+    """
+    prev = extract_blocks(prev_body.decode("utf-8", errors="replace"))
+    curr = extract_blocks(curr_body.decode("utf-8", errors="replace"))
+
+    def rows(blocks: dict[str, str]) -> dict[int, int]:
+        count: dict[int, int] = {}
+        for path in blocks:
+            match = _CELL.match(path)
+            if match:
+                table, row = int(match.group(1)), int(match.group(2))
+                count[table] = max(count.get(table, 0), row + 1)
+        return count
+
+    prev_rows, curr_rows = rows(prev), rows(curr)
+    found: list[DiffRecord] = []
+    for path, curr_text in curr.items():
+        match = _CELL.match(path)
+        prev_text = prev.get(path)
+        if match is None or prev_text is None or prev_text == curr_text:
+            continue
+        table, row, col = (int(g) for g in match.groups())
+        if prev_rows.get(table) != curr_rows.get(table):
+            continue
+        label_path = f"table[{table}].row[{row}].col[0]"
+        if col > 0 and prev.get(label_path) != curr.get(label_path):
+            continue
+        # The first row is a header only if its cell in this column is words, not a value:
+        # a table with no header row starts straight in with data.
+        header_path = f"table[{table}].row[0].col[{col}]"
+        header = curr.get(header_path, "") if row > 0 else ""
+        if header and quantities_in(header):
+            header = ""
+        if header and prev.get(header_path) != header:
+            continue
+        before, after = quantities_in(prev_text), quantities_in(curr_text)
+        if not before or len(before) != len(after):
+            continue
+        label = curr.get(label_path, "") if col > 0 else ""
+        context = " - ".join(part for part in (label, header) if part)[:_EVIDENCE_CAP]
+        for old, new in zip(before, after, strict=True):
+            if not same_dimension(old, new) or not values_differ(old, new):
+                continue
+            if (old.raw.lower(), new.raw.lower()) in already:
+                continue
+            found.append(
+                DiffRecord(
+                    target_id=target_id,
+                    from_observation_hash=from_hash,
+                    to_observation_hash=to_hash,
+                    detected_at=detected_at,
+                    diff_type=DiffType.NumericThresholdChange,
+                    severity="High",
+                    layer="L2-table",
+                    evidence={"context": context, "unit": new.unit, "from": old.raw, "to": new.raw, "block": path},
+                )
+            )
+    if len(found) > _MAX_LOCALISED:
+        # A re-based table is one event, not a flood of leaves: keep the first cells and say
+        # how many more moved.
+        extra = len(found) - _MAX_LOCALISED
+        found = found[:_MAX_LOCALISED]
+        found[-1] = replace(found[-1], evidence={**found[-1].evidence, "also_changed": extra})
+    return found

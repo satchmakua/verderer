@@ -177,6 +177,20 @@ const types = [
     <li>that a time is exact — times are the collector’s clock, bounded from outside only where a proof carries an independent timestamp.</li>
   </ul>
 
+  <h2 id="timestamps">Independent timestamps</h2>
+  <p>
+    A time written by the collector is only the collector’s word. So after each run, the head of the log is
+    sent to outside timestamp authorities (DigiCert and FreeTSA), which sign a statement that it existed at
+    that moment. Those signed statements travel inside every proof bundle, and the verifier checks them
+    against the authorities’ published certificates — so a proof can say “this record existed no later
+    than” a time that Verderer could not have chosen or backdated.
+  </p>
+  <p class="small muted">
+    It is an upper bound only: it shows a record existed by then, not when the source first said it.
+    A proof made before timestamping was switched on, or while an authority was unreachable, carries none
+    and says so.
+  </p>
+
   <h2 id="verify">Verify it yourself</h2>
   <ol>
     <li>Open any source and choose <strong>Verify the latest proof</strong>, or download its proof bundle.</li>
@@ -206,6 +220,7 @@ const types = [
       <tbody>
         <tr><td><a href="/record.json">record.json</a></td><td>The whole record, machine-readable. Its <code>legend</code> entry states which fields are proven, interpreted, or operator-reported.</td></tr>
         <tr><td><a href="/feed.xml">feed.xml</a></td><td>RSS of every change. Each source also has its own feed, linked from its page.</td></tr>
+        <tr><td><a href="/digest.xml">digest.xml</a></td><td>The <a href="/digest">weekly digest</a> as a feed: one item when each week closes, quiet weeks included.</td></tr>
         <tr><td><a href="/checkpoint">checkpoint</a></td><td>The log’s current signed head: its size and root fingerprint.</td></tr>
         <tr><td><code>/tile/…</code></td><td>The log itself, as standard tiles — enough to recompute any proof without asking this site.</td></tr>
         <tr><td><code>/warc/…</code></td><td>Every recorded response as a standard web-archive file, readable by any archive tool.</td></tr>

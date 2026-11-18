@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from ..pipeline import Verderer, _checkpoint_size
-from .feed import SITE_TITLE, render_rss
+from .feed import SITE_TITLE, render_digest_rss, render_rss
 from .record import build_record
 
 
@@ -32,6 +32,13 @@ def export_site(verderer: Verderer, out_dir: Path, *, base_url: str = "https://v
             site_url=base_url,
             titles=titles,
         ),
+        encoding="utf-8",
+    )
+
+    # The weekly digest: one item per completed week, for readers who want a summary rather
+    # than every change as it lands.
+    (out / "digest.xml").write_text(
+        render_digest_rss(record["weeks"], record["changes"], link=base_url, site_url=base_url, titles=titles),
         encoding="utf-8",
     )
 

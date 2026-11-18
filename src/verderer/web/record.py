@@ -21,6 +21,7 @@ from typing import Any
 
 from ..pipeline import Verderer
 from ..scheduler import ScheduleEntry, load_schedule_state
+from .digest import build_weeks
 from .explain import CRITERIA_TAGS, build_changes, parse_criteria, target_state
 
 RECORD_SCHEMA = "verderer.record/v1"
@@ -32,7 +33,7 @@ LEGEND = {
         "ledger leaves: provable offline against the signed checkpoint."
     ),
     "interpretation": (
-        "explain, state, changes, summary, tags and criteria_text are best-effort plain-language "
+        "explain, state, changes, weeks, summary, tags and criteria_text are best-effort plain-language "
         "readings derived from those leaves. They are not attested and can be re-derived."
     ),
     "operator_reported": (
@@ -100,9 +101,16 @@ def _checkpoint_view(verderer: Verderer) -> dict[str, Any] | None:
     path = verderer.data_dir / "ledger" / "checkpoint"
     try:
         origin, size, root = path.read_text(encoding="utf-8").splitlines()[:3]
-        return {"origin": origin, "size": int(size), "root": root}
+        view: dict[str, Any] = {"origin": origin, "size": int(size), "root": root}
     except (OSError, ValueError):
         return None
+    try:
+        # Which outside authorities have timestamped this log head. Operator-reported: the
+        # tokens themselves ride in every proof bundle, where a verifier checks them.
+        view["anchored_by"] = verderer.anchored_by()
+    except Exception:
+        view["anchored_by"] = []
+    return view
 
 
 def build_record(verderer: Verderer, *, generated_at: str | None = None) -> dict[str, Any]:
@@ -177,9 +185,10 @@ def build_record(verderer: Verderer, *, generated_at: str | None = None) -> dict
     ordered = sorted(targets.values(), key=lambda t: t["id"])
     observation_times = [o["fetched_at"] for t in ordered for o in t["observations"] if o.get("fetched_at")]
     checks = [t["monitor"]["last_checked"] for t in ordered if t["monitor"] and t["monitor"]["last_checked"]]
+    stamp = generated_at or datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     return {
         "schema": RECORD_SCHEMA,
-        "generated_at": generated_at or datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_at": stamp,
         "public_key": verderer.log.public_key_hex,
         "size": len(entries),
         "checkpoint": _checkpoint_view(verderer),
@@ -201,4 +210,5 @@ def build_record(verderer: Verderer, *, generated_at: str | None = None) -> dict
         "targets": ordered,
         "events": all_events,
         "changes": changes,
+        "weeks": build_weeks(changes, ordered, generated_at=stamp),  # the weekly digest, newest first
     }

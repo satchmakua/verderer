@@ -114,6 +114,30 @@ def test_pipeline_table_cell_change_is_localized(tmp_path: Path, ledger_built: N
     )
     verderer.observe("t")
     cursor["i"] = 1
+    (diff,) = verderer.observe("t").diffs
+    # The cell holds a quantity, so the table-aware numeric layer names it: the same exact
+    # cell the structure diff would localise, now recognised as a limit that moved.
+    assert diff.layer == "L2-table" and diff.diff_type.value == "NumericThresholdChange"
+    assert diff.evidence["block"] == "table[0].row[1].col[1]" and diff.evidence["context"] == "Lead"
+    assert diff.evidence["from"] == "15 ppb" and diff.evidence["to"] == "99 ppb"
+
+
+def test_pipeline_wording_change_in_a_table_cell_is_localized(tmp_path: Path, ledger_built: None) -> None:
+    # No quantity in the cell: nothing for the numeric layers, so the structure diff localises it.
+    pages = [_TABLE.format(lead="under review").encode(), _TABLE.format(lead="withdrawn").encode()]
+    cursor = {"i": 0}
+
+    def fetch(url: str, *, timeout: float = 30.0) -> FetchResult:
+        return FetchResult(url=url, status=200, headers={}, body=pages[cursor["i"]])
+
+    verderer = Verderer(
+        tmp_path / "data",
+        targets={"t": Target(id="t", title="T", url="https://example.gov/t")},
+        terms=[],
+        collector=StaticCollector(fetcher=fetch),
+    )
+    verderer.observe("t")
+    cursor["i"] = 1
     diffs = verderer.observe("t").diffs
     localized = [d for d in diffs if d.layer == "L0-structure"]
     assert localized and localized[0].evidence["block"] == "table[0].row[1].col[1]"

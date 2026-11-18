@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import WeekDigest from '../../components/WeekDigest.astro';
+import When from '../../components/When.astro';
+import type { Week } from '../../lib/record';
+import { record, weekSpan, weeks } from '../../lib/record';
+
+export function getStaticPaths() {
+  // `weeks` is newest first, so the neighbour at index + 1 is the week before.
+  return weeks.map((week, index) => ({
+    params: { week: week.id },
+    props: { week, newer: weeks[index - 1] ?? null, older: weeks[index + 1] ?? null },
+  }));
+}
+
+interface Props {
+  week: Week;
+  newer: Week | null;
+  older: Week | null;
+}
+const { week, newer, older } = Astro.props;
+---
+
+<Base
+  title={`Verderer — week of ${weekSpan(week)}`}
+  description={`${week.summary} in the week of ${weekSpan(week)}.`}
+  active="digest"
+>
+  <p class="small"><a href="/digest">← Weekly digest</a></p>
+  <h1>Week of {weekSpan(week)}</h1>
+  <p class="lede">
+    {week.summary}.
+    {!week.complete && (
+      <span class="muted"> This week is still in progress — as of <When iso={record.generatedAt} time />.</span>
+    )}
+  </p>
+
+  <WeekDigest week={week} />
+
+  <nav class="pager" aria-label="Other weeks">
+    {older ? <a class="btn" href={`/digest/${older.id}`}>← {weekSpan(older)}</a> : <span></span>}
+    {newer ? <a class="btn" href={`/digest/${newer.id}`}>{weekSpan(newer)} →</a> : <span></span>}
+  </nav>
+
+  <p class="small muted">
+    Week {week.id}, Monday to Sunday in UTC. Changes are a best-effort reading of the signed record;
+    <a href="/guide#proof">what is proven and what is not</a>.
+  </p>
+
+  <style>
+    .pager { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 26px 0 12px; }
+  </style>
+</Base>

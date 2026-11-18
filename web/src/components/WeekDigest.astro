@@ -1,0 +1,79 @@
+---
+// One week of the record: what changed, most important first, then source by source.
+import type { Week } from '../lib/record';
+import { changesOf, plural, titleOf } from '../lib/record';
+import ChangeCard from './ChangeCard.astro';
+
+interface Props {
+  week: Week;
+}
+const { week } = Astro.props;
+const found = changesOf(week);
+const notable = found.filter((c) => c.category === 'notable');
+const rest = found.filter((c) => c.category !== 'notable');
+// The remaining changes, grouped under the source they belong to (sources in title order).
+const bySource = [...new Set(rest.map((c) => c.target_id))]
+  .map((id) => ({ id, title: titleOf(id), items: rest.filter((c) => c.target_id === id) }))
+  .sort((a, b) => a.title.localeCompare(b.title));
+---
+
+<div class="grid cols-4">
+  <div class="card stat">
+    <div class="label">Changes</div>
+    <div class="value">{week.changes}</div>
+    <div class="sub">{week.sources.length > 0 ? `across ${plural(week.sources.length, 'source')}` : 'in the sources that answered'}</div>
+  </div>
+  <div class="card stat">
+    <div class="label">High severity</div>
+    <div class="value">{week.notable}</div>
+    <div class="sub"><a href="/guide#severity">what that means</a></div>
+  </div>
+  <div class="card stat">
+    <div class="label">New responses recorded</div>
+    <div class="value">{week.observations}</div>
+    <div class="sub">a re-check that finds the same bytes adds nothing</div>
+  </div>
+  <div class="card stat">
+    <div class="label">Error-page changes set aside</div>
+    <div class="value">{week.churn}</div>
+    <div class="sub"><a href="/guide#churn">why they are not counted</a></div>
+  </div>
+</div>
+
+{found.length === 0 && (
+  <div class="callout ok" style="margin-top:16px">
+    <strong>Nothing changed {week.complete ? 'this week' : 'so far this week'}</strong> in the sources that
+    answered.
+    {week.observations > 0
+      ? ` ${plural(week.observations, 'new response')} ${week.observations === 1 ? 'was' : 'were'} recorded, none amounting to a change in a source (a first recording, or an error page that only reworded itself).`
+      : ' Every re-check returned the same bytes as before.'}
+  </div>
+)}
+
+{notable.length > 0 && (
+  <>
+    <h2>High severity</h2>
+    <div class="stack">{notable.map((change) => <ChangeCard change={change} />)}</div>
+  </>
+)}
+
+{bySource.length > 0 && (
+  <>
+    <h2>{notable.length > 0 ? 'Other changes' : 'Changes'}</h2>
+    {bySource.map((group) => (
+      <section class="by-source">
+        <h3>
+          <a href={`/target/${group.id}`}>{group.title}</a>
+          <span class="muted small"> · {plural(group.items.length, 'change')}</span>
+        </h3>
+        <div class="stack">{group.items.map((change) => <ChangeCard change={change} showSource={false} />)}</div>
+      </section>
+    ))}
+  </>
+)}
+
+<style>
+  .stack { display: grid; gap: 12px; }
+  .by-source { margin-top: 18px; }
+  .by-source > h3 { margin: 0 0 8px; }
+</style>

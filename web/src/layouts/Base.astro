@@ -2,7 +2,7 @@
 interface Props {
   title: string;
   description?: string;
-  active?: 'overview' | 'changes' | 'guide' | 'verify' | 'overlay';
+  active?: 'overview' | 'changes' | 'digest' | 'guide' | 'verify' | 'overlay';
 }
 const {
   title,
@@ -13,6 +13,7 @@ const {
 const nav = [
   { id: 'overview', href: '/', label: 'Overview' },
   { id: 'changes', href: '/changes', label: 'Changes' },
+  { id: 'digest', href: '/digest', label: 'This week' },
   { id: 'guide', href: '/guide', label: 'How to read this' },
   { id: 'verify', href: '/verify', label: 'Verify' },
   { id: 'overlay', href: '/overlay', label: 'Archives' },
@@ -28,6 +29,7 @@ const nav = [
     <meta name="color-scheme" content="light dark" />
     <title>{title}</title>
     <link rel="alternate" type="application/rss+xml" title="Verderer — all changes" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Verderer — weekly digest" href="/digest.xml" />
     <script is:inline>
       // Apply a saved theme before first paint (no flash). Storage can be unavailable; ignore.
       try {
@@ -207,6 +209,9 @@ const nav = [
         font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
       table.data td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
       .scroll { overflow-x: auto; }
+      .weekline { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+        text-decoration: none; color: var(--ink); }
+      .weekline .more { color: var(--accent); white-space: nowrap; }
       .source { display: grid; gap: 8px; }
       .source .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
       .source .top > div { min-width: 0; }
@@ -276,6 +281,7 @@ const nav = [
         </div>
         <div class="links">
           <a href="/feed.xml">RSS feed</a>
+          <a href="/digest.xml">Weekly digest feed</a>
           <a href="/record.json">record.json</a>
           <a href="/checkpoint">Signed checkpoint</a>
           <a href="/verify">Verify a proof</a>

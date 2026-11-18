@@ -144,7 +144,14 @@ def cmd_anchor(args: argparse.Namespace) -> int:
 
     names = [n.strip() for n in args.tsa.split(",") if n.strip()]
     succeeded = 0
+    held = set(verderer.anchored_by())
     for name in names:
+        if name in held:
+            # One token per authority per checkpoint: a scheduled run that found nothing new
+            # must not ask a timestamp authority to re-stamp the same log head.
+            print(f"already anchored via {name}: this checkpoint has not changed")
+            succeeded += 1
+            continue
         try:
             if name == "dev":
                 anchorer: object = OpensslTsaAnchorer(args.data_dir / "anchors" / "dev-tsa")
@@ -236,47 +243,40 @@ def cmd_export(args: argparse.Namespace) -> int:
 
 
 def cmd_notify(args: argparse.Namespace) -> int:
-    from .notify import (
-        HttpWebhookNotifier,
-        Notifier,
-        SmtpEmailNotifier,
-        dispatch,
-        events,
-        load_state,
-        load_subscriptions,
-        matches,
-        save_state,
-    )
+    from .notify import alerts, default_notifiers, dispatch, load_state, load_subscriptions, matches, save_state
+    from .web.explain import to_ascii
 
     verderer = _build(args)
     subs_path = args.subscriptions or _repo_data_dir() / "subscriptions.toml"
     subscriptions = load_subscriptions(subs_path)
-    evs = events(verderer)
+    inactive = [s for s in subscriptions if not s.active]
+    pending_alerts = alerts(verderer, site_url=args.site_url)
     state = load_state(args.data_dir)
+    for sub in inactive:
+        print(f"  inactive: {sub.name} ({sub.channel}) - {sub.label} is not set")
 
     if args.dry_run:
         pending = [
-            (s.name, s.channel, e["id"])
-            for e in evs
+            (s.name, s.channel, e)
+            for e in pending_alerts
             for s in subscriptions
-            if matches(s, e) and f"{s.name}:{e['id']}" not in state.delivered
+            if s.active and matches(s, e) and f"{s.name}:{e['id']}" not in state.delivered
         ]
-        print(f"{len(pending)} pending delivery(ies) across {len(subscriptions)} subscription(s):")
-        for name, channel, eid in pending[:30]:
-            print(f"  {channel:8} {name:24} <- {eid[:16]}")
+        active = len(subscriptions) - len(inactive)
+        print(f"{len(pending)} pending delivery(ies) across {active} active subscription(s):")
+        for name, channel, alert in pending[:30]:
+            headline = to_ascii(alert["headline"])
+            print(f"  {channel:12} {name:20} <- [{alert['severity']}] {alert['target_id']}: {headline}")
         return 0
 
-    notifiers: dict[str, Notifier] = {
-        "webhook": HttpWebhookNotifier(),
-        "email": SmtpEmailNotifier(args.smtp_host, args.smtp_port, args.email_from),
-    }
-    deliveries = dispatch(evs, subscriptions, notifiers, state)
+    notifiers = default_notifiers(smtp_host=args.smtp_host, smtp_port=args.smtp_port, email_from=args.email_from)
+    deliveries = dispatch(pending_alerts, subscriptions, notifiers, state)
     save_state(args.data_dir, state)
     sent = [d for d in deliveries if "error" not in d]
     failed = [d for d in deliveries if "error" in d]
     print(f"delivered {len(sent)} alert(s); {len(failed)} failed (will retry)")
     for d in sent[:30]:
-        print(f"  {d['channel']:8} {d['subscription']:24} -> {d['dest']}")
+        print(f"  {d['channel']:12} {d['subscription']:20} -> {d['dest']}")
     for d in failed[:10]:
         print(f"  FAILED {d['channel']} {d['subscription']} -> {d['dest']}: {d['error']}")
     return 1 if failed and not sent else 0
@@ -284,27 +284,15 @@ def cmd_notify(args: argparse.Namespace) -> int:
 
 def _build_notify_fn(args: argparse.Namespace):  # type: ignore[no-untyped-def]
     """Wire the real M5c notify pipeline as a scheduler seam: (verderer) -> deliveries."""
-    from .notify import (
-        HttpWebhookNotifier,
-        Notifier,
-        SmtpEmailNotifier,
-        dispatch,
-        events,
-        load_state,
-        load_subscriptions,
-        save_state,
-    )
+    from .notify import alerts, default_notifiers, dispatch, load_state, load_subscriptions, save_state
 
     subs_path = args.subscriptions or _repo_data_dir() / "subscriptions.toml"
     subscriptions = load_subscriptions(subs_path)
-    notifiers: dict[str, Notifier] = {
-        "webhook": HttpWebhookNotifier(),
-        "email": SmtpEmailNotifier(args.smtp_host, args.smtp_port, args.email_from),
-    }
+    notifiers = default_notifiers(smtp_host=args.smtp_host, smtp_port=args.smtp_port, email_from=args.email_from)
 
     def notify_fn(verderer: Verderer) -> list[dict[str, object]]:
         state = load_state(args.data_dir)
-        deliveries = dispatch(events(verderer), subscriptions, notifiers, state)
+        deliveries = dispatch(alerts(verderer, site_url=args.site_url), subscriptions, notifiers, state)
         save_state(args.data_dir, state)
         return deliveries
 
@@ -564,6 +552,7 @@ def main(argv: list[str] | None = None) -> int:
     notify.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
     notify.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
     notify.add_argument("--email-from", default="verderer@localhost", help="From: address for email alerts")
+    notify.add_argument("--site-url", default="", help="public site address, so an alert can link to its change page")
     keygen = sub.add_parser("keygen", help="generate a fresh log signing key (key.json) for a new instance (M15)")
     keygen.add_argument("--name", default="verderer.watchdog/m1-log", help="the note key name (the log origin)")
     mirror = sub.add_parser("mirror", help="submit the published checkpoint to independent archives (M14b-2)")
@@ -578,6 +567,7 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--smtp-host", default="localhost", help="SMTP host for email subscriptions")
     run.add_argument("--smtp-port", type=int, default=25, help="SMTP port")
     run.add_argument("--email-from", default="verderer@localhost", help="From: address for email alerts")
+    run.add_argument("--site-url", default="", help="public site address, so an alert can link to its change page")
 
     args = parser.parse_args(argv)
     dispatch = {

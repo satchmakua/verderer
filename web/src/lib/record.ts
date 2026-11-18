@@ -114,12 +114,27 @@ export type Summary = {
   last_checked_at: string | null;
 };
 
+export type Week = {
+  id: string; // ISO week, e.g. 2026-W46
+  start: string; // the Monday, YYYY-MM-DD (UTC)
+  end: string; // the Sunday
+  complete: boolean;
+  observations: number;
+  changes: number;
+  notable: number;
+  churn: number;
+  sources: string[];
+  change_ids: string[];
+  summary: string;
+};
+
 type RawRecord = {
   schema?: string;
   generated_at?: string;
   public_key?: string;
   size?: number;
-  checkpoint?: { origin: string; size: number; root: string } | null;
+  checkpoint?: { origin: string; size: number; root: string; anchored_by?: string[] } | null;
+  weeks?: Week[];
   legend?: Record<string, string>;
   criteria_tags?: Record<string, string>;
   watched_terms?: string[];
@@ -172,6 +187,9 @@ function fallbackChanges(events: Finding[]): Change[] {
 export const events: Finding[] = source.events ?? [];
 export const changes: Change[] = source.changes ?? fallbackChanges(events);
 
+// The weekly digest, newest week first. A record exported before it existed has none.
+export const weeks: Week[] = source.weeks ?? [];
+
 export const targets: Target[] = (source.targets ?? []).map((t) => {
   const observations = (t.observations ?? []) as Observation[];
   const own = changes.filter((c) => c.target_id === t.id && c.category !== 'churn');
@@ -218,6 +236,9 @@ export const record = {
   publicKey: source.public_key ?? '',
   size: source.size ?? 0,
   checkpoint: source.checkpoint ?? null,
+  // Outside authorities holding a timestamp over this log head (operator-reported; each
+  // token rides in every proof bundle, where the verifier checks it).
+  anchoredBy: source.checkpoint?.anchored_by ?? [],
   criteriaTags: source.criteria_tags ?? {},
   watchedTerms: source.watched_terms ?? [],
 };
@@ -234,6 +255,29 @@ export const eventById = (id: string): Finding | undefined => eventIndex.get(id)
 export const findingsOf = (change: Change): Finding[] =>
   change.event_ids.map((id) => eventIndex.get(id)).filter((e): e is Finding => e !== undefined);
 export const titleOf = (targetId: string): string => targetIndex.get(targetId)?.title ?? targetId;
+export const weekById = (id: string): Week | undefined => weeks.find((w) => w.id === id);
+export const changesOf = (week: Week): Change[] =>
+  week.change_ids.map((id) => changeIndex.get(id)).filter((c): c is Change => c !== undefined);
+
+/** `Nov 9 – 15, 2026`, with both ends in full across a month or year boundary. */
+export function weekSpan(week: Week): string {
+  const start = new Date(`${week.start}T00:00:00Z`);
+  const end = new Date(`${week.end}T00:00:00Z`);
+  const md = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric' });
+  const sameMonth = start.getUTCMonth() === end.getUTCMonth() && start.getUTCFullYear() === end.getUTCFullYear();
+  if (start.getUTCFullYear() !== end.getUTCFullYear()) {
+    return `${md.format(start)}, ${start.getUTCFullYear()} – ${md.format(end)}, ${end.getUTCFullYear()}`;
+  }
+  return `${md.format(start)} – ${sameMonth ? end.getUTCDate() : md.format(end)}, ${end.getUTCFullYear()}`;
+}
+
+// How each timestamp authority is named to a reader.
+export const AUTHORITY_NAMES: Record<string, string> = {
+  digicert: 'DigiCert',
+  freetsa: 'FreeTSA',
+  sectigo: 'Sectigo',
+  ots: 'the Bitcoin blockchain (OpenTimestamps)',
+};
 
 // --- formatting ----------------------------------------------------------------------------
 

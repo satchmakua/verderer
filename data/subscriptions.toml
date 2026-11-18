@@ -1,24 +1,56 @@
-# Alert subscriptions (DESIGN §7). `verderer notify` delivers each new classified diff event
-# to every subscription it matches. Filter by target, diff-type, and minimum severity.
-# `channel` is "webhook" (POST verderer.alert/v1 JSON) or "email" (SMTP). Delivery is
-# idempotent — an event is sent to a subscription at most once.
+# Alert subscriptions (DESIGN §7). `verderer notify` sends one alert per change - everything one
+# comparison between two recorded versions found, as one headline - to every subscription it
+# matches. Error-page churn is never alerted, and an alert is sent to a subscription at most once.
+#
+#   channel       "webhook" (POSTs verderer.alert/v2 JSON; it also carries `text` and `content`,
+#                 so a Slack-, Mattermost- or Discord-style incoming webhook shows it as-is),
+#                 "email" (SMTP), or "github-issue" (opens an issue on `dest` = owner/repo, so
+#                 anyone watching that repository is notified by GitHub).
+#   dest          the address. Write `env:NAME` to read it from the environment, so a secret URL
+#                 or a private address never has to be committed. While NAME is unset the
+#                 subscription is inactive - which is how each one below is switched on or off.
+#   min_severity  Info | Low | Medium | High
+#   targets       only these target ids (default: all)
+#   diff_types    only changes containing one of these types (default: all)
+#   since         only changes detected at or after this date - without it, a new subscription
+#                 is also sent the history it matches.
+#
+# Email needs a relay: VERDERER_SMTP_HOST, VERDERER_SMTP_PORT, VERDERER_SMTP_USER,
+# VERDERER_SMTP_PASSWORD and VERDERER_SMTP_FROM (see docs/deployment.md).
 
 [[subscription]]
-name = "high-severity-webhook"
+name = "webhook"
 channel = "webhook"
-dest = "https://example.com/hooks/verderer"
+dest = "env:VERDERER_ALERT_WEBHOOK"
 min_severity = "High"
+since = "2026-11-17"
 
 [[subscription]]
-name = "ncas-desk"
+name = "issues"
+channel = "github-issue"
+dest = "env:VERDERER_ALERT_ISSUES"
+min_severity = "High"
+since = "2026-11-17"
+
+[[subscription]]
+name = "email"
 channel = "email"
-dest = "desk@example.org"
-targets = ["usgcrp", "epa-climate-indicators"]
-min_severity = "Medium"
+dest = "env:VERDERER_ALERT_EMAIL"
+min_severity = "High"
+since = "2026-11-17"
 
-[[subscription]]
-name = "threshold-watch"
-channel = "webhook"
-dest = "https://example.com/hooks/thresholds"
-diff_types = ["NumericThresholdChange", "SchemaChange", "DistributionalShift"]
-min_severity = "Medium"
+# More examples:
+#
+# [[subscription]]
+# name = "threshold-watch"
+# channel = "webhook"
+# dest = "https://example.com/hooks/thresholds"
+# diff_types = ["NumericThresholdChange", "SchemaChange", "DistributionalShift"]
+# min_severity = "Medium"
+#
+# [[subscription]]
+# name = "water-desk"
+# channel = "email"
+# dest = "desk@example.org"
+# targets = ["epa-drinking-water-mcl", "epa-pfas-drinking-water"]
+# min_severity = "Medium"

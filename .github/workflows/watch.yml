@@ -1,7 +1,7 @@
 # M15 — continuous cloud operation. Every 6h this workflow IS the watchdog: it restores the
 # append-only ledger, re-observes the curated set through the polite layer, appends any diffs,
-# rebuilds + deploys the public record, persists the new ledger state, and mirrors the
-# checkpoint. Public repo -> Actions minutes are free. The signing key lives ONLY in the
+# has independent authorities timestamp the new log head, rebuilds + deploys the public record,
+# sends alerts, persists the new ledger state, and mirrors the checkpoint. Public repo -> Actions minutes are free. The signing key lives ONLY in the
 # encrypted secret VERDERER_SIGNING_KEY (set in the repository settings); it never touches the repo.
 name: watch
 
@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write # push the state + gh-pages branches
+  issues: write # the opt-in "github-issue" alert channel (off unless VERDERER_ALERT_ISSUES is set)
 
 concurrency:
   group: verderer-watch
@@ -67,6 +68,16 @@ jobs:
           # recorded error and retry, which is correct — that target is DNS-dead anyway.
           python -m verderer --data-dir verderer-data run --once --no-notify
 
+      - name: Timestamp the log head with independent authorities
+        # An RFC 3161 token from each authority binds this checkpoint to a time Verderer does
+        # not control, so every proof built below can say "existed no later than T" on someone
+        # else's word. Skipped per authority when the checkpoint is unchanged. Never fatal: a
+        # timestamp service being down must not cost the run its record.
+        continue-on-error: true
+        run: |
+          export PATH="$PWD/rust/target/release:$PATH"
+          python -m verderer --data-dir verderer-data anchor --tsa digicert,freetsa
+
       - name: Export the record + build the site
         run: |
           export PATH="$PWD/rust/target/release:$PATH"
@@ -89,6 +100,25 @@ jobs:
           cp web/public/record.json web/src/data/record.json
           npm --prefix web ci
           npm --prefix web run build
+
+      - name: Send alerts for new changes
+        # One alert per change, to whichever channels are switched on (data/subscriptions.toml).
+        # Each destination comes from a secret or variable; unset means that channel is off.
+        # Runs before the state is persisted so what was sent is remembered, and never fatal.
+        continue-on-error: true
+        env:
+          VERDERER_ALERT_WEBHOOK: ${{ secrets.VERDERER_ALERT_WEBHOOK }}
+          VERDERER_ALERT_EMAIL: ${{ secrets.VERDERER_ALERT_EMAIL }}
+          VERDERER_ALERT_ISSUES: ${{ vars.VERDERER_ALERT_ISSUES }}
+          VERDERER_SMTP_HOST: ${{ secrets.VERDERER_SMTP_HOST }}
+          VERDERER_SMTP_PORT: ${{ secrets.VERDERER_SMTP_PORT }}
+          VERDERER_SMTP_USER: ${{ secrets.VERDERER_SMTP_USER }}
+          VERDERER_SMTP_PASSWORD: ${{ secrets.VERDERER_SMTP_PASSWORD }}
+          VERDERER_SMTP_FROM: ${{ secrets.VERDERER_SMTP_FROM }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          export PATH="$PWD/rust/target/release:$PATH"
+          python -m verderer --data-dir verderer-data notify --site-url https://verderer.satchelhamilton.com
 
       - name: Persist the updated ledger state (append-only, key excluded)
         env:

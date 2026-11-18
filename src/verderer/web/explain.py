@@ -246,14 +246,16 @@ def _explain_term(e: Mapping[str, Any]) -> dict[str, Any]:
 def _explain_number(e: Mapping[str, Any]) -> dict[str, Any]:
     before, after = _clip(e.get("from"), 60), _clip(e.get("to"), 60)
     change = _percent(relative_change(before, after))
-    return {
-        "kind": "number_changed",
-        "title": f"Regulatory number changed: {before} → {after}",
-        "summary": (
-            f"In the passage {_quoted('…' + _clip(e.get('context', ''), 120))}, the value changed "
-            f"from {before} to {after}{change}."
-        ),
-    }
+    context = _clip(e.get("context", ""), 120)
+    if "block" in e:
+        # Found in a table cell: its row label and column header name the value.
+        where = f"In {describe_block(e['block'])}" + (f" ({_quoted(context)})" if context else "")
+        more = _int(e.get("also_changed"))
+        tail = f" {_plural(more, 'more value')} in the same table also changed." if more else ""
+        summary = f"{where}, the value changed from {before} to {after}{change}.{tail}"
+    else:
+        summary = f"In the passage {_quoted('…' + context)}, the value changed from {before} to {after}{change}."
+    return {"kind": "number_changed", "title": f"Regulatory number changed: {before} → {after}", "summary": summary}
 
 
 def _explain_content(e: Mapping[str, Any], served: bool) -> dict[str, Any]:

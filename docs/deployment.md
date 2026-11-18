@@ -182,8 +182,9 @@ EnvironmentFile=/etc/verderer/s3.env      # chmod 600, root:root
 
 The zero-cost way to make Verderer a *running* watchdog (not a snapshot). A scheduled workflow
 (`.github/workflows/watch.yml`, every 6 h) restores the ledger, re-observes the curated set,
-redeploys the site, persists the new ledger state, and mirrors the checkpoint — all on a public
-repo, so the Actions minutes are free.
+has DigiCert and FreeTSA timestamp the new log head, redeploys the site, sends alerts, persists
+the new ledger state, and mirrors the checkpoint — all on a public repo, so the Actions minutes
+are free.
 
 **One-time setup (the signing key is yours alone to hold):**
 
@@ -205,6 +206,35 @@ After that it runs itself every 6 h. The append-only ledger lives on a `state` b
 excluded); the site is force-published to `gh-pages` each run; both are safe to inspect. To
 pause it, disable the workflow in the Actions tab. To move blobs off the repo onto S3 later, set
 the `VERDERER_S3_*` secrets (see above) — no code change.
+
+### Timestamps
+
+Each run asks two independent RFC 3161 authorities to timestamp the signed checkpoint
+(`verderer anchor --tsa digicert,freetsa`). The tokens are stored beside the ledger and ride in
+every proof bundle built from that checkpoint, so a verifier can state "existed no later than T"
+on the authorities' word rather than the operator's. An authority is only asked when the
+checkpoint has changed, and a timestamp service being down never fails the run — that run's
+proofs simply carry fewer anchors (or none) and say so.
+
+### Alerts
+
+`data/subscriptions.toml` defines three channels, each **off until its destination is set** —
+nothing secret is committed, and nothing is sent anywhere by default. One alert is one change
+(everything found between two recorded versions, as one headline, with a link to its page);
+error-page churn is never alerted; history from before a subscription's `since` date is not
+replayed. The shipped subscriptions fire on high-severity changes.
+
+| Channel | Switch it on | What arrives |
+|---|---|---|
+| Webhook | `gh secret set VERDERER_ALERT_WEBHOOK` (paste the URL) | A JSON POST (`verderer.alert/v2`). It carries `text` and `content`, so a Slack-, Mattermost- or Discord-style incoming webhook displays it without an adapter. |
+| GitHub issue | `gh variable set VERDERER_ALERT_ISSUES --body owner/repo` | An issue labelled `change-alert` on that repository; GitHub notifies everyone watching it. |
+| Email | `gh secret set VERDERER_ALERT_EMAIL` plus the relay: `VERDERER_SMTP_HOST`, `VERDERER_SMTP_PORT`, `VERDERER_SMTP_USER`, `VERDERER_SMTP_PASSWORD`, `VERDERER_SMTP_FROM` | A plain-text message per change (STARTTLS when a user is set). |
+
+Check what would be sent without sending it: `verderer notify --dry-run`. A delivery that fails
+is retried on the next run; one that succeeded is never repeated.
+
+For a summary instead of every change, the site publishes a weekly digest (`/digest`) and a feed
+with one item per completed week (`/digest.xml`).
 
 ## Mirroring the checkpoint (M14b-2)
 

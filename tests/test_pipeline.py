@@ -292,3 +292,21 @@ def test_a_dataset_that_404s_is_a_deletion_not_a_parse_failure(tmp_path: Path, l
     cursor["i"] = 1
     gone = verderer.observe("d")
     assert _diff_types(gone) == ["Deletion"]
+
+
+def test_a_limit_in_a_table_cell_is_logged_as_a_threshold_change(tmp_path: Path, ledger_built: None) -> None:
+    # The keyword that makes "10 ppt" regulatory is the column header, not the text beside
+    # it, so only the table-aware layer can tell this is a limit that moved.
+    def page(limit: str) -> bytes:
+        return (
+            "<html><body><main><table><tr><th>Compound</th><th>Enforceable value</th></tr>"
+            f"<tr><td>PFHxS</td><td>{limit}</td></tr></table></main></body></html>"
+        ).encode()
+
+    cursor = {"i": 0}
+    verderer = _make_verderer(tmp_path, [page("10 ppt"), page("20 ppt")], cursor)
+    verderer.observe("t")
+    cursor["i"] = 1
+    (diff,) = verderer.observe("t").diffs
+    assert diff.diff_type.value == "NumericThresholdChange" and diff.severity == "High"
+    assert diff.evidence["context"] == "PFHxS - Enforceable value" and diff.evidence["to"] == "20 ppt"

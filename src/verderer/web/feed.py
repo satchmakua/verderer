@@ -89,3 +89,61 @@ def render_rss(
         ET.SubElement(item, "pubDate").text = _rfc822(change.get("detected_at"))
         ET.SubElement(item, "link").text = f"{root}/change/{change.get('id') or ''}"
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(rss, encoding="unicode")
+
+
+_MAX_WEEKS = 52
+
+
+def render_digest_rss(
+    weeks: Sequence[Mapping[str, Any]],
+    changes: Sequence[Mapping[str, Any]],
+    *,
+    link: str,
+    site_url: str | None = None,
+    titles: Mapping[str, str] | None = None,
+) -> str:
+    """The weekly digest as an RSS channel: one item per **completed** week (so an item, once
+    published, does not change under a reader), quiet weeks included - a week in which nothing
+    changed is still an answer, and it shows the watchdog was running."""
+    from .digest import span_text
+
+    root = (site_url or link).rstrip("/")
+    names = titles or {}
+    by_id = {change.get("id"): change for change in changes}
+    rss = ET.Element("rss", {"version": "2.0"})
+    channel = ET.SubElement(rss, "channel")
+    ET.SubElement(channel, "title").text = f"{SITE_TITLE} - weekly digest"
+    ET.SubElement(channel, "link").text = f"{root}/digest"
+    ET.SubElement(channel, "description").text = (
+        "One item a week: what changed in the government environmental pages and datasets Verderer watches."
+    )
+    ET.SubElement(channel, "generator").text = "verderer"
+    done = [week for week in weeks if week.get("complete")]
+    for week in done[:_MAX_WEEKS]:
+        item = ET.SubElement(channel, "item")
+        ET.SubElement(item, "title").text = f"Week of {span_text(week)}: {str(week.get('summary')).lower()}"
+        lines: list[str] = []
+        for change_id in week.get("change_ids") or []:
+            change = by_id.get(change_id)
+            if change is None:
+                continue
+            target_id = str(change.get("target_id"))
+            lines.append(f"[{change.get('severity')}] {names.get(target_id, target_id)}: {change.get('headline')}.")
+        if not lines:
+            lines.append("No changes were detected in the sources that answered.")
+        observed = int(week.get("observations") or 0)
+        lines.append(f"{observed} new response{'' if observed == 1 else 's'} recorded.")
+        churn = int(week.get("churn") or 0)
+        if churn:
+            lines.append(f"{churn} error-page change{'' if churn == 1 else 's'} set aside.")
+        lines.append(_DISCLAIMER)
+        ET.SubElement(item, "description").text = " ".join(lines)
+        guid = ET.SubElement(item, "guid", {"isPermaLink": "false"})
+        guid.text = f"verderer-digest-{week.get('id')}"
+        # Published the moment the week ends: 00:00 UTC on the following Monday.
+        closes = dt.date.fromisoformat(str(week.get("end"))) + dt.timedelta(days=1)
+        ET.SubElement(item, "pubDate").text = format_datetime(
+            dt.datetime(closes.year, closes.month, closes.day, tzinfo=dt.UTC)
+        )
+        ET.SubElement(item, "link").text = f"{root}/digest/{week.get('id')}"
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(rss, encoding="unicode")

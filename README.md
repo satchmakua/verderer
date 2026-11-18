@@ -55,7 +55,7 @@ diffs, and fires alerts on its own — restart-safe, with `--once` for cron/syst
 [docs/deployment.md](docs/deployment.md)). Every observation is archived as a standards
 **WARC** (M11) — attested by `warc_record_hash`, recoverable by any archive tool, shipped by
 `verderer export` — so Verderer interoperates with the rescue ecosystem (Wayback / End-of-Term /
-EDGI). **The Phase 5–6 arc is complete (2026-07-17)**: live at [verderer.satchelhamilton.com](https://verderer.satchelhamilton.com), S3-portable storage, independent mirrors, an independently-run witness, fuzz/scale hardening, and a 12-target curated set with published criteria. Detection got sharper (M12): pint cross-unit
+EDGI). **The Phase 5–6 arc is complete (2026-07-17)**: live at [verderer.satchelhamilton.com](https://verderer.satchelhamilton.com), S3-portable storage, independent mirrors, an independently-run witness, fuzz/scale hardening, and a curated set with published criteria (20 targets since 2026-11). Detection got sharper (M12): pint cross-unit
 numerics (`10 ppb` == `0.010 ppm`), structure/table-aware localized diffs, rendered-DOM noise
 suppression, and an index-column truncation fix. And **gossip** closes the equivocation gap
 (M13a): `verderer verify-consistency` proves — offline, under a pinned key — that a later
@@ -67,6 +67,15 @@ Bitcoin-confirmed **OpenTimestamps** proof over the live checkpoint verifies off
 carried block header — a distinct `anchors` type, the maximally adversary-resistant time bound,
 added without a synthetic anchor on the trust path. See
 [ROADMAP.md](ROADMAP.md).
+
+**Since the roadmap closed (2026-11):** the record reads in plain language — source states,
+one *change* per comparison with its net effect, reversals linked, error-page churn set aside —
+with a [weekly digest](https://verderer.satchelhamilton.com/digest) (and `/digest.xml`). Every
+scheduled run now has DigiCert and FreeTSA timestamp the log head, so live proofs carry an
+independent "existed no later than". Alerts are sent per change over a webhook, email, or a
+GitHub issue, each switched on by setting its destination
+([docs/deployment.md](docs/deployment.md#alerts)). Limits that sit in table cells (a PFAS or
+NAAQS row) are now recognised as regulatory numbers by their row and column.
 
 ---
 
@@ -115,7 +124,7 @@ A browsable, static-leaning record: recent classified changes, per-target timeli
 feed** (`/feed.xml`, plus per-target feeds), and a **`/verify` page that checks a downloaded
 proof bundle entirely in your browser** (WebAssembly — nothing uploaded, trusting neither
 the source nor Verderer). The home page has client-side search over the classified changes,
-and `verderer notify` pushes new events to webhook/email subscriptions. The site also serves
+and `verderer notify` pushes each new change to webhook, email or GitHub-issue subscriptions. The site also serves
 the log itself — `/checkpoint` plus the C2SP `/tile/…` files — so an independent verifier
 can fetch tiles and recompute inclusion proofs with no live service (M2c).
 

@@ -152,6 +152,38 @@ def extract(text: str) -> dict[str, Quantity]:
     return found
 
 
+_SPELLED_OUT = re.compile(r"parts\s+per\s+(million|billion|trillion)", re.IGNORECASE)
+_SPELLED_UNITS = {"million": "ppm", "billion": "ppb", "trillion": "ppt"}
+
+
+def quantities_in(text: str) -> list[Quantity]:
+    """Every quantity with a plausible unit in a short passage, in order - no regulatory
+    keyword required. For text whose *position* already says it is a regulatory value (a cell
+    under a "limit" column), where the keyword `extract` looks for sits in the header instead
+    of beside the number. Spelled-out parts-per units count ("4.0 parts per trillion")."""
+    text = _SPELLED_OUT.sub(lambda m: _SPELLED_UNITS[m.group(1).lower()], text)
+    found: list[Quantity] = []
+    for match in _QTY.finditer(text):
+        unit = match.group("unit")
+        if not _plausible_unit(unit):
+            continue
+        try:
+            value = float(match.group("value").replace(",", ""))
+        except ValueError:
+            continue
+        found.append(Quantity(context="", value=value, unit=unit, raw=f"{match.group('value')} {unit}"))
+    return found
+
+
+def same_dimension(previous: Quantity, current: Quantity) -> bool:
+    return _dim_key(previous.value, previous.unit) == _dim_key(current.value, current.unit)
+
+
+def values_differ(previous: Quantity, current: Quantity) -> bool:
+    """Public face of the cross-unit comparison, for two quantities of one dimension."""
+    return _values_differ(previous, current)
+
+
 def numeric_watch(
     prev_text: str,
     curr_text: str,

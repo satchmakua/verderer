@@ -4,6 +4,7 @@ import ChangeCard from '../components/ChangeCard.astro';
 import SourceCard from '../components/SourceCard.astro';
 import When from '../components/When.astro';
 import {
+  AUTHORITY_NAMES,
   changes,
   fmtDate,
   fmtDateTime,
@@ -16,7 +17,11 @@ import {
   STATE_ORDER,
   summary,
   titleOf,
+  weeks,
 } from '../lib/record';
+
+const thisWeek = weeks[0];
+const authorities = record.anchoredBy.map((name) => AUTHORITY_NAMES[name] ?? name);
 
 const meaningful = changes.filter((c) => c.category !== 'churn');
 const notable = meaningful.filter((c) => c.category === 'notable');
@@ -88,11 +93,29 @@ const states = STATE_ORDER.filter((code) => summary.states[code]).map((code) => 
         {record.checkpoint && (
           <div class="sub muted small">
             Log root <code title={record.checkpoint.root}>{shortHash(record.checkpoint.root, 12)}</code>
+            {authorities.length > 0 && (
+              <>
+                {' '}· timestamped by {authorities.join(' and ')}
+                {' '}<a href="/guide#timestamps">what that adds</a>
+              </>
+            )}
           </div>
         )}
       </div>
     </div>
   </section>
+
+  {thisWeek && (
+    <section>
+      <a class="card weekline" href="/digest">
+        <span>
+          <strong>{thisWeek.complete ? 'Latest week' : 'This week so far'}:</strong>{' '}
+          {thisWeek.changes === 0 ? 'no changes detected' : thisWeek.summary.toLowerCase()}.
+        </span>
+        <span class="more">Weekly digest →</span>
+      </a>
+    </section>
+  )}
 
   <section>
     <h2>Notable findings</h2>

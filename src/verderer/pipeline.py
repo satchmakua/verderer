@@ -30,7 +30,7 @@ from .differ.status import (
     is_served,
     status_watch,
 )
-from .differ.structure import structure_watch
+from .differ.structure import structure_watch, table_numeric_watch
 from .differ.termwatch import term_watch
 from .ledger.core import Ledger, checkpoint_size
 from .models import DiffRecord, DiffType, Observation
@@ -330,6 +330,21 @@ class Verderer:
             from_hash=previous.raw_bytes_hash,
             to_hash=observation.raw_bytes_hash,
         )
+        # L2 for tables: a limit in a table cell is named by its row and column, so the
+        # flat-text watch above cannot tell it is regulatory. Runs alongside it, de-duplicated.
+        diffs += table_numeric_watch(
+            prev_body,
+            body,
+            target_id=observation.target_id,
+            detected_at=now,
+            from_hash=previous.raw_bytes_hash,
+            to_hash=observation.raw_bytes_hash,
+            already=frozenset(
+                (str(d.evidence.get("from", "")).lower(), str(d.evidence.get("to", "")).lower())
+                for d in diffs
+                if d.diff_type == DiffType.NumericThresholdChange
+            ),
+        )
         if not diffs and prev_text != curr_text:
             # M12: localise the change to the block it happened in (a table cell, a heading,
             # a list item) — in place of the coarse floor — when the semantic layers didn't
@@ -415,6 +430,21 @@ class Verderer:
         if root:
             (self.data_dir / "ledger" / f"{anchorer.name}-root.pem").write_text(root, encoding="utf-8")
         return {"tsa": anchorer.name, "anchored_hash": digest.hex(), "token_bytes": len(token)}
+
+    def anchored_by(self) -> list[str]:
+        """The authorities whose anchors over the *current* checkpoint are on file (TSA names,
+        plus ``"ots"``). The operator's account of what it holds, not a verification: a
+        verifier checks each token itself."""
+        if not self.log.entries():
+            return []
+        digest = anchored_hash(self.log.signed_checkpoint()).hex()
+        adir = self._anchors_dir()
+        if not adir.exists():
+            return []
+        names = sorted(path.name[len(digest) + 1 : -4] for path in adir.glob(f"{digest}.*.der"))
+        if (adir / f"{digest}.ots.json").exists():
+            names.append("ots")
+        return names
 
     def store_ots_anchor(self, ots_bytes: bytes, headers: dict[int, bytes]) -> dict:
         """Attach a Bitcoin-confirmed OpenTimestamps proof to the current checkpoint (M13b).

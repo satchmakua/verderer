@@ -132,12 +132,147 @@ def test_build_email_shape() -> None:
     assert "usgcrp" in msg["Subject"]
 
 
-def test_load_subscriptions_from_repo_config() -> None:
-    from verderer.config import load_targets  # noqa: F401  (repo layout sanity)
+# --- change-level alerts -------------------------------------------------------------------
 
-    path = Path(__file__).resolve().parents[1] / "data" / "subscriptions.toml"
+CHANGE = {
+    "id": "c" * 64,
+    "target_id": "epa-drinking-water-mcl",
+    "title": "EPA drinking water limits",
+    "severity": "High",
+    "diff_type": "NumericThresholdChange",
+    "diff_types": ["NumericThresholdChange", "ContentEdit"],
+    "detected_at": "2026-11-20T06:00:00Z",
+    "headline": "Regulatory number changed: 0.010 mg/L → 0.015 mg/L",
+    "points": ["In the passage “…action level”, the value changed from 0.010 mg/L to 0.015 mg/L (+50%)."],
+    "findings": 2,
+    "reverts": None,
+    "url": "https://verderer.example/change/" + "c" * 64,
+}
+
+
+def test_an_env_destination_stays_out_of_the_file_and_is_inactive_until_set(tmp_path: Path) -> None:
     from verderer.notify import load_subscriptions
 
-    subs = load_subscriptions(path)
-    assert any(s.channel == "webhook" and s.min_severity == "High" for s in subs)
-    assert any(s.channel == "email" for s in subs)
+    config = tmp_path / "subscriptions.toml"
+    config.write_text(
+        '[[subscription]]\nname = "hook"\nchannel = "webhook"\ndest = "env:ALERT_HOOK"\nsince = "2026-11-17"\n',
+        encoding="utf-8",
+    )
+    (unset,) = load_subscriptions(config, env={})
+    assert not unset.active and unset.label == "env:ALERT_HOOK"
+    (live,) = load_subscriptions(config, env={"ALERT_HOOK": "https://hooks.example/secret-token"})
+    assert live.active and live.dest == "https://hooks.example/secret-token"
+    assert live.label == "env:ALERT_HOOK"  # what gets printed never includes the secret
+
+    sent: list[dict] = []
+
+    class Hook:
+        channel = "webhook"
+
+        def send(self, sub: Subscription, event: dict) -> None:
+            sent.append(event)
+
+    assert dispatch([CHANGE], [unset], {"webhook": Hook()}, DispatchState()) == []  # inactive: skipped
+    (delivery,) = dispatch([CHANGE], [live], {"webhook": Hook()}, DispatchState())
+    assert delivery["dest"] == "env:ALERT_HOOK" and sent == [CHANGE]
+
+
+def test_since_and_any_diff_type_filter_change_alerts() -> None:
+    recent = Subscription("s", "webhook", "https://x", since="2026-11-17")
+    assert matches(recent, CHANGE)
+    assert not matches(recent, {**CHANGE, "detected_at": "2026-09-22T00:00:00Z"})  # history is not replayed
+    # A change matches a type filter if any of its findings has that type.
+    assert matches(Subscription("s", "webhook", "https://x", diff_types=("ContentEdit",)), CHANGE)
+    assert not matches(Subscription("s", "webhook", "https://x", diff_types=("SchemaChange",)), CHANGE)
+
+
+def test_a_change_alert_is_one_readable_message_on_every_channel() -> None:
+    from verderer.notify import GithubIssueNotifier
+
+    posted: list[tuple[str, dict]] = []
+    HttpWebhookNotifier(poster=lambda url, payload: posted.append((url, payload))).send(
+        Subscription("s", "webhook", "https://hook"), CHANGE
+    )
+    payload = posted[0][1]
+    assert payload["schema"] == "verderer.alert/v2" and payload["headline"] == CHANGE["headline"]
+    # Chat-style incoming webhooks read `text` (Slack, Mattermost) or `content` (Discord).
+    assert payload["text"] == payload["content"]
+    assert payload["text"].startswith("[High] EPA drinking water limits: Regulatory number changed")
+    assert payload["text"].endswith(CHANGE["url"])
+
+    message = build_email(Subscription("s", "email", "to@x"), CHANGE, from_addr="from@x")
+    assert message["Subject"].startswith("[Verderer] [High] EPA drinking water limits")
+    body = message.get_content()
+    assert "(+50%)" in body and CHANGE["url"] in body and "best-effort" in body
+
+    issues: list[tuple[str, dict]] = []
+    GithubIssueNotifier(poster=lambda url, body: issues.append((url, body))).send(
+        Subscription("s", "github-issue", "someone/somerepo"), CHANGE
+    )
+    url, issue = issues[0]
+    assert url == "https://api.github.com/repos/someone/somerepo/issues"
+    assert issue["title"].startswith("[High] EPA drinking water limits") and issue["labels"] == ["change-alert"]
+    assert CHANGE["url"] in issue["body"]
+
+
+def test_a_github_issue_needs_a_real_repository_and_a_token() -> None:
+    import pytest
+
+    from verderer.notify import GithubIssueNotifier
+
+    with pytest.raises(ValueError):
+        GithubIssueNotifier(poster=lambda *_: None).send(Subscription("s", "github-issue", "not-a-repo"), CHANGE)
+    with pytest.raises(RuntimeError):  # no token: a failed delivery, retried later - never a silent drop
+        GithubIssueNotifier(token="").send(Subscription("s", "github-issue", "someone/somerepo"), CHANGE)
+
+
+def test_alerts_are_one_per_change_and_skip_error_page_churn(tmp_path: Path, ledger_built: None) -> None:
+    from verderer.collectors.base import FetchResult
+    from verderer.collectors.static import StaticCollector
+    from verderer.config import Target
+    from verderer.notify import alerts
+    from verderer.pipeline import Verderer
+
+    def page(*items: str) -> bytes:
+        listed = "".join(f"<li>{item}</li>" for item in items)
+        return f"<html><body><main><h1>Plan</h1><ul>{listed}</ul></main></body></html>".encode()
+
+    responses = [
+        (200, page("Climate change adaptation", "Community resilience grants", "Contact the office")),
+        (200, page("Adaptation", "Community grants", "Contact the office")),  # two watched terms removed
+        (403, b"<html>Access Denied. Reference #18.aaaa</html>"),
+        (403, b"<html>Access Denied. Reference #18.bbbb</html>"),  # only the error page differs
+    ]
+    cursor = {"i": 0}
+
+    def fetch(url: str, *, timeout: float = 30.0) -> FetchResult:
+        status, body = responses[cursor["i"]]
+        return FetchResult(url=url, status=status, headers={"content-type": "text/html"}, body=body)
+
+    verderer = Verderer(
+        tmp_path / "data",
+        targets={"t": Target(id="t", title="The Plan", url="https://example.gov/plan")},
+        terms=["climate change", "resilience"],
+        collector=StaticCollector(fetcher=fetch),
+    )
+    for step in range(len(responses)):
+        cursor["i"] = step
+        verderer.observe("t")
+
+    found = alerts(verderer, site_url="https://verderer.example/")
+    # Two terms removed is ONE alert; the takedown is one more; the error-page churn is none.
+    assert [a["severity"] for a in found] == ["High", "High"]
+    first, second = found
+    assert first["findings"] == 2 and first["title"] == "The Plan" and "2 watched terms removed" in first["headline"]
+    assert first["url"] == f"https://verderer.example/change/{first['id']}"
+    assert second["diff_types"] == ["Deletion"]
+
+
+def test_repo_subscriptions_are_opt_in() -> None:
+    from verderer.notify import load_subscriptions
+
+    path = Path(__file__).resolve().parents[1] / "data" / "subscriptions.toml"
+    subs = load_subscriptions(path, env={})
+    assert {s.channel for s in subs} == {"webhook", "email", "github-issue"}
+    # Nothing is sent anywhere until a destination is provided, and history is never replayed.
+    assert all(not s.active and s.source.startswith("env:") and s.since for s in subs)

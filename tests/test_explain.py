@@ -566,3 +566,24 @@ def test_a_source_that_stops_answering_is_called_out_but_one_blip_is_not() -> No
     down = target_state(url, history, _monitor("error", 5, "ReadTimeout: timed out"))
     assert down["code"] == "failing" and down["label"] == "Not responding"
     assert "last answered on 2026-03-01" in down["detail"] and "connection times out" in down["detail"]
+
+
+def test_a_number_found_in_a_table_is_explained_by_its_row_and_column() -> None:
+    explained = explain_event(
+        {
+            "diff_type": "NumericThresholdChange",
+            "severity": "High",
+            "evidence": {
+                "context": "PFHxS - Final MCL",
+                "unit": "ppt",
+                "from": "10 ppt",
+                "to": "20 ppt",
+                "block": "table[0].row[2].col[1]",
+                "also_changed": 2,
+            },
+        }
+    )
+    assert explained["kind"] == "number_changed"
+    assert explained["title"] == "Regulatory number changed: 10 ppt → 20 ppt"
+    assert "table 1, row 3, column 2" in explained["summary"] and "PFHxS - Final MCL" in explained["summary"]
+    assert "(+100%)" in explained["summary"] and "2 more values in the same table" in explained["summary"]

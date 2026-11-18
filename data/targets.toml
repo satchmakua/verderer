@@ -120,3 +120,69 @@ url = "https://hazards.fema.gov/nri/"
 collector = "static"
 interval = "1d"
 criteria = "[threshold][traffic] Community hazard/climate risk ratings used in planning + funding decisions (200 at curation)."
+
+# --- Added 2026-11-17: live regulatory thresholds + climate records under active revision ---
+
+[[target]]
+id = "epa-pfas-drinking-water"
+title = "EPA PFAS drinking water regulation"
+url = "https://www.epa.gov/sdwa/and-polyfluoroalkyl-substances-pfas"
+collector = "static"
+interval = "12h"
+criteria = "[mandate][threshold] The enforceable PFAS limits, stated in parts per trillion; EPA announced in 2025 that it would reconsider part of the rule (200 at curation, 2026-11-17)."
+
+[[target]]
+id = "epa-naaqs-table"
+title = "EPA National Ambient Air Quality Standards (NAAQS table)"
+url = "https://www.epa.gov/criteria-air-pollutants/naaqs-table"
+collector = "static"
+interval = "12h"
+criteria = "[mandate][threshold] The Clean Air Act limits for the six criteria pollutants - every row is a regulatory number with a unit (200 at curation, 2026-11-17)."
+
+[[target]]
+id = "epa-endangerment-finding"
+title = "EPA greenhouse gas endangerment finding"
+url = "https://www.epa.gov/climate-change/endangerment-and-cause-or-contribute-findings-greenhouse-gases-under-section-202a"
+collector = "static"
+interval = "12h"
+criteria = "[mandate][history] The 2009 finding that underpins federal greenhouse gas regulation; EPA proposed rescinding it in 2025 (200 at curation, 2026-11-17)."
+
+[[target]]
+id = "epa-ghg-inventory"
+title = "EPA Inventory of U.S. Greenhouse Gas Emissions and Sinks"
+url = "https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks"
+collector = "static"
+interval = "1d"
+criteria = "[mandate][traffic] The national emissions inventory the U.S. reports each year under the UN climate convention (200 at curation, 2026-11-17)."
+
+[[target]]
+id = "epa-environmental-justice"
+title = "EPA Environmental Justice"
+url = "https://www.epa.gov/environmentaljustice"
+collector = "static"
+interval = "1d"
+criteria = "[history][removed] EPA's environmental justice home page; 404 at curation (2026-11-17) after the program was closed in 2025 - attesting absence, watching for reappearance."
+
+[[target]]
+id = "noaa-billion-dollar-disasters"
+title = "NOAA Billion-Dollar Weather and Climate Disasters"
+url = "https://www.ncei.noaa.gov/access/billions/"
+collector = "static"
+interval = "1d"
+criteria = "[history][traffic] The federal tally of disaster costs; NOAA announced in 2025 that it would stop updating it (200 at curation, 2026-11-17). The tallies are drawn by script, so this static watch covers the page being served and its framing, not the figures."
+
+[[target]]
+id = "cdc-environmental-justice-index"
+title = "CDC/ATSDR Environmental Justice Index"
+url = "https://www.atsdr.cdc.gov/place-health/php/eji/index.html"
+collector = "static"
+interval = "1d"
+criteria = "[history][traffic] Community-level environmental burden index; taken offline and then restored in 2025 (200 at curation, 2026-11-17)."
+
+[[target]]
+id = "nasa-climate"
+title = "NASA Climate Change"
+url = "https://science.nasa.gov/climate-change/"
+collector = "static"
+interval = "1d"
+criteria = "[history][traffic] NASA's public climate portal, moved from climate.nasa.gov in 2025 (200 at curation, 2026-11-17)."

@@ -69,6 +69,11 @@ def test_export_writes_record_and_feeds(tmp_path: Path, ledger_built: None) -> N
     assert loaded["size"] >= 3
     assert info["events"] >= 1
     ET.fromstring((out / "feed.xml").read_text(encoding="utf-8"))  # valid XML
+    # The weekly digest: weeks in the record (the one in progress included) and its own feed.
+    assert loaded["weeks"] and loaded["weeks"][0]["complete"] is False
+    assert sum(week["changes"] for week in loaded["weeks"]) == loaded["summary"]["changes"]
+    assert loaded["checkpoint"]["anchored_by"] == []  # nothing has timestamped this log head
+    ET.fromstring((out / "digest.xml").read_text(encoding="utf-8"))
 
 
 # --- the reader-facing views: interpretation and operator-reported health, kept apart from the attested leaves ---

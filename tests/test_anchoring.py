@@ -55,8 +55,10 @@ def test_anchor_bundle_and_verify_offline(tmp_path: Path, ledger_built: None, op
     verderer.observe("t")
 
     anchorer = OpensslTsaAnchorer(tmp_path / "data" / "anchors" / "dev-tsa")
+    assert verderer.anchored_by() == []
     info = verderer.anchor(anchorer)
     assert info["tsa"] == "dev-tsa"
+    assert verderer.anchored_by() == ["dev-tsa"]  # what a scheduled run checks before re-stamping
 
     bundle = verderer.bundle("t")
     assert len(bundle["anchors"]) == 1
