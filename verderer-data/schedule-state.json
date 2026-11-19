@@ -30,46 +30,46 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794948957.188725,
-      "last_run": 1794948957.188725,
-      "last_status": "unchanged",
-      "next_due": 1795034516.724574,
+      "last_ok": 1795073153.9509091,
+      "last_run": 1795073153.9509091,
+      "last_status": "observed",
+      "next_due": 1795157614.7980034,
       "target_id": "epa-glyphosate"
     },
     {
-      "consecutive_failures": 1,
-      "last_error": "TransientFetchError: https://www.epa.gov/climate-indicators: HTTP 503 after 5 attempts",
-      "last_ok": 1794948958.1876328,
-      "last_run": 1795033907.91639,
-      "last_status": "error",
-      "next_due": 1795034207.91639,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_ok": 1795073154.282472,
+      "last_run": 1795073154.282472,
+      "last_status": "unchanged",
+      "next_due": 1795120085.1462317,
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 424,
+      "consecutive_failures": 425,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1795033918.4096406,
+      "last_run": 1795073155.4882152,
       "last_status": "error",
-      "next_due": 1795037518.4096406,
+      "next_due": 1795076755.4882152,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 424,
+      "consecutive_failures": 425,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795033929.5475652,
+      "last_run": 1795073161.6119995,
       "last_status": "error",
-      "next_due": 1795037529.5475652,
+      "next_due": 1795076761.6119995,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 424,
+      "consecutive_failures": 425,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795033939.6414187,
+      "last_run": 1795073170.0362918,
       "last_status": "error",
-      "next_due": 1795037539.6414187,
+      "next_due": 1795076770.0362918,
       "target_id": "nca5"
     },
     {
@@ -93,10 +93,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794976943.4835887,
-      "last_run": 1794976943.4835887,
+      "last_ok": 1795073176.925111,
+      "last_run": 1795073176.925111,
       "last_status": "observed",
-      "next_due": 1795062897.7310698,
+      "next_due": 1795164596.7242253,
       "target_id": "usda-climate-hubs"
     },
     {
@@ -138,46 +138,46 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794976946.4365835,
-      "last_run": 1794976946.4365835,
+      "last_ok": 1795073177.4186726,
+      "last_run": 1795073177.4186726,
       "last_status": "observed",
-      "next_due": 1795061172.2604284,
+      "next_due": 1795154634.1605453,
       "target_id": "epa-ghg-inventory"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794976947.2757516,
-      "last_run": 1794976947.2757516,
-      "last_status": "observed",
-      "next_due": 1795069685.8184884,
+      "last_ok": 1795073177.5796425,
+      "last_run": 1795073177.5796425,
+      "last_status": "unchanged",
+      "next_due": 1795162997.6663365,
       "target_id": "epa-environmental-justice"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794976948.74931,
-      "last_run": 1794976948.74931,
-      "last_status": "observed",
-      "next_due": 1795069412.5476365,
+      "last_ok": 1795073178.7766848,
+      "last_run": 1795073178.7766848,
+      "last_status": "unchanged",
+      "next_due": 1795164004.6234372,
       "target_id": "noaa-billion-dollar-disasters"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794976949.3576136,
-      "last_run": 1794976949.3576136,
-      "last_status": "observed",
-      "next_due": 1795063237.1531184,
+      "last_ok": 1795073179.0712502,
+      "last_run": 1795073179.0712502,
+      "last_status": "unchanged",
+      "next_due": 1795160775.4046443,
       "target_id": "cdc-environmental-justice-index"
     },
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1794976949.6405578,
-      "last_run": 1794976949.6405578,
+      "last_ok": 1795073179.142326,
+      "last_run": 1795073179.142326,
       "last_status": "observed",
-      "next_due": 1795059918.3493454,
+      "next_due": 1795151603.025988,
       "target_id": "nasa-climate"
     }
   ]
