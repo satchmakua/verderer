@@ -30,10 +30,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795158953.9571106,
-      "last_run": 1795158953.9571106,
-      "last_status": "unchanged",
-      "next_due": 1795239362.9343674,
+      "last_ok": 1795244886.1641018,
+      "last_run": 1795244886.1641018,
+      "last_status": "observed",
+      "next_due": 1795333661.152748,
       "target_id": "epa-glyphosate"
     },
     {
@@ -46,30 +46,30 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 428,
+      "consecutive_failures": 429,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1795206041.307236,
+      "last_run": 1795244886.6395996,
       "last_status": "error",
-      "next_due": 1795209641.307236,
+      "next_due": 1795248486.6395996,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 428,
+      "consecutive_failures": 429,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795206049.7577043,
+      "last_run": 1795244893.2071397,
       "last_status": "error",
-      "next_due": 1795209649.7577043,
+      "next_due": 1795248493.2071397,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 428,
+      "consecutive_failures": 429,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795206056.3054824,
+      "last_run": 1795244899.9896266,
       "last_status": "error",
-      "next_due": 1795209656.3054824,
+      "next_due": 1795248499.9896266,
       "target_id": "nca5"
     },
     {
@@ -174,10 +174,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795158980.9067492,
-      "last_run": 1795158980.9067492,
+      "last_ok": 1795244912.4036431,
+      "last_run": 1795244912.4036431,
       "last_status": "observed",
-      "next_due": 1795240519.388474,
+      "next_due": 1795327254.6892483,
       "target_id": "nasa-climate"
     }
   ]
