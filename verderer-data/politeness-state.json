@@ -1,34 +1,34 @@
 {
   "validators": {
     "https://hazards.fema.gov/nri/": {
-      "etag": "\"1795284353\"",
-      "last_modified": "Sat, 21 Nov 2026 18:05:53 GMT"
+      "etag": "\"1795414509\"",
+      "last_modified": "Mon, 23 Nov 2026 06:15:09 GMT"
     },
     "https://www.climatehubs.usda.gov/": {
       "etag": "\"1795327623-gzip\"",
       "last_modified": "Sun, 22 Nov 2026 06:07:03 GMT"
     },
     "https://www.epa.gov/climate-change/endangerment-and-cause-or-contribute-findings-greenhouse-gases-under-section-202a": {
-      "etag": "W/\"1795359502\"",
-      "last_modified": "Sun, 22 Nov 2026 14:58:22 GMT"
+      "etag": "W/\"1795386906\"",
+      "last_modified": "Sun, 22 Nov 2026 22:35:06 GMT"
     },
     "https://www.epa.gov/climate-indicators": {
       "etag": "W/\"6b003f27-1976\""
     },
     "https://www.epa.gov/criteria-air-pollutants/naaqs-table": {
-      "etag": "W/\"1795356846\"",
-      "last_modified": "Sun, 22 Nov 2026 14:14:06 GMT"
+      "etag": "W/\"1795385974\"",
+      "last_modified": "Sun, 22 Nov 2026 22:19:34 GMT"
     },
     "https://www.epa.gov/environmentaljustice": {
       "etag": "W/\"6b003f27-1976\""
     },
     "https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks": {
-      "etag": "W/\"1795277751\"",
-      "last_modified": "Sat, 21 Nov 2026 16:15:51 GMT"
+      "etag": "W/\"1795386599\"",
+      "last_modified": "Sun, 22 Nov 2026 22:29:59 GMT"
     },
     "https://www.epa.gov/ghgreporting": {
-      "etag": "W/\"1795356720\"",
-      "last_modified": "Sun, 22 Nov 2026 14:12:00 GMT"
+      "etag": "W/\"1795386548\"",
+      "last_modified": "Sun, 22 Nov 2026 22:29:08 GMT"
     },
     "https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations": {
       "etag": "W/\"1795357424\"",
@@ -39,8 +39,8 @@
       "last_modified": "Sun, 22 Nov 2026 14:10:41 GMT"
     },
     "https://www.epa.gov/sdwa/and-polyfluoroalkyl-substances-pfas": {
-      "etag": "W/\"1795357826\"",
-      "last_modified": "Sun, 22 Nov 2026 14:30:26 GMT"
+      "etag": "W/\"1795386012\"",
+      "last_modified": "Sun, 22 Nov 2026 22:20:12 GMT"
     },
     "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip": {
       "last_modified": "Tue, 15 Oct 2024 14:42:16 GMT"
