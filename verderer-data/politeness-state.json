@@ -1,8 +1,8 @@
 {
   "validators": {
     "https://hazards.fema.gov/nri/": {
-      "etag": "\"1795414509\"",
-      "last_modified": "Mon, 23 Nov 2026 06:15:09 GMT"
+      "etag": "\"1795506908\"",
+      "last_modified": "Tue, 24 Nov 2026 07:55:08 GMT"
     },
     "https://www.climatehubs.usda.gov/": {
       "etag": "\"1795475195-gzip\"",
@@ -23,8 +23,8 @@
       "etag": "W/\"6b003f27-1976\""
     },
     "https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks": {
-      "etag": "W/\"1795386599\"",
-      "last_modified": "Sun, 22 Nov 2026 22:29:59 GMT"
+      "etag": "W/\"1795497478\"",
+      "last_modified": "Tue, 24 Nov 2026 05:17:58 GMT"
     },
     "https://www.epa.gov/ghgreporting": {
       "etag": "W/\"1795472080\"",

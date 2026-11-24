@@ -46,30 +46,30 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 434,
+      "consecutive_failures": 435,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1795478042.405264,
+      "last_run": 1795514075.9207854,
       "last_status": "error",
-      "next_due": 1795481642.405264,
+      "next_due": 1795517675.9207854,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 434,
+      "consecutive_failures": 435,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795478049.6984215,
+      "last_run": 1795514080.2181895,
       "last_status": "error",
-      "next_due": 1795481649.6984215,
+      "next_due": 1795517680.2181895,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 434,
+      "consecutive_failures": 435,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795478061.156679,
+      "last_run": 1795514090.964946,
       "last_status": "error",
-      "next_due": 1795481661.156679,
+      "next_due": 1795517690.964946,
       "target_id": "nca5"
     },
     {
@@ -84,10 +84,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795419555.66683,
-      "last_run": 1795419555.66683,
+      "last_ok": 1795514096.0653663,
+      "last_run": 1795514096.0653663,
       "last_status": "unchanged",
-      "next_due": 1795507048.9886656,
+      "next_due": 1795602599.6913977,
       "target_id": "noaa-co2-trends"
     },
     {
@@ -102,10 +102,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795419555.8982737,
-      "last_run": 1795419555.8982737,
+      "last_ok": 1795514096.4934142,
+      "last_run": 1795514096.4934142,
       "last_status": "observed",
-      "next_due": 1795504244.0191767,
+      "next_due": 1795607422.0820808,
       "target_id": "fema-nri"
     },
     {
@@ -138,10 +138,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795419558.6216497,
-      "last_run": 1795419558.6216497,
-      "last_status": "unchanged",
-      "next_due": 1795508218.656964,
+      "last_ok": 1795514096.9361575,
+      "last_run": 1795514096.9361575,
+      "last_status": "observed",
+      "next_due": 1795597754.8512092,
       "target_id": "epa-ghg-inventory"
     },
     {
@@ -174,10 +174,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795419559.5687034,
-      "last_run": 1795419559.5687034,
+      "last_ok": 1795514097.1727428,
+      "last_run": 1795514097.1727428,
       "last_status": "observed",
-      "next_due": 1795498182.321869,
+      "next_due": 1795596929.0627673,
       "target_id": "nasa-climate"
     }
   ]
