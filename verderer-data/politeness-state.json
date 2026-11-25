@@ -1,46 +1,46 @@
 {
   "validators": {
     "https://hazards.fema.gov/nri/": {
-      "etag": "\"1795506908\"",
-      "last_modified": "Tue, 24 Nov 2026 07:55:08 GMT"
+      "etag": "\"1795637007\"",
+      "last_modified": "Wed, 25 Nov 2026 20:03:27 GMT"
     },
     "https://www.climatehubs.usda.gov/": {
       "etag": "\"1795594000-gzip\"",
       "last_modified": "Wed, 25 Nov 2026 08:06:40 GMT"
     },
     "https://www.epa.gov/climate-change/endangerment-and-cause-or-contribute-findings-greenhouse-gases-under-section-202a": {
-      "etag": "W/\"1795548874\"",
-      "last_modified": "Tue, 24 Nov 2026 19:34:34 GMT"
+      "etag": "W/\"1795640331\"",
+      "last_modified": "Wed, 25 Nov 2026 20:58:51 GMT"
     },
     "https://www.epa.gov/climate-indicators": {
       "etag": "W/\"6b003f27-1976\""
     },
     "https://www.epa.gov/criteria-air-pollutants/naaqs-table": {
-      "etag": "W/\"1795547212\"",
-      "last_modified": "Tue, 24 Nov 2026 19:06:52 GMT"
+      "etag": "W/\"1795639718\"",
+      "last_modified": "Wed, 25 Nov 2026 20:48:38 GMT"
     },
     "https://www.epa.gov/environmentaljustice": {
       "etag": "W/\"6b003f27-1976\""
     },
     "https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks": {
-      "etag": "W/\"1795497478\"",
-      "last_modified": "Tue, 24 Nov 2026 05:17:58 GMT"
+      "etag": "W/\"1795635331\"",
+      "last_modified": "Wed, 25 Nov 2026 19:35:31 GMT"
     },
     "https://www.epa.gov/ghgreporting": {
-      "etag": "W/\"1795550609\"",
-      "last_modified": "Tue, 24 Nov 2026 20:03:29 GMT"
+      "etag": "W/\"1795637116\"",
+      "last_modified": "Wed, 25 Nov 2026 20:05:16 GMT"
     },
     "https://www.epa.gov/ground-water-and-drinking-water/national-primary-drinking-water-regulations": {
-      "etag": "W/\"1795554292\"",
-      "last_modified": "Tue, 24 Nov 2026 21:04:52 GMT"
+      "etag": "W/\"1795636890\"",
+      "last_modified": "Wed, 25 Nov 2026 20:01:30 GMT"
     },
     "https://www.epa.gov/ingredients-used-pesticide-products/glyphosate": {
       "etag": "W/\"1795585488\"",
       "last_modified": "Wed, 25 Nov 2026 05:44:48 GMT"
     },
     "https://www.epa.gov/sdwa/and-polyfluoroalkyl-substances-pfas": {
-      "etag": "W/\"1795558847\"",
-      "last_modified": "Tue, 24 Nov 2026 22:20:47 GMT"
+      "etag": "W/\"1795637640\"",
+      "last_modified": "Wed, 25 Nov 2026 20:14:00 GMT"
     },
     "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip": {
       "last_modified": "Tue, 15 Oct 2024 14:42:16 GMT"
