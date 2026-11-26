@@ -46,30 +46,30 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 438,
+      "consecutive_failures": 439,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1795642943.9006839,
+      "last_run": 1795681071.2533236,
       "last_status": "error",
-      "next_due": 1795646543.9006839,
+      "next_due": 1795684671.2533236,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 438,
+      "consecutive_failures": 439,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795642952.8607843,
+      "last_run": 1795681076.1443112,
       "last_status": "error",
-      "next_due": 1795646552.8607843,
+      "next_due": 1795684676.1443112,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 438,
+      "consecutive_failures": 439,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795642957.9205863,
+      "last_run": 1795681086.723655,
       "last_status": "error",
-      "next_due": 1795646557.9205863,
+      "next_due": 1795684686.723655,
       "target_id": "nca5"
     },
     {
@@ -93,10 +93,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795595705.3207762,
-      "last_run": 1795595705.3207762,
+      "last_ok": 1795681094.4815521,
+      "last_run": 1795681094.4815521,
       "last_status": "observed",
-      "next_due": 1795680530.6548796,
+      "next_due": 1795770825.905176,
       "target_id": "usda-climate-hubs"
     },
     {
@@ -147,10 +147,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795595705.6792014,
-      "last_run": 1795595705.6792014,
+      "last_ok": 1795681096.0124567,
+      "last_run": 1795681096.0124567,
       "last_status": "unchanged",
-      "next_due": 1795674943.345053,
+      "next_due": 1795762716.4754412,
       "target_id": "epa-environmental-justice"
     },
     {
