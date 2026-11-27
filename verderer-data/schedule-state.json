@@ -3,10 +3,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795728714.1901705,
-      "last_run": 1795728714.1901705,
+      "last_ok": 1795768431.1393886,
+      "last_run": 1795768431.1393886,
       "last_status": "unchanged",
-      "next_due": 1795768064.7690675,
+      "next_due": 1795814525.2937806,
       "target_id": "epa-ghgrp"
     },
     {
@@ -21,10 +21,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795728715.6658435,
-      "last_run": 1795728715.6658435,
+      "last_ok": 1795768431.3388565,
+      "last_run": 1795768431.3388565,
       "last_status": "unchanged",
-      "next_due": 1795768284.1373734,
+      "next_due": 1795813132.5412796,
       "target_id": "epa-drinking-water-mcl"
     },
     {
@@ -46,30 +46,30 @@
       "target_id": "epa-climate-indicators"
     },
     {
-      "consecutive_failures": 440,
+      "consecutive_failures": 441,
       "last_error": "TransientFetchError: https://ejscreen.epa.gov/mapper/: No module named 'playwright'",
       "last_ok": null,
-      "last_run": 1795728719.0787363,
+      "last_run": 1795768432.3461115,
       "last_status": "error",
-      "next_due": 1795732319.0787363,
+      "next_due": 1795772032.3461115,
       "target_id": "epa-ejscreen"
     },
     {
-      "consecutive_failures": 440,
+      "consecutive_failures": 441,
       "last_error": "TransientFetchError: https://www.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795728731.3196845,
+      "last_run": 1795768439.1144524,
       "last_status": "error",
-      "next_due": 1795732331.3196845,
+      "next_due": 1795772039.1144524,
       "target_id": "usgcrp"
     },
     {
-      "consecutive_failures": 440,
+      "consecutive_failures": 441,
       "last_error": "TransientFetchError: https://nca2023.globalchange.gov/: [Errno -5] No address associated with hostname",
       "last_ok": null,
-      "last_run": 1795728741.2330282,
+      "last_run": 1795768443.6835296,
       "last_status": "error",
-      "next_due": 1795732341.2330282,
+      "next_due": 1795772043.6835296,
       "target_id": "nca5"
     },
     {
@@ -84,10 +84,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795642969.5756798,
-      "last_run": 1795642969.5756798,
+      "last_ok": 1795768453.7771292,
+      "last_run": 1795768453.7771292,
       "last_status": "unchanged",
-      "next_due": 1795733248.5141306,
+      "next_due": 1795856781.1278267,
       "target_id": "noaa-co2-trends"
     },
     {
@@ -147,10 +147,10 @@
     {
       "consecutive_failures": 0,
       "last_error": "",
-      "last_ok": 1795681096.0124567,
-      "last_run": 1795681096.0124567,
+      "last_ok": 1795768454.1237988,
+      "last_run": 1795768454.1237988,
       "last_status": "unchanged",
-      "next_due": 1795762716.4754412,
+      "next_due": 1795856262.2724974,
       "target_id": "epa-environmental-justice"
     },
     {
