@@ -53,7 +53,7 @@ science = [
 # outside the trust core — both are best-effort reviewer aids, never attested.
 triage = [
   "sentence-transformers>=3",  # L3 embeddings
-  "anthropic>=0.69",           # L5 summaries (billable; needs credentials)
+  "anthropic>=0.112",          # L5 summaries (billable; needs credentials; output_config effort)
 ]
 
 [project.scripts]

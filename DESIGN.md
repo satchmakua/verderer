@@ -70,7 +70,7 @@ Pinned and verified 2026-06-29. Choices lean on the builder's existing kit (R2, 
 | **Blob + tile store** | **Cloudflare R2** (S3-compatible) | Snapshots, datasets, and **log tiles** live here. Tiles are immutable, cacheable static files served by Cloudflare CDN → the verifier fetches them directly, no live Verderer service in the trust path. |
 | **External anchoring** | `opentimestamps-client` 0.7.2 (OTS→Bitcoin) + **RFC 3161** TSAs (FreeTSA / DigiCert / `timestamp.sigstore.dev`) + multi-mirror checkpoint publication | Several simultaneous anchors so no single one is a trust or availability chokepoint (§6.3). |
 | **Public UI** | **Astro 6** (MIT; Cloudflare-owned since Jan 2026) on Cloudflare Pages | The public record is overwhelmingly read-heavy/static — Astro's island model is the sweet spot; the WASM verifier runs as one island. |
-| **Reviewer LLM aid (later)** | Anthropic API — `claude-opus-4-8` (quality summaries), `claude-haiku-4-5` (cheap bulk triage) | Change-summary drafting for *human reviewers only*; never an authority. |
+| **Reviewer LLM aid (later)** | Anthropic API — `claude-sonnet-5-5` at low effort (change summaries), `claude-haiku-5-5` (cheap bulk triage) | Change-summary drafting for *human reviewers only*; never an authority. |
 
 > **License check before depending:** confirm `tlog_tiles` ships a permissive license (Cloudflare OSS crates are typically Apache-2.0/MIT/BSD-3) compatible with redistribution of the WASM verifier. Tracked in §9.
 

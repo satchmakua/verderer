@@ -121,11 +121,12 @@ def test_claude_summarizer_builds_a_correct_request() -> None:
     # Verify the Messages API usage (model, system, single user turn) without the SDK or
     # a billable call, by injecting a fake client.
     client = _FakeAnthropic()
-    summarize = claude_summarizer("claude-opus-4-8", client=client)
+    summarize = claude_summarizer(client=client)
     out = summarize("BEFORE text", "AFTER text", context="target t")
 
     assert out == "weakened commitment to a voluntary measure"
-    assert client.captured["model"] == "claude-opus-4-8"
+    assert client.captured["model"] == "claude-sonnet-5-5"
+    assert client.captured["output_config"] == {"effort": "low"}
     assert client.captured["max_tokens"] == 1024
     assert "reviewer" in client.captured["system"].lower()
     messages = client.captured["messages"]

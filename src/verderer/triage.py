@@ -36,7 +36,9 @@ class Summarizer(Protocol):
     def __call__(self, before: str, after: str, *, context: str = "") -> str: ...
 
 
-def claude_summarizer(model: str = "claude-opus-4-8", *, client: Any = None) -> Summarizer:
+def claude_summarizer(
+    model: str = "claude-sonnet-5-5", *, effort: str = "low", client: Any = None
+) -> Summarizer:
     """The default :class:`Summarizer`: a single Claude Messages call (optional `triage`
     extra — `anthropic`). `client` is injectable for testing; by default a live
     `anthropic.Anthropic()` is constructed lazily (resolves credentials from the env or an
@@ -56,6 +58,8 @@ def claude_summarizer(model: str = "claude-opus-4-8", *, client: Any = None) -> 
         message = api.messages.create(
             model=model,
             max_tokens=1024,
+            # A short drafting summary: low effort keeps it quick and cheap.
+            output_config={"effort": effort},
             system=_SYSTEM,
             messages=[{"role": "user", "content": user}],
         )

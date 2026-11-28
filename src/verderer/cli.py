@@ -537,7 +537,7 @@ def main(argv: list[str] | None = None) -> int:
     verify_bundle.add_argument("--quorum", type=int, default=0, help="required number of witness cosignatures (M8)")
     triage = sub.add_parser("triage", help="draft a plain-language reviewer summary of a reworded change (L5)")
     triage.add_argument("target_id")
-    triage.add_argument("--model", default="claude-opus-4-8", help="Claude model for the summary")
+    triage.add_argument("--model", default="claude-sonnet-5-5", help="Claude model for the summary")
     overlay = sub.add_parser("overlay", help="build the federated overlay index (third-party archives + attested badges)")
     overlay.add_argument("--out", type=Path, default=Path("site-data"), help="output directory")
     overlay.add_argument("--sources", default="wayback", help="comma-separated archive sources (known: wayback)")
